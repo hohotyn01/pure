@@ -11,17 +11,17 @@
     |
     */
 
-    Route::get('/', 'Home@index');
-    Route::post('/', 'Home@index');
+    Route::get('/', 'Index@home');
+    Route::post('/', 'Index@home');
 
-    Route::get('/personal_info', 'PersonalInfo@index')->name('info');
-    Route::post('/personal_info', 'PersonalInfo@index');
+    Route::get('/personal_info', 'Index@personalInfo')->name('info');
+    Route::post('/personal_info', 'Index@personalInfo');
 
-    Route::get('/your_home', 'YourHome@index')->name('home');
-    Route::post('/your_home', 'YourHome@index');
+    Route::get('/your_home', 'Index@yourHome')->name('home');
+    Route::post('/your_home', 'Index@yourHome');
 
-    Route::get('/materials', 'Materials@index')->name('materials');
-    Route::post('/materials', 'Materials@index');
+    Route::get('/materials', 'Index@materials')->name('materials');
+    Route::post('/materials', 'Index@materials');
 
-    Route::get('/extras', 'Extras@index')->name('extras');
-    Route::post('/extras', 'Extras@index');
+    Route::get('/extras', 'Index@extras')->name('extras');
+    Route::post('/extras', 'Index@extras');
