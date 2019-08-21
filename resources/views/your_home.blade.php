@@ -5,12 +5,14 @@
 @endsection
 
 @section('content')
-    <strong>Now we need information your home</strong>
     <div class="container">
-        <form action="" method="post">
-
-        </form>
+        <div class="row">
+            <div class="col-md-12">
+                <form action="" method="post">
+                    <p>123421421</p>
+                    <strong>Now you choice some extras to finish up</strong>
+                </form>
+            </div>
+        </div>
     </div>
-
-
 @endsection

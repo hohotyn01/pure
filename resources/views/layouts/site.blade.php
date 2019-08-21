@@ -31,7 +31,7 @@
 
     @yield('content')
 
-<footer class="footer text-faded text-center py-5">
+<footer id="footer" class="footer navbar-fixed-bottom text-faded text-center py-5">
     <div class="container">
         <p class="m-0 small">&copy; 2019 </p>
     </div>
