@@ -10,7 +10,6 @@
             <h2>
                 Get an estimate for home cleaning
             </h2>
-
             @if(count($errors) > 0)
                 <div class="alert alert-danger">
                     <ul>
@@ -20,12 +19,10 @@
                     </ul>
                 </div>
             @endif
-
         </div>
         <form action="" method="post">
             <div class="form-row mt-4">
                 @csrf
-
                 <div class="col-md-3"></div>
                 <div class="col-md-3">
                     <div class="form-group">

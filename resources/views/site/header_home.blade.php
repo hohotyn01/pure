@@ -11,7 +11,7 @@
                     <strong class="nav-link text-uppercase text-expanded">Pure hose cleaning</strong>
                 </li>
                 <li>
-                    <a class="nav-link text-uppercase text-expanded" href="{{route('info')}}">Временная кнопка</a>
+                    <a class="nav-link text-uppercase text-expanded" href="{{route('info')}}">Index page</a>
                 </li>
             </ul>
         </div>

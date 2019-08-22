@@ -5,14 +5,17 @@
 @endsection
 
 @section('content')
-    <div class="container mt-4">
-        <div class="text-center">
-            <h2>
-                Get a price for home cleaning
-            </h2>
+    <div class="container mt-4 ">
+        <div class="text-center mt-5 mb-5">
+            <h3>
+                Let's start with some basic information
+            </h3>
+            <h5>
+                <small>At the end of the quote you will get a price for cleaning</small>
+            </h5>
         </div>
+        <hr>
         <form>
-            <hr>
             @csrf
             {{--
                 CLEANING FREQUENCY
@@ -25,24 +28,25 @@
                         <small>You can always change frequencies, reschedule, or save cleaning for later</small>
                     </h5>
                 </div>
-                <label for="staticEmail" class="col-sm-3 col-form-label">CLEANING FREQUENCY</label>
-                <div class="col-sm-9">
+                {{--LEFT LABEL--}}
+                <label for="staticEmail" class="col-sm-3 col-form-label align-self-center">CLEANING FREQUENCY</label>
 
+                <div class="col-sm-9">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="Once" value="Once">
-                        <label class="form-check-label" for="Once">Once</label>
+                        <input class="form-check-input" type="checkbox" id="once" value="once">
+                        <label class="form-check-label" for="once">Once</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="Weekly" value="Weekly">
-                        <label class="form-check-label" for="Weekly">Weekly</label>
+                        <input class="form-check-input" type="checkbox" id="weekly" value="weekly">
+                        <label class="form-check-label" for="weekly">Weekly</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="Biweekly" value="Biweekly">
-                        <label class="form-check-label" for="Biweekly">Biweekly</label>
+                        <input class="form-check-input" type="checkbox" id="biweekly" value="biweekly">
+                        <label class="form-check-label" for="biweekly">Biweekly</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="Monthly" value="Monthly">
-                        <label class="form-check-label" for="Monthly">Monthly</label>
+                        <input class="form-check-input" type="checkbox" id="monthly" value="monthly">
+                        <label class="form-check-label" for="monthly">Monthly</label>
                     </div>
                 </div>
             </div>
@@ -55,9 +59,10 @@
                 <div class="col-sm-9">
                     <h5> What type of cleaning? </h5>
                 </div>
+                {{--LEFT LABEL--}}
                 <label for="staticEmail" class="col-sm-3 col-form-label">CLEANING TYPE</label>
-                <div class="col-sm-9">
 
+                <div class="col-sm-9">
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" id="deep_or_spring" value="deep_or_spring">
                         <label class="form-check-label" for="deep_or_spring">Deep or Spring</label>
@@ -85,9 +90,10 @@
                 <div class="col-sm-9">
                     <h5> When will you need us? </h5>
                 </div>
+                {{--LEFT LABEL--}}
                 <label for="staticEmail" class="col-sm-3 col-form-label">CLEANING DATE</label>
-                <div class="col-sm-9">
 
+                <div class="col-sm-9">
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" id="next_available" value="next_available">
                         <label class="form-check-label" for="next_available">Next available</label>
@@ -118,10 +124,12 @@
             </div>
             <hr>
             {{--
-                FORMA INFO
+                PERSONAL INFO
             --}}
             <div class="form-group row mt-5  mb-5">
-                <label for="staticEmail" class="col-sm-3 col-form-label">PERSONAL INFO</label>
+                {{--LEFT LABEL--}}
+                <label for="staticEmail" class="col-sm-3 col-form-label align-self-center">PERSONAL INFO</label>
+
                 <div class="col-sm-9">
                     <div class="row">
                         {{--The first block--}}
@@ -152,20 +160,20 @@
                             <input type="text" class="form-control" id="home_square_footage">
                         </div>
                         {{--Four Bock--}}
-                        {{--<div class="form-group col-md-6">--}}
-                            {{--<label for="City">City</label>--}}
-                            {{--<input type="text" class="form-control" id="City">--}}
-                        {{--</div>--}}
-                        {{--<div class="form-group col-md-6">--}}
-                            {{--<label for="home_square_footage">Home Square Footage</label>--}}
-                            {{--<input type="text" class="form-control" id="home_square_footage">--}}
-                        {{--</div>--}}
+                        <div class="form-group col-md-6">
+                            <label for="mobile_phone">Mobile phone</label>
+                            <input type="tel" class="form-control" name="form-control" id="mobile_phone">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="about_us">How did you hear about us?</label>
+                            <select class="form-control" name="about_us" id="about_us">
+                                <option value="">Cleaning for Reason</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
-            {{--
-                Button
-            --}}
+            {{--Button--}}
             <div class="text-center mb-5">
                 <input type="submit" class="btn btn-danger" value="3 Steps Left">
             </div>
