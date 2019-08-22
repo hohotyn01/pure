@@ -8,7 +8,10 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item active px-lg-12">
-                    <strong class="nav-link text-uppercase text-expanded" href="#">Pure hose cleaning</strong>
+                    <strong class="nav-link text-uppercase text-expanded">Pure hose cleaning</strong>
+                </li>
+                <li>
+                    <a class="nav-link text-uppercase text-expanded" href="{{route('info')}}">Временная кнопка</a>
                 </li>
             </ul>
         </div>

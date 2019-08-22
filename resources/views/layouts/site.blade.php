@@ -26,16 +26,11 @@
 <body>
 <!-- Navigation -->
 
-    @yield('header')
+@yield('header')
 
 
-    @yield('content')
+@yield('content')
 
-<footer id="footer" class="footer navbar-fixed-bottom text-faded text-center py-5">
-    <div class="container">
-        <p class="m-0 small">&copy; 2019 </p>
-    </div>
-</footer>
 
 <!-- Bootstrap core JavaScript -->
 <script src="{{asset('assets/vendor/jquery/jquery.min.js')}}"></script>

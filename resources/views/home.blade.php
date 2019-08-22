@@ -7,20 +7,25 @@
 @section('content')
     <div class="container mt-4">
         <div class="text-center">
-            <strong><h2>Get an estimate for home cleaning</h2></strong>
+            <h2>
+                Get an estimate for home cleaning
+            </h2>
+
+            @if(count($errors) > 0)
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{$error}}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
         </div>
         <form action="" method="post">
             <div class="form-row mt-4">
                 @csrf
-                @if(count($errors) > 0)
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach($errors->all() as $error)
-                                <li>{{$error}}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+
                 <div class="col-md-3"></div>
                 <div class="col-md-3">
                     <div class="form-group">
@@ -51,7 +56,7 @@
                 <div class="col-md-3"></div>
             </div>
             <div class="text-center">
-                <input type="submit" class="btn btn-danger mb-2" value="Continue">
+                <input type="submit" class="btn btn-danger mb-4" value="Continue">
             </div>
         </form>
     </div>

@@ -11,7 +11,7 @@
     |
     */
 
-    Route::get('/', 'Index@home');
+    Route::get('/', 'Index@home')->name('index');
     Route::post('/', 'Index@home');
 
     Route::get('/personal_info', 'Index@personalInfo')->name('info');
