@@ -111,11 +111,13 @@
                     <strong>Are there stainless steel appliances?</strong>
                     <br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="stainless_steel_appliances" id="steel_yes" value="yes">
+                        <input class="form-check-input" type="radio" name="stainless_steel_appliances" id="steel_yes"
+                               value="yes">
                         <label class="form-check-label" for="steel_yes">yes</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="stainless_steel_appliances" id="steel_no" value="no">
+                        <input class="form-check-input" type="radio" name="stainless_steel_appliances" id="steel_no"
+                               value="no">
                         <label class="form-check-label" for="steel_no">no</label>
                     </div>
                     <hr>
@@ -139,11 +141,13 @@
                     <strong>Are shower doors made of glass?</strong>
                     <br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="shawer_doors_glass" id="shawer_yes" value="yes">
+                        <input class="form-check-input" type="radio" name="shawer_doors_glass" id="shawer_yes"
+                               value="yes">
                         <label class="form-check-label" for="shawer_yes">yes</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="shawer_doors_glass" id="shawer_no" value="no">
+                        <input class="form-check-input" type="radio" name="shawer_doors_glass" id="shawer_no"
+                               value="no">
                         <label class="form-check-label" for="shawer_no">no</label>
                     </div>
                     <hr>
