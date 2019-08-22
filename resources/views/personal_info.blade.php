@@ -15,7 +15,7 @@
             </h5>
         </div>
         <hr>
-        <form>
+        <form action="" method="post">
             @csrf
             {{--
                 CLEANING FREQUENCY
@@ -33,19 +33,19 @@
 
                 <div class="col-sm-9">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="once" value="once">
+                        <input class="form-check-input" type="radio" id="once" value="once" name="cleaning_frequency">
                         <label class="form-check-label" for="once">Once</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="weekly" value="weekly">
+                        <input class="form-check-input" type="radio" id="weekly" value="weekly" name="cleaning_frequency">
                         <label class="form-check-label" for="weekly">Weekly</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="biweekly" value="biweekly">
+                        <input class="form-check-input" type="radio" id="biweekly" value="biweekly" name="cleaning_frequency">
                         <label class="form-check-label" for="biweekly">Biweekly</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="monthly" value="monthly">
+                        <input class="form-check-input" type="radio" id="monthly" value="monthly" name="cleaning_frequency">
                         <label class="form-check-label" for="monthly">Monthly</label>
                     </div>
                 </div>
@@ -64,19 +64,19 @@
 
                 <div class="col-sm-9">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="deep_or_spring" value="deep_or_spring">
+                        <input class="form-check-input" type="radio" id="deep_or_spring" value="deep_or_spring" name="cleaning_type">
                         <label class="form-check-label" for="deep_or_spring">Deep or Spring</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="move_in" value="move_in">
+                        <input class="form-check-input" type="radio" id="move_in" value="move_in" name="cleaning_type">
                         <label class="form-check-label" for="move_in">Move in</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="move_out" value="move_out">
+                        <input class="form-check-input" type="radio" id="move_out" value="move_out" name="cleaning_type">
                         <label class="form-check-label" for="move_out">Move Out</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="post_remodeling" value="post_remodeling">
+                        <input class="form-check-input" type="radio" id="post_remodeling" value="post_remodeling" name="cleaning_type">
                         <label class="form-check-label" for="post_remodeling">Post Remodeling</label>
                     </div>
                 </div>
@@ -95,29 +95,28 @@
 
                 <div class="col-sm-9">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="next_available" value="next_available">
+                        <input class="form-check-input" type="radio" id="next_available" value="next_available" name="cleaning_date">
                         <label class="form-check-label" for="next_available">Next available</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="this_week" value="this_week">
+                        <input class="form-check-input" type="radio" id="this_week" value="this_week" name="cleaning_date">
                         <label class="form-check-label" for="this_week">This week</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="next_week" value="next_week">
+                        <input class="form-check-input" type="radio" id="next_week" value="next_week" name="cleaning_date">
                         <label class="form-check-label" for="next_week">Next week</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="this_month" value="this_month">
+                        <input class="form-check-input" type="radio" id="this_month" value="this_month" name="cleaning_date">
                         <label class="form-check-label" for="this_month">This Month</label>
                     </div>
                     <br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="i_am_flexible" value="i_am_flexible">
+                        <input class="form-check-input" type="radio" id="i_am_flexible" value="i_am_flexible" name="cleaning_date">
                         <label class="form-check-label" for="i_am_flexible">I am flexible</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="just_need_a_quote"
-                               value="just_need_a_quote">
+                        <input class="form-check-input" type="radio" id="just_need_a_quote" value="just_need_a_quote" name="cleaning_date">
                         <label class="form-check-label" for="just_need_a_quote">Just need a quote</label>
                     </div>
                 </div>
@@ -126,43 +125,43 @@
             {{--
                 PERSONAL INFO
             --}}
-            <div class="form-group row mt-5  mb-5">
+            <div class="form-group form-row mt-5  mb-5">
                 {{--LEFT LABEL--}}
                 <label for="staticEmail" class="col-sm-3 col-form-label align-self-center">PERSONAL INFO</label>
 
                 <div class="col-sm-9">
-                    <div class="row">
+                    <div class="form-row">
                         {{--The first block--}}
                         <div class="form-group col-md-6">
                             <label for="first_name">First name</label>
-                            <input type="text" class="form-control" id="first_name">
+                            <input type="text" class="form-control" id="first_name" name="first_name">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="last_name">Last name</label>
-                            <input type="text" class="form-control" id="last_name">
+                            <input type="text" class="form-control" id="last_name" name="last_name">
                         </div>
                         {{--The second block--}}
                         <div class="form-group col-md-8">
                             <label for="street_address">Street address</label>
-                            <input type="text" class="form-control" id="street_address">
+                            <input type="text" class="form-control" id="street_address" name="street_address">
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="Apt">Apt</label>
-                            <input type="text" class="form-control" id="Apt">
+                            <label for="apt">Apt</label>
+                            <input type="text" class="form-control" id="apt" name="apt">
                         </div>
                         {{--Tree block--}}
                         <div class="form-group col-md-6">
-                            <label for="City">City</label>
-                            <input type="text" class="form-control" id="City">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="home_square_footage">Home Square Footage</label>
-                            <input type="text" class="form-control" id="home_square_footage">
+                            <input type="text" class="form-control" id="home_square_footage" name="home_square_footage">
                         </div>
                         {{--Four Bock--}}
                         <div class="form-group col-md-6">
                             <label for="mobile_phone">Mobile phone</label>
-                            <input type="tel" class="form-control" name="form-control" id="mobile_phone">
+                            <input type="tel" class="form-control" name="mobile_phone" id="mobile_phone" >
                         </div>
                         <div class="form-group col-md-6">
                             <label for="about_us">How did you hear about us?</label>

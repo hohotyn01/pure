@@ -26,7 +26,7 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <select class="form-control" name="bedrooms">
+                        <select class="form-control" name="bedroom">
                             @foreach($bedroom as $bedrooms)
                                 <option value="{{$bedrooms}}">{{$bedrooms}}</option>
                             @endforeach
@@ -34,12 +34,12 @@
                     </div>
                     <div class="form-group">
                         <label for="zip">ZIP Code</label><br>
-                        <input type="text" class="form-control" id="zip" name="zip">
+                        <input type="text" class="form-control" id="zip" name="zip_code">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <select class="form-control" name="bathrom">
+                        <select class="form-control" name="bathroom">
                             @foreach($bathrom as $bathroms)
                                 <option value="{{$bathroms}}">{{$bathroms}}</option>
                             @endforeach

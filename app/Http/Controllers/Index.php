@@ -2,6 +2,7 @@
 
     namespace App\Http\Controllers;
 
+    use Illuminate\Support\Facades\DB;
     use Validator;
     use Illuminate\Http\Request;
     use App\Models\Order;
@@ -49,7 +50,9 @@
                  * Validate Start
                  */
                 $validator = Validator::make($request->all(), [
-                    'zip' => 'required|max:10',
+                    'bedroom' => 'required',
+                    'bathroom' => 'required',
+                    'zip_code' => 'required|max:10',
                     'email' => 'required|email|max:150',
                 ]);
 
@@ -65,7 +68,24 @@
                 /*
                 * Save start
                 */
+                $user = new User;
+                $order = new Order;
 
+                $user->email = $request->email;
+                $order->bedroom = $request->bedroom;
+                $order->bathroom = $request->bathroom;
+                $order->zip_code = $request->zip_code;
+
+                $user->save();
+
+                if ($user->save()) {
+                    $order->user_id = $user->latest('id')->first()->id;
+
+                }
+
+                $order->save();
+
+                return redirect(route('info'));
                 /*
                  * Save end
                  */
@@ -79,7 +99,24 @@
             }
 
             if ($request->isMethod('post')) {
-                echo 1;
+
+                /*
+                * Validate Start
+                */
+                $validator = Validator::make($request->all(), [
+                    'cleaning_frequency' => 'required|in:once,weekly,biweekly,monthly',
+                    'cleaning_type' => 'required|in:deep_or_spring,move_in,move_out,post_remodeling',
+                    'cleaning_date' => 'required',
+                    'first_name' => 'required',
+                    'last_name' => 'required',
+                    'street_address' => 'required',
+                    'apt' => '',
+                    'city' => 'required',
+                    'home_square_footage' => 'required',
+                    'mobile_phone' => 'required',
+                    'about_us' => 'required'
+                ]);
+
             }
         }
 

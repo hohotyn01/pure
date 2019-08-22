@@ -28,6 +28,8 @@ class AddForeignKeyOrders extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('orders', function (Blueprint $table){
+            $table->integer('user_id')->change();
+        });
     }
 }
