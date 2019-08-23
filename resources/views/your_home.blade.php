@@ -123,46 +123,15 @@
                     <div class="col-md-12">
                         <strong>How would you rate your current home cleanliness?</strong>
                         <br>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_1" value="1">
-                            <label class="form-check-label" for="rate_1">1</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_2" value="2">
-                            <label class="form-check-label" for="rate_2">2</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_3" value="3">
-                            <label class="form-check-label" for="rate_3">3</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_4" value="4">
-                            <label class="form-check-label" for="rate_4">4</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_5" value="5">
-                            <label class="form-check-label" for="rate_5">5</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_6" value="6">
-                            <label class="form-check-label" for="rate_6">6</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_7" value="7">
-                            <label class="form-check-label" for="rate_7">7</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_8" value="8">
-                            <label class="form-check-label" for="rate_8">8</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_9" value="9">
-                            <label class="form-check-label" for="rate_9">9</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rate" id="rate_10" value="10">
-                            <label class="form-check-label" for="rate_10">10</label>
-                        </div>
+                        @foreach($rate as $rates)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rate" id="rate_{{$rates}}"
+                                       value="{{$rates}}">
+                                <label class="form-check-label" for="rate_{{$rates}}">{{$rates}}</label>
+                            </div>
+                        @endforeach
+
+
                     </div>
                 </div>
             </div>
@@ -221,7 +190,7 @@
                         </label>
                         <br>
                         <div class="custom-file">
-                            <input class="custom-file-input" type="file" id="photo">
+                            <input class="custom-file-input" type="file" id="photo" name="photo">
                             <label class="custom-file-label" for="photo">Select a files...</label>
                         </div>
                     </div>

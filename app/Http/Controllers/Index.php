@@ -19,29 +19,10 @@
         public function home(Request $request)
         {
             if ($request->isMethod('get')) {
-                $bedroom = [
-                    '1 Bedroom',
-                    '2 Bedroom',
-                    '3 Bedroom',
-                    '4 Bedroom',
-                    '5 Bedroom',
-                    '6 Bedroom',
-                    '7 Bedroom',
-                    '8 Bedroom',
-                    '9 Bedroom',
-                    '10 Bedroom'
-                ];
-                $bathrom = [
-                    '1 Bathroom',
-                    '1.5 Bathroom',
-                    '2 Bathroom',
-                    '2.5 Bathroom',
-                    '3 Bathroom',
-                    '3.5 Bathroom',
-                    '4 Bathroom',
-                    '4.5 Bathroom',
-                    '5 Bathroom'
-                ];
+
+                $bedroom = range('1', '10', '1');
+                $bathrom = range('1', '5', '0.5');
+
                 return view('home', ['bedroom' => $bedroom, 'bathrom' => $bathrom]);
             }
 
@@ -50,8 +31,8 @@
                  * Validate Start
                  */
                 $validator = Validator::make($request->all(), [
-                    'bedroom' => 'required',
-                    'bathroom' => 'required',
+                    'bedroom' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+                    'bathroom' => 'required|in:1,1.5,2,2.5,3,3.5,4,4.5,5',
                     'zip_code' => 'required|max:10',
                     'email' => 'required|email|max:150',
                 ]);
@@ -76,14 +57,16 @@
                 $order->bathroom = $request->bathroom;
                 $order->zip_code = $request->zip_code;
 
-                $user->save();
-
-                if ($user->save()) {
-                    $order->user_id = $user->latest('id')->first()->id;
-
+                if (!$user->save()) {
+                    abort(404);
+//                    return view('question.single', compact('question'));
                 }
 
-                $order->save();
+                $order->user_id = $user->id;
+
+                if (!$order->save()) {
+                    abort(404);
+                }
 
                 return redirect(route('info'));
                 /*
@@ -99,35 +82,114 @@
             }
 
             if ($request->isMethod('post')) {
-
                 /*
                 * Validate Start
                 */
                 $validator = Validator::make($request->all(), [
                     'cleaning_frequency' => 'required|in:once,weekly,biweekly,monthly',
                     'cleaning_type' => 'required|in:deep_or_spring,move_in,move_out,post_remodeling',
-                    'cleaning_date' => 'required',
-                    'first_name' => 'required',
-                    'last_name' => 'required',
-                    'street_address' => 'required',
-                    'apt' => '',
-                    'city' => 'required',
-                    'home_square_footage' => 'required',
-                    'mobile_phone' => 'required',
-                    'about_us' => 'required'
+                    'cleaning_date' => 'required|in:next_available,this_week,next_week,this_month,i_am_flexible,just_need_a_quote',
+                    'first_name' => 'required|max:150',
+                    'last_name' => 'required|max:150',
+                    'street_address' => 'required|max:150',
+                    'apt' => 'max:15',
+                    'city' => 'required|max:150',
+                    'home_square_footage' => 'required|max:10',
+                    'mobile_phone' => 'required|between:9,15',
+                    'about_us' => 'required|in:cleaning_for_reason'
                 ]);
 
+                if ($validator->fails()) {
+                    return back()
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+                /*
+                 * Validate End
+                 */
+
+                /*
+                * Save start
+                */
+                $user = new User;
+                $order = new Order;
+
+                $order->cleaning_frequency = $request->cleaning_frequency;
+                $order->cleaning_type = $request->cleaning_type;
+                $order->cleaning_date = $request->cleaning_date;
+                $user->first_name = $request->first_name;
+                $user->last_name = $request->last_name;
+                $order->street_address = $request->street_address;
+                $order->apt = $request->apt;
+                $order->city = $request->city;
+                $order->home_square_footage = $request->home_footage;
+                $user->mobile_phone = $request->mobile_phone;
+                $order->about_us = $request->about_us;
+
+                $user->save();
+                $order->save();
+
+                return redirect(route('home'));
+
+                /*
+                * Save End
+                */
             }
         }
 
         public function yourHome(Request $request)
         {
             if ($request->isMethod('get')) {
-                return view('your_home');
+                $rate = range('1', '10', '1');
+
+                return view('your_home', ['rate' => $rate]);
             }
 
             if ($request->isMethod('post')) {
-                echo 1;
+                /*
+                * Validate Start
+                */
+                $validator = Validator::make($request->all(), [
+                    'dogs_or_cats' => 'required|in:none,dog,cat,both',
+                    'pets_total' => 'required|in:pet_1,pet_2,pet_3_more',
+                    'adults' => 'required|in:none,1_2,3_4,5_and_more',
+                    'children' => 'required|in:none_children,1,2,3_and_more',
+                    'rate' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+                    'cleaned_2_months_ago' => 'required|in:yes,no',
+                    'differently' => 'required|max:255',
+                    'photo' => 'max:255|',
+                ]);
+
+                if ($validator->fails()) {
+                    return back()
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+                /*
+                * Validate End
+                */
+                /*
+                * Save Start
+                */
+                $OrderDetail = new OrderDetail;
+                $OrderDetailPhoto = new OrderDetailPhoto;
+
+                $OrderDetail->dogs_or_cats = $request->dogs_or_cats;
+                $OrderDetail->pets_total = $request->pets_total;
+                $OrderDetail->adults = $request->adults;
+                $OrderDetail->children = $request->children;
+                $OrderDetail->rate_cleanliness = $request->rate;
+                $OrderDetail->cleaned_2_months_ago = $request->cleaned_2_months_ago;
+                $OrderDetail->differently = $request->differently;
+                $OrderDetailPhoto->photo_path = $request->photo;
+
+                $OrderDetail->save();
+                $OrderDetailPhoto->save();
+
+                return redirect(route('materials'));
+                /*
+                * Save End
+                */
             }
         }
 
@@ -138,7 +200,29 @@
             }
 
             if ($request->isMethod('post')) {
-                echo 1;
+                /*
+                 * Validate Start
+                 */
+                $validator = Validator::make($request->all(), [
+                    ''
+                ]);
+
+                if ($validator->fails()) {
+                    return back()
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+                /*
+                * Validate End
+                */
+                /*
+                * Save Start
+                */
+
+                return redirect (route('extras'));
+                /*
+                * Save End
+                */
             }
         }
 
@@ -149,7 +233,28 @@
             }
 
             if ($request->isMethod('post')) {
-                echo 1;
+                /*
+                * Validate Start
+                */
+                $validarot = Validator::make($request->all(), [
+
+                ]);
+
+                if ($validarot->fails()) {
+                    return back()
+                        ->withErrors($validarot)
+                        ->withInput();
+                }
+                /*
+                * Validate End
+                */
+                /*
+                * Save Start
+                */
+                return back();
+                /*
+                * Save End
+                */
             }
         }
     }

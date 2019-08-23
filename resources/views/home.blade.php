@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <select class="form-control" name="bedroom">
                             @foreach($bedroom as $bedrooms)
-                                <option value="{{$bedrooms}}">{{$bedrooms}}</option>
+                                <option value="{{$bedrooms}}">{{$bedrooms.' Bedroom'}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <select class="form-control" name="bathroom">
                             @foreach($bathrom as $bathroms)
-                                <option value="{{$bathroms}}">{{$bathroms}}</option>
+                                <option value="{{$bathroms}}">{{$bathroms.' Bathroms'}}</option>
                             @endforeach
                         </select>
                     </div>

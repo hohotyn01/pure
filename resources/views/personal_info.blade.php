@@ -16,6 +16,15 @@
         </div>
         <hr>
         <form action="" method="post">
+            @if(count($errors) > 0)
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{$error}}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             @csrf
             {{--
                 CLEANING FREQUENCY
@@ -166,7 +175,7 @@
                         <div class="form-group col-md-6">
                             <label for="about_us">How did you hear about us?</label>
                             <select class="form-control" name="about_us" id="about_us">
-                                <option value="">Cleaning for Reason</option>
+                                <option value="cleaning_for_reason">Cleaning for Reason</option>
                             </select>
                         </div>
                     </div>
