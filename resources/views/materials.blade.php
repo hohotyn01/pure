@@ -16,8 +16,17 @@
             </h5>
         </div>
         <hr>
-        <form action="">
+        <form action="" method="post">
             @csrf
+            @if(count($errors) > 0)
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{$error}}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="form-group row mt-4 md-4">
                 {{--LEFT LABEL--}}
                 <label class="col-sm-3 col-form-label align-self-center">HOME SURFACES</label>
@@ -71,7 +80,7 @@
                     <small>Check all that apply</small>
                     <br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="concrete" id="concrete" value="1">
+                        <input class="form-check-input" type="checkbox" name="concrete_c" id="concrete" value="1">
                         <label class="form-check-label" for="concrete">Concrete</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -92,7 +101,7 @@
                         <label class="form-check-label" for="marble">Marble</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="tile" id="tile" value="1">
+                        <input class="form-check-input" type="checkbox" name="tile_c" id="tile" value="1">
                         <label class="form-check-label" for="tile">Tile</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -179,15 +188,15 @@
                         Special attention (TEXT)
                     --}}
                     <div class="col-md-12">
-                        <label for="differently"><strong>Are there areas needing special attention?</strong></label>
-                        <textarea class="form-control" name="differently" id="differently" rows="3"></textarea>
+                        <label for="areas_special_attention"><strong>Are there areas needing special attention?</strong></label>
+                        <textarea class="form-control" name="areas_special_attention" id="areas_special_attention" rows="3"></textarea>
                     </div>
                     {{--
                         Anything else we should know (TEXT)
                     --}}
                     <div class="col-md-12">
-                        <label for="differently"><strong>Anything else we should know?</strong></label>
-                        <textarea class="form-control" name="differently" id="differently" rows="3"></textarea>
+                        <label for="anything_know"><strong>Anything else we should know?</strong></label>
+                        <textarea class="form-control" name="anything_know" id="anything_know" rows="3"></textarea>
                     </div>
                 </div>
             </div>

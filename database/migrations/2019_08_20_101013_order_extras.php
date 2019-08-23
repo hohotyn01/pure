@@ -21,7 +21,7 @@ class OrderExtras extends Migration
             $table->boolean('garage_swept');
             $table->boolean('blinds_cleaning');
             $table->boolean('laundry_wash_dry');
-            $table->boolean('service weekend');
+            $table->boolean('service_weekend');
             $table->boolean('carpet');
             $table->timestamps();
         });

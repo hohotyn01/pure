@@ -204,7 +204,34 @@
                  * Validate Start
                  */
                 $validator = Validator::make($request->all(), [
-                    ''
+//                    Floor
+                    'hardwood' => 'boolean',
+                    'cork' => 'boolean',
+                    'vinyl' => 'boolean',
+                    'concrete' => 'boolean',
+                    'carpet' => 'boolean',
+                    'natural_stone' => 'boolean',
+                    'tile' => 'boolean',
+                    'laminate' => 'boolean',
+//                    Floor
+//                    Countertop
+                    'concrete_c' => 'boolean',
+                    'quartz' => 'boolean',
+                    'formica' => 'boolean',
+                    'granite' => 'boolean',
+                    'marble' => 'boolean',
+                    'tile_c' => 'boolean',
+                    'paper_stone' => 'boolean',
+                    'butcher_block' => 'boolean',
+//                    Countertop
+//                    Detail
+                    'stainless_steel_appliances' => 'required|in:yes,no',
+                    'stove_type' => 'required|in:yes,no',
+                    'shawer_doors_glass' => 'required|in:yes,no',
+                    'mold' => 'required|in:yes,no',
+                    'areas_special_attention' => 'max:255',
+                    'anything_know' => 'max:255',
+//                    Detail
                 ]);
 
                 if ($validator->fails()) {
@@ -218,8 +245,45 @@
                 /*
                 * Save Start
                 */
+                $OrderMaterialsFloor = new OrderMaterialsFloor;
+                $OrderMaterialsCountertop = new OrderMaterialsCountertop;
+                $OrderMaterialsDetail = new OrderMaterialsDetail;
 
-                return redirect (route('extras'));
+//                Floor
+                $OrderMaterialsFloor->hardwood = $request->hardwood;
+                $OrderMaterialsFloor->cork = $request->cork;
+                $OrderMaterialsFloor->vinyl = $request->vinyl;
+                $OrderMaterialsFloor->concrete = $request->concrete;
+                $OrderMaterialsFloor->carpet = $request->carpet;
+                $OrderMaterialsFloor->natural_stone = $request->natural_stone;
+                $OrderMaterialsFloor->tile = $request->tile;
+                $OrderMaterialsFloor->laminate = $request->laminate;
+
+//                Countertop
+                $OrderMaterialsCountertop->concrete = $request->concrete_c;
+                $OrderMaterialsCountertop->quartz = $request->quartz;
+                $OrderMaterialsCountertop->formica = $request->formica;
+                $OrderMaterialsCountertop->granite = $request->granite;
+                $OrderMaterialsCountertop->marble = $request->marble;
+                $OrderMaterialsCountertop->tile = $request->tile_c;
+                $OrderMaterialsCountertop->paper_stone = $request->paper_stone;
+                $OrderMaterialsCountertop->butcher_block = $request->butcher_block;
+
+//                Detail
+                $OrderMaterialsDetail->stainless_steel_appliances = $request->stainless_steel_appliances;
+                $OrderMaterialsDetail->stove_type = $request->stove_type;
+                $OrderMaterialsDetail->shawer_doors_glass = $request->shawer_doors_glass;
+                $OrderMaterialsDetail->mold = $request->mold;
+
+                $OrderMaterialsDetail->areas_special_attention = $request->areas_special_attention;
+                $OrderMaterialsDetail->anything_know = $request->anything_know;
+
+
+                $OrderMaterialsFloor->save();
+                $OrderMaterialsCountertop->save();
+                $OrderMaterialsDetail->save();
+
+                return redirect(route('extras'));
                 /*
                 * Save End
                 */
@@ -236,13 +300,21 @@
                 /*
                 * Validate Start
                 */
-                $validarot = Validator::make($request->all(), [
+                $validator = Validator::make($request->all(), [
+//                    Select extras
+                    'inside_fridge' => 'boolean',
+                    'inside_oven' => 'boolean',
+                    'garage_swept' => 'boolean',
+                    'blinds_cleaning' => 'boolean',
+                    'laundry_wash_dry' => 'boolean',
 
+                    'service_weekend' => 'required|in:yes,no',
+                    'carpet' => 'required|in:yes,no',
                 ]);
 
-                if ($validarot->fails()) {
+                if ($validator->fails()) {
                     return back()
-                        ->withErrors($validarot)
+                        ->withErrors($validator)
                         ->withInput();
                 }
                 /*
@@ -251,6 +323,20 @@
                 /*
                 * Save Start
                 */
+                $OrderExtras = new OrderExtras;
+
+                $OrderExtras->inside_fridge = $request->inside_fridge;
+                $OrderExtras->inside_oven = $request->inside_oven;
+                $OrderExtras->garage_swept = $request->garage_swept;
+                $OrderExtras->blinds_cleaning = $request->blinds_cleaning;
+                $OrderExtras->laundry_wash_dry = $request->laundry_wash_dry;
+                $OrderExtras->service_weekend = $request->service_weekend;
+                $OrderExtras->carpet = $request->carpet;
+
+                if (!$OrderExtras->save()) {
+                    abort('404');
+                }
+
                 return back();
                 /*
                 * Save End
