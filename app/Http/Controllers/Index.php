@@ -3,6 +3,7 @@
     namespace App\Http\Controllers;
 
     use Illuminate\Support\Facades\DB;
+    use Session;
     use Validator;
     use Illuminate\Http\Request;
     use App\Models\Order;
@@ -18,12 +19,38 @@
     {
         public function home(Request $request)
         {
+
+
             if ($request->isMethod('get')) {
+                /*
+                 * Value for view
+                 */
+                if (session::has('order') && session::has('user')) {
 
-                $bedroom = range('1', '10', '1');
-                $bathrom = range('1', '5', '0.5');
+                    $id = session::get('order');
+                    $orderDB = Order::all()->find("$id");
+                    $userDB = User::all()->find("$orderDB->user_id");
 
-                return view('home', ['bedroom' => $bedroom, 'bathrom' => $bathrom]);
+                    $email = $userDB->email;
+                    $bedroom = $orderDB->bedroom;
+                    $bathroom = $orderDB->bathroom;
+                    $zipCode = $orderDB->zip_code;
+                }
+                /*
+                 * Value for view
+                 */
+                $bedroomRange = range('1', '10', '1');
+                $bathromRange = range('1', '5', '0.5');
+
+                return view('home', [
+                    'bedroomRange' => $bedroomRange,
+                    'bathromRange' => $bathromRange,
+                    'email' => $email,
+                    'bedroom' => $bedroom,
+                    'bathroom' => $bathroom,
+                    'zipCode' => $zipCode
+                ]);
+
             }
 
             if ($request->isMethod('post')) {
@@ -68,6 +95,9 @@
                     abort(404);
                 }
 
+                Session::put('order', "$order->id");
+                Session::put('user', "$order->user_id");
+
                 return redirect(route('info'));
                 /*
                  * Save end
@@ -78,7 +108,47 @@
         public function personalInfo(Request $request)
         {
             if ($request->isMethod('get')) {
-                return view('personal_info');
+                /*
+                 * Value for view
+                 */
+                if (session::has('order') && session::has('user')) {
+
+                    $id = session::get('order');
+                    $orderDB = Order::all()->find("$id");
+                    $userDB = User::all()->find("$orderDB->user_id");
+
+                    $first_name = $userDB->first_name;
+                    $last_name = $userDB->last_name;
+                    $mobile_phone = $userDB->mobile_phone;
+
+                    $cleaning_frequency = $orderDB->cleaning_frequency;
+                    $cleaning_type = $orderDB->cleaning_type;
+                    $cleaning_date = $orderDB->cleaning_date;
+
+                    $street_address = $orderDB->street_address;
+                    $apt = $orderDB->apt;
+                    $city = $orderDB->city;
+                    $home_footage = $orderDB->home_footage;
+                    $about_us = $orderDB->about_us;
+
+                }
+                /*
+                 * Value for view
+                 */
+
+                return view('personal_info', [
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'cleaning_frequency' => $cleaning_frequency,
+                    'cleaning_type' => $cleaning_type,
+                    'cleaning_date' => $cleaning_date,
+                    'street_address' => $street_address,
+                    'apt' => $apt,
+                    'city' => $city,
+                    'home_footage' => $home_footage,
+                    'mobile_phone' => $mobile_phone,
+                    'about_us' => $about_us
+                ]);
             }
 
             if ($request->isMethod('post')) {
@@ -111,8 +181,13 @@
                 /*
                 * Save start
                 */
-                $user = new User;
-                $order = new Order;
+                $id = session::get('order');
+                $userId = session::get('user');
+
+                $order = Order::all()->find($id);
+                $user = User::all()->find($userId);
+
+                Page::where('id', $id)->update(array('image' => 'asdasd'));
 
                 $order->cleaning_frequency = $request->cleaning_frequency;
                 $order->cleaning_type = $request->cleaning_type;
@@ -122,7 +197,7 @@
                 $order->street_address = $request->street_address;
                 $order->apt = $request->apt;
                 $order->city = $request->city;
-                $order->home_square_footage = $request->home_footage;
+                $order->home_footage = $request->home_square_footage;
                 $user->mobile_phone = $request->mobile_phone;
                 $order->about_us = $request->about_us;
 
@@ -141,8 +216,8 @@
         {
             if ($request->isMethod('get')) {
                 $rate = range('1', '10', '1');
-
-                return view('your_home', ['rate' => $rate]);
+//                dd(session::all());
+                return view('your_home', ['rate' => $rate,]);
             }
 
             if ($request->isMethod('post')) {
@@ -154,7 +229,7 @@
                     'pets_total' => 'required|in:pet_1,pet_2,pet_3_more',
                     'adults' => 'required|in:none,1_2,3_4,5_and_more',
                     'children' => 'required|in:none_children,1,2,3_and_more',
-                    'rate' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+                    'rate_cleanliness' => 'required|in:1,2,3,4,5,6,7,8,9,10',
                     'cleaned_2_months_ago' => 'required|in:yes,no',
                     'differently' => 'required|max:255',
                     'photo' => 'max:255|',
@@ -171,20 +246,17 @@
                 /*
                 * Save Start
                 */
+//                $OrderDetail = OrderDetail::find('');
                 $OrderDetail = new OrderDetail;
                 $OrderDetailPhoto = new OrderDetailPhoto;
+                $id = session::get('order');
+                $data = $request->except('_token','photo');
+                $data['order_id'] = $id;
+//                dd($data);
+               $d = OrderDetail::updateOrCreate(["order_id" => $id], $data);
 
-                $OrderDetail->dogs_or_cats = $request->dogs_or_cats;
-                $OrderDetail->pets_total = $request->pets_total;
-                $OrderDetail->adults = $request->adults;
-                $OrderDetail->children = $request->children;
-                $OrderDetail->rate_cleanliness = $request->rate;
-                $OrderDetail->cleaned_2_months_ago = $request->cleaned_2_months_ago;
-                $OrderDetail->differently = $request->differently;
-                $OrderDetailPhoto->photo_path = $request->photo;
+//dd($d);
 
-                $OrderDetail->save();
-                $OrderDetailPhoto->save();
 
                 return redirect(route('materials'));
                 /*
@@ -196,6 +268,10 @@
         public function materials(Request $request)
         {
             if ($request->isMethod('get')) {
+                if (session::has('order') && session::has('user')) {
+
+                }
+
                 return view('materials');
             }
 

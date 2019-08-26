@@ -27,27 +27,27 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <select class="form-control" name="bedroom">
-                            @foreach($bedroom as $bedrooms)
-                                <option value="{{$bedrooms}}">{{$bedrooms.' Bedroom'}}</option>
+                            @foreach($bedroomRange as $bedrooms)
+                                <option {{!empty($bedroom) && ($bedrooms == $bedroom) ? 'selected': ''}} value="{{$bedrooms}}">{{$bedrooms.' Bedroom'}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="zip">ZIP Code</label><br>
-                        <input type="text" class="form-control" id="zip" name="zip_code">
+                        <input type="text" class="form-control" id="zip" name="zip_code" value="{{!empty($zipCode) ? $zipCode : ""}}">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <select class="form-control" name="bathroom">
-                            @foreach($bathrom as $bathroms)
-                                <option value="{{$bathroms}}">{{$bathroms.' Bathroms'}}</option>
+                            @foreach($bathromRange as $bathroms)
+                                <option {{!empty($bathroom) && ($bathroms == $bathroom) ? 'selected': ''}} value="{{$bathroms}}">{{$bathroms.' Bathroms'}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label><br>
-                        <input type="text" class="form-control" id="email" name="email">
+                        <input type="text" class="form-control" id="email" name="email" value="{{!empty($email) ? $email : ""}}">
                     </div>
                 </div>
                 <div class="col-md-3"></div>
