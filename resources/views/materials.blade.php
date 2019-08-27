@@ -80,8 +80,8 @@
                     <small>Check all that apply</small>
                     <br>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="concrete_c" id="concrete" value="1">
-                        <label class="form-check-label" for="concrete">Concrete</label>
+                        <input class="form-check-input" type="checkbox" name="concrete_c" id="concrete_c" value="1">
+                        <label class="form-check-label" for="concrete_c">Concrete</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" name="quartz" id="quartz" value="1">
@@ -101,8 +101,8 @@
                         <label class="form-check-label" for="marble">Marble</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" name="tile_c" id="tile" value="1">
-                        <label class="form-check-label" for="tile">Tile</label>
+                        <input class="form-check-input" type="checkbox" name="tile_c" id="tile_c" value="1">
+                        <label class="form-check-label" for="tile_c">Tile</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="checkbox" name="paper_stone" id="paper_stone" value="1">
@@ -121,12 +121,12 @@
                     <br>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="stainless_steel_appliances" id="steel_yes"
-                               value="yes">
+                               value="1">
                         <label class="form-check-label" for="steel_yes">yes</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="stainless_steel_appliances" id="steel_no"
-                               value="no">
+                               value="0">
                         <label class="form-check-label" for="steel_no">no</label>
                     </div>
                     <hr>

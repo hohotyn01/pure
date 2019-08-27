@@ -20,37 +20,15 @@
         public function home(Request $request)
         {
 
-
             if ($request->isMethod('get')) {
-                /*
-                 * Value for view
-                 */
-                if (session::has('order') && session::has('user')) {
+                if (Session::has('userId') && Session::has('orderId')) {
+                    $order = Order::where('id', Session::get('orderId'))->get();
+                    $user = User::where('id', Session::get('userId'))->get();
 
-                    $id = session::get('order');
-                    $orderDB = Order::all()->find("$id");
-                    $userDB = User::all()->find("$orderDB->user_id");
-
-                    $email = $userDB->email;
-                    $bedroom = $orderDB->bedroom;
-                    $bathroom = $orderDB->bathroom;
-                    $zipCode = $orderDB->zip_code;
+                    return view('home', ['order' => $order, 'user' => $user]);
+                } else {
+                    return view('home');
                 }
-                /*
-                 * Value for view
-                 */
-                $bedroomRange = range('1', '10', '1');
-                $bathromRange = range('1', '5', '0.5');
-
-                return view('home', [
-                    'bedroomRange' => $bedroomRange,
-                    'bathromRange' => $bathromRange,
-                    'email' => $email,
-                    'bedroom' => $bedroom,
-                    'bathroom' => $bathroom,
-                    'zipCode' => $zipCode
-                ]);
-
             }
 
             if ($request->isMethod('post')) {
@@ -76,27 +54,32 @@
                 /*
                 * Save start
                 */
-                $user = new User;
-                $order = new Order;
+                $dataUser = $request->except(
+                    'user_id',
+                    '_token',
+                    'bedroom',
+                    'zip_code',
+                    'bathroom'
+                );
 
-                $user->email = $request->email;
-                $order->bedroom = $request->bedroom;
-                $order->bathroom = $request->bathroom;
-                $order->zip_code = $request->zip_code;
+                //Add User in Database
+                User::updateOrcreate($dataUser);
 
-                if (!$user->save()) {
-                    abort(404);
-//                    return view('question.single', compact('question'));
-                }
+                //Add Session userId
+                $user = User::where('email', $dataUser)->first()->id;
+                Session::put('userId', "$user");
 
-                $order->user_id = $user->id;
 
-                if (!$order->save()) {
-                    abort(404);
-                }
+                //Add Order in Database
+                $idUser = Session::get('userId');
+                $dataOrder = $request->except('email', '_token');
+                $dataOrder['user_id'] = $idUser;
 
-                Session::put('order', "$order->id");
-                Session::put('user', "$order->user_id");
+                Order::updateOrCreate($dataOrder);
+
+                //Add Session orderId
+                $order = Order::where('user_id', $user)->first()->id;
+                Session::put('orderId', $order);
 
                 return redirect(route('info'));
                 /*
@@ -108,47 +91,16 @@
         public function personalInfo(Request $request)
         {
             if ($request->isMethod('get')) {
-                /*
-                 * Value for view
-                 */
-                if (session::has('order') && session::has('user')) {
 
-                    $id = session::get('order');
-                    $orderDB = Order::all()->find("$id");
-                    $userDB = User::all()->find("$orderDB->user_id");
+                if (Session::has('cleaning_frequency') && Session::has('first_name')) {
+                    $order = Order::where('id', Session::get('orderId'))->get();
+                    $user = User::where('id', Session::get('userId'))->get();
 
-                    $first_name = $userDB->first_name;
-                    $last_name = $userDB->last_name;
-                    $mobile_phone = $userDB->mobile_phone;
-
-                    $cleaning_frequency = $orderDB->cleaning_frequency;
-                    $cleaning_type = $orderDB->cleaning_type;
-                    $cleaning_date = $orderDB->cleaning_date;
-
-                    $street_address = $orderDB->street_address;
-                    $apt = $orderDB->apt;
-                    $city = $orderDB->city;
-                    $home_footage = $orderDB->home_footage;
-                    $about_us = $orderDB->about_us;
-
+                    return view('personal_info', ['order' => $order, 'user' => $user]);
+                } else {
+                    return view('personal_info');
                 }
-                /*
-                 * Value for view
-                 */
 
-                return view('personal_info', [
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                    'cleaning_frequency' => $cleaning_frequency,
-                    'cleaning_type' => $cleaning_type,
-                    'cleaning_date' => $cleaning_date,
-                    'street_address' => $street_address,
-                    'apt' => $apt,
-                    'city' => $city,
-                    'home_footage' => $home_footage,
-                    'mobile_phone' => $mobile_phone,
-                    'about_us' => $about_us
-                ]);
             }
 
             if ($request->isMethod('post')) {
@@ -164,7 +116,7 @@
                     'street_address' => 'required|max:150',
                     'apt' => 'max:15',
                     'city' => 'required|max:150',
-                    'home_square_footage' => 'required|max:10',
+                    'home_footage' => 'required|max:10',
                     'mobile_phone' => 'required|between:9,15',
                     'about_us' => 'required|in:cleaning_for_reason'
                 ]);
@@ -181,28 +133,35 @@
                 /*
                 * Save start
                 */
-                $id = session::get('order');
-                $userId = session::get('user');
+                $dataOrder = $request->except(
+                    '_token',
+                    'first_name',
+                    'last_name',
+                    'mobile_phone'
+                );
+                $dataUser = $request->except(
+                    '_token',
+                    'cleaning_frequency',
+                    'cleaning_type',
+                    'cleaning_date',
+                    'street_address',
+                    'apt',
+                    'city',
+                    'home_footage',
+                    'about_us'
+                );
 
-                $order = Order::all()->find($id);
-                $user = User::all()->find($userId);
+                //Update Database Order and User
+                Order::where('id', Session::get('orderId'))->update($dataOrder);
+                User::where('id', Session::get('userId'))->update($dataUser);
 
-                Page::where('id', $id)->update(array('image' => 'asdasd'));
+                $cleaning_frequency = Order::where('id', Session::get('orderId'))->first()->cleaning_frequency;
+                $first_name = User::where('id', Session::get('userId'))->first()->first_name;
 
-                $order->cleaning_frequency = $request->cleaning_frequency;
-                $order->cleaning_type = $request->cleaning_type;
-                $order->cleaning_date = $request->cleaning_date;
-                $user->first_name = $request->first_name;
-                $user->last_name = $request->last_name;
-                $order->street_address = $request->street_address;
-                $order->apt = $request->apt;
-                $order->city = $request->city;
-                $order->home_footage = $request->home_square_footage;
-                $user->mobile_phone = $request->mobile_phone;
-                $order->about_us = $request->about_us;
-
-                $user->save();
-                $order->save();
+                if (!empty($cleaning_frequency) && !empty($first_name)) {
+                    Session::put('cleaning_frequency', $cleaning_frequency);
+                    Session::put('first_name', $first_name);
+                }
 
                 return redirect(route('home'));
 
@@ -215,9 +174,21 @@
         public function yourHome(Request $request)
         {
             if ($request->isMethod('get')) {
-                $rate = range('1', '10', '1');
-//                dd(session::all());
-                return view('your_home', ['rate' => $rate,]);
+
+                if (Session::has('idOrderDetail')) {
+                    $orderDetails = OrderDetail::where('id', Session::get('idOrderDetail'))->get();
+
+                    if (!empty(Session::get('idOrderPath'))) {
+                        $orderPath = OrderDetailPhoto::where('id', Session::get('idOrderPath'))->get();
+
+                        return view('your_home', ['orderDetails' => $orderDetails, 'orderPath' => $orderPath]);
+                    } else {
+                        return view('your_home', ['orderDetails' => $orderDetails]);
+                    }
+
+                } else {
+                    return view('your_home');
+                }
             }
 
             if ($request->isMethod('post')) {
@@ -246,16 +217,34 @@
                 /*
                 * Save Start
                 */
-//                $OrderDetail = OrderDetail::find('');
-                $OrderDetail = new OrderDetail;
-                $OrderDetailPhoto = new OrderDetailPhoto;
-                $id = session::get('order');
-                $data = $request->except('_token','photo');
+                $id = session::get('orderId');
+                $data = $request->except('_token', 'photo');
                 $data['order_id'] = $id;
-//                dd($data);
-               $d = OrderDetail::updateOrCreate(["order_id" => $id], $data);
 
-//dd($d);
+                $dataPhoto = $request->except(
+                    '_token',
+                    'differently',
+                    'cleaned_2_months_ago',
+                    'children',
+                    'adults',
+                    'pets_total',
+                    'dogs_or_cats'
+                );
+
+                OrderDetail::updateOrCreate(["order_id" => $id], $data);
+
+
+//                OrderDetailPhoto::updateOrCreate(["order_id"=>$id], $dataPhoto);
+
+//                if(!empty()){
+//                    $idOrderPath = OrderDetailPhoto::where('order_id', session::get('orderId'))->first()->id;
+//
+//                    Session::put('idOrderPath', $idOrderPath);
+//                }
+
+                $idOrderDetail = OrderDetail::where('order_id', session::get('orderId'))->first()->id;
+
+                Session::put('idOrderDetail', $idOrderDetail);
 
 
                 return redirect(route('materials'));
@@ -268,9 +257,9 @@
         public function materials(Request $request)
         {
             if ($request->isMethod('get')) {
-                if (session::has('order') && session::has('user')) {
-
-                }
+//                if (session::has('order') && session::has('user')) {
+//
+//                }
 
                 return view('materials');
             }
@@ -301,7 +290,7 @@
                     'butcher_block' => 'boolean',
 //                    Countertop
 //                    Detail
-                    'stainless_steel_appliances' => 'required|in:yes,no',
+                    'stainless_steel_appliances' => 'required|in:1,0',
                     'stove_type' => 'required|in:yes,no',
                     'shawer_doors_glass' => 'required|in:yes,no',
                     'mold' => 'required|in:yes,no',
@@ -321,43 +310,74 @@
                 /*
                 * Save Start
                 */
-                $OrderMaterialsFloor = new OrderMaterialsFloor;
-                $OrderMaterialsCountertop = new OrderMaterialsCountertop;
-                $OrderMaterialsDetail = new OrderMaterialsDetail;
+                $id = session::get('orderId');
+                $dataDetails = $request->except(
+                    '_token',
+                    //countertops
+                    'concrete_c',
+                    'quartz',
+                    'formica',
+                    'granite',
+                    'marble',
+                    'tile_c',
+                    'paper_stone',
+                    'butcher_block',
+                    //floors
+                    'hardwood',
+                    'cork',
+                    'vinyl',
+                    'concrete',
+                    'carpet',
+                    'natural_stone',
+                    'tile',
+                    'laminate'
+                );
 
-//                Floor
-                $OrderMaterialsFloor->hardwood = $request->hardwood;
-                $OrderMaterialsFloor->cork = $request->cork;
-                $OrderMaterialsFloor->vinyl = $request->vinyl;
-                $OrderMaterialsFloor->concrete = $request->concrete;
-                $OrderMaterialsFloor->carpet = $request->carpet;
-                $OrderMaterialsFloor->natural_stone = $request->natural_stone;
-                $OrderMaterialsFloor->tile = $request->tile;
-                $OrderMaterialsFloor->laminate = $request->laminate;
+                OrderMaterialsDetail::updateOrCreate(["order_id" => $id], $dataDetails);
 
-//                Countertop
-                $OrderMaterialsCountertop->concrete = $request->concrete_c;
-                $OrderMaterialsCountertop->quartz = $request->quartz;
-                $OrderMaterialsCountertop->formica = $request->formica;
-                $OrderMaterialsCountertop->granite = $request->granite;
-                $OrderMaterialsCountertop->marble = $request->marble;
-                $OrderMaterialsCountertop->tile = $request->tile_c;
-                $OrderMaterialsCountertop->paper_stone = $request->paper_stone;
-                $OrderMaterialsCountertop->butcher_block = $request->butcher_block;
+                $dataFloors = $request->except(
+                    '_token',
+                    'stainless_steel_appliances',
+                    'stove_type',
+                    'shawer_doors_glass',
+                    'mold',
+                    'areas_special_attention',
+                    'anything_know',
 
-//                Detail
-                $OrderMaterialsDetail->stainless_steel_appliances = $request->stainless_steel_appliances;
-                $OrderMaterialsDetail->stove_type = $request->stove_type;
-                $OrderMaterialsDetail->shawer_doors_glass = $request->shawer_doors_glass;
-                $OrderMaterialsDetail->mold = $request->mold;
+                    //countertops
+                    'concrete_c',
+                    'quartz',
+                    'formica',
+                    'granite',
+                    'marble',
+                    'tile_c',
+                    'paper_stone',
+                    'butcher_block'
+                );
 
-                $OrderMaterialsDetail->areas_special_attention = $request->areas_special_attention;
-                $OrderMaterialsDetail->anything_know = $request->anything_know;
+                OrderMaterialsFloor::updateOrCreate(["order_id" => $id], $dataFloors);
 
+                $dataCountertops = $request->except(
+                    '_token',
+                    'stainless_steel_appliances',
+                    'stove_type',
+                    'shawer_doors_glass',
+                    'mold',
+                    'areas_special_attention',
+                    'anything_know',
 
-                $OrderMaterialsFloor->save();
-                $OrderMaterialsCountertop->save();
-                $OrderMaterialsDetail->save();
+                    //floors
+                    'hardwood',
+                    'cork',
+                    'vinyl',
+                    'concrete',
+                    'carpet',
+                    'natural_stone',
+                    'tile',
+                    'laminate'
+                );
+
+                OrderMaterialsCountertop::updateOrCreate(["order_id" => $id], $dataCountertops);
 
                 return redirect(route('extras'));
                 /*

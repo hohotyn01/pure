@@ -27,27 +27,29 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <select class="form-control" name="bedroom">
-                            @foreach($bedroomRange as $bedrooms)
-                                <option {{!empty($bedroom) && ($bedrooms == $bedroom) ? 'selected': ''}} value="{{$bedrooms}}">{{$bedrooms.' Bedroom'}}</option>
+                            @foreach(config('admin.range')['bedroom'] as $bedrooms)
+                                <option {{!empty($order[0]->bedroom) && ($bedrooms == $order[0]->bedroom) ? 'selected' : ''}} value="{{$bedrooms}}">{{$bedrooms.' Bedroom'}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="zip">ZIP Code</label><br>
-                        <input type="text" class="form-control" id="zip" name="zip_code" value="{{!empty($zipCode) ? $zipCode : ""}}">
+                        <input type="text" class="form-control" id="zip" name="zip_code"
+                               value="{{!empty($order[0]->zip_code) ? $order[0]->zip_code : ""}}">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <select class="form-control" name="bathroom">
-                            @foreach($bathromRange as $bathroms)
-                                <option {{!empty($bathroom) && ($bathroms == $bathroom) ? 'selected': ''}} value="{{$bathroms}}">{{$bathroms.' Bathroms'}}</option>
+                            @foreach(config('admin.range')['bathroom'] as $bathrooms)
+                                <option {{!empty($order[0]->bathroom) && ($bathrooms == $order[0]->bathroom) ? 'selected' : ''}} value="{{$bathrooms}}">{{$bathrooms.' Bathrooms'}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label><br>
-                        <input type="text" class="form-control" id="email" name="email" value="{{!empty($email) ? $email : ""}}">
+                        <input type="text" class="form-control" id="email" name="email"
+                               value="{{!empty($user[0]->email) ? $user[0]->email : ""}}">
                     </div>
                 </div>
                 <div class="col-md-3"></div>
