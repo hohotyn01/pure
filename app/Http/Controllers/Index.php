@@ -79,6 +79,7 @@
             $order = Order::where('user_id', $user)->first()->id;
             Session::put('orderId', $order);
 
+
             return redirect(route('info'));
             /*
              * Save end
@@ -178,20 +179,6 @@
 
         public function yourHomePost(Request $request)
         {
-//            $path  = $request->file('photo')->store('upload', 'public');
-
-
-//            foreach ($request->file('filenames') as $file) {
-//
-//                $name = $file->getClientOriginalName();
-//
-//                $file->move(public_path() . '/files/', $name);
-//
-//                $data[] = $name;
-//
-//            }
-
-
             /*
             * Validate Start
             */
@@ -227,22 +214,14 @@
             if (!empty($request->file('photo'))) {
                 foreach ($request->file('photo') as $photo) {
                     $filename = $photo->hashName();
-                    $photo->move(public_path() . '/photo/', $filename);
-                    $dataPhoto[] = $filename;
+                    $photo->store('upload', 'public');
+
+                    $orderDetailPhoto = new OrderDetailPhoto;
+                    $orderDetailPhoto->photo_path = $filename;
+                    $orderDetailPhoto->order_id = $id;
+                    $orderDetailPhoto->save();
                 }
             }
-
-
-//            OrderDetailPhoto::updateOrCreate(["order_id" => $id], ['photo_path' => $dataPhoto]);
-
-            $OrderDetailPhoto = new OrderDetailPhoto;
-            $OrderDetailPhoto->photo_path = $dataPhoto;
-            $OrderDetailPhoto->save();
-//                if(!empty()){
-//                    $idOrderPath = OrderDetailPhoto::where('order_id', Session::get('orderId'))->first()->id;
-//
-//                    Session::put('idOrderPath', $idOrderPath);
-//                }
 
             $idOrderDetail = OrderDetail::where('order_id', $id)->first()->id;
 
