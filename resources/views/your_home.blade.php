@@ -15,7 +15,7 @@
             </h5>
         </div>
         <hr>
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             @if(count($errors) > 0)
                 <div class="alert alert-danger">
                     <ul>
@@ -213,12 +213,14 @@
                     <div class="col-md-12">
                         <label>
                             <strong>Do you have any photos of your home?</strong><br>
-                            <small>You can upload more than one photo at a time. Up to 5 photos in total</small>
+                            <small>You can upload more than one photo at a time. Up to 8 photos in total</small>
                         </label>
                         <br>
                         <div class="custom-file">
-                            <input class="custom-file-input" type="file" id="photo" name="photo">
+                            <input class="custom-file-input" type="file" accept="image/png, image/jpeg, image/jpg"
+                                   id="photo" name="photo[]" multiple>
                             <label class="custom-file-label" for="photo">Select a files...</label>
+                            <small>JPG, PNG only, maximum file size - 5MB</small>
                         </div>
                     </div>
                 </div>

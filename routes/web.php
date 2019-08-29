@@ -16,6 +16,7 @@
 
     Route::get('/personal_info', 'Index@personalInfo')->name('info');
     Route::post('/personal_info', 'Index@personalInfoPost');
+//    Route::post('/personal_info', 'Index@personalInfoPostPhotos');
 
     Route::get('/your_home', 'Index@yourHome')->name('home');
     Route::post('/your_home', 'Index@yourHomePost');

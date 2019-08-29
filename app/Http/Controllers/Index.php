@@ -98,76 +98,75 @@
 
         public function personalInfoPost(Request $request)
         {
-            if ($request->isMethod('post')) {
-                /*
-                * Validate Start
-                */
-                $validator = Validator::make($request->all(), [
-                    'cleaning_frequency' => 'required|in:once,weekly,biweekly,monthly',
-                    'cleaning_type' => 'required|in:deep_or_spring,move_in,move_out,post_remodeling',
-                    'cleaning_date' => 'required|in:next_available,this_week,next_week,this_month,i_am_flexible,just_need_a_quote',
-                    'first_name' => 'required|max:150',
-                    'last_name' => 'required|max:150',
-                    'street_address' => 'required|max:150',
-                    'apt' => 'max:15',
-                    'city' => 'required|max:150',
-                    'home_footage' => 'required|max:10',
-                    'mobile_phone' => 'required|between:9,15',
-                    'about_us' => 'required|in:cleaning_for_reason'
-                ]);
+            /*
+            * Validate Start
+            */
+            $validator = Validator::make($request->all(), [
+                'cleaning_frequency' => 'required|in:once,weekly,biweekly,monthly',
+                'cleaning_type' => 'required|in:deep_or_spring,move_in,move_out,post_remodeling',
+                'cleaning_date' => 'required|in:next_available,this_week,next_week,this_month,i_am_flexible,just_need_a_quote',
+                'first_name' => 'required|max:150',
+                'last_name' => 'required|max:150',
+                'street_address' => 'required|max:150',
+                'apt' => 'max:15',
+                'city' => 'required|max:150',
+                'home_footage' => 'required|max:10',
+                'mobile_phone' => 'required|between:9,15',
+                'about_us' => 'required|in:cleaning_for_reason'
+            ]);
 
-                if ($validator->fails()) {
-                    return back()
-                        ->withErrors($validator)
-                        ->withInput();
-                }
-                /*
-                 * Validate End
-                 */
-
-                /*
-                * Save start
-                */
-                $dataOrder = $request->except(
-                    '_token',
-                    'first_name',
-                    'last_name',
-                    'mobile_phone'
-                );
-                $dataUser = $request->except(
-                    '_token',
-                    'cleaning_frequency',
-                    'cleaning_type',
-                    'cleaning_date',
-                    'street_address',
-                    'apt',
-                    'city',
-                    'home_footage',
-                    'about_us'
-                );
-
-                //Update Database Order and User
-                Order::where('id', Session::get('orderId'))->update($dataOrder);
-                User::where('id', Session::get('userId'))->update($dataUser);
-
-                $cleaning_frequency = Order::where('id', Session::get('orderId'))->first()->cleaning_frequency;
-                $first_name = User::where('id', Session::get('userId'))->first()->first_name;
-
-                if (!empty($cleaning_frequency) && !empty($first_name)) {
-                    Session::put('cleaning_frequency', $cleaning_frequency);
-                    Session::put('first_name', $first_name);
-                }
-
-                return redirect(route('home'));
-
-                /*
-                * Save End
-                */
+            if ($validator->fails()) {
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
+            /*
+             * Validate End
+             */
+
+            /*
+            * Save start
+            */
+            $dataOrder = $request->except(
+                '_token',
+                'first_name',
+                'last_name',
+                'mobile_phone'
+            );
+            $dataUser = $request->except(
+                '_token',
+                'cleaning_frequency',
+                'cleaning_type',
+                'cleaning_date',
+                'street_address',
+                'apt',
+                'city',
+                'home_footage',
+                'about_us'
+            );
+
+            //Update Database Order and User
+            Order::where('id', Session::get('orderId'))->update($dataOrder);
+            User::where('id', Session::get('userId'))->update($dataUser);
+
+            $cleaning_frequency = Order::where('id', Session::get('orderId'))->first()->cleaning_frequency;
+            $first_name = User::where('id', Session::get('userId'))->first()->first_name;
+
+            if (!empty($cleaning_frequency) && !empty($first_name)) {
+                Session::put('cleaning_frequency', $cleaning_frequency);
+                Session::put('first_name', $first_name);
+            }
+
+            return redirect(route('home'));
+
+            /*
+            * Save End
+            */
+
         }
 
 
-        public function yourHome(Request $request)
+        public function yourHome()
         {
             //If (isset Session ('idOrderDetail'))  get id OrderDetail
             $orderDetails = Session::has('idOrderDetail') ? OrderDetail::where('id',
@@ -179,6 +178,20 @@
 
         public function yourHomePost(Request $request)
         {
+//            $path  = $request->file('photo')->store('upload', 'public');
+
+
+//            foreach ($request->file('filenames') as $file) {
+//
+//                $name = $file->getClientOriginalName();
+//
+//                $file->move(public_path() . '/files/', $name);
+//
+//                $data[] = $name;
+//
+//            }
+
+
             /*
             * Validate Start
             */
@@ -187,10 +200,11 @@
                 'pets_total' => 'required|in:pet_1,pet_2,pet_3_more',
                 'adults' => 'required|in:none,1_2,3_4,5_and_more',
                 'children' => 'required|in:none_children,1,2,3_and_more',
-                'rate_cleanliness' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+                'rate_cleanliness' => 'required|max:10',
                 'cleaned_2_months_ago' => 'required|in:yes,no',
                 'differently' => 'required|max:255',
-                'photo' => 'max:255|',
+                'photo.*' => 'image|mimes:jpeg,png,jpg',
+                'photo' => 'max:8',
             ]);
 
             if ($validator->fails()) {
@@ -208,12 +222,22 @@
             $data = $request->except('_token', 'photo');
             $data['order_id'] = $id;
 
-
             OrderDetail::updateOrCreate(["order_id" => $id], $data);
 
+            if (!empty($request->file('photo'))) {
+                foreach ($request->file('photo') as $photo) {
+                    $filename = $photo->hashName();
+                    $photo->move(public_path() . '/photo/', $filename);
+                    $dataPhoto[] = $filename;
+                }
+            }
 
-//                OrderDetailPhoto::updateOrCreate(["order_id"=>$id], $dataPhoto);
 
+//            OrderDetailPhoto::updateOrCreate(["order_id" => $id], ['photo_path' => $dataPhoto]);
+
+            $OrderDetailPhoto = new OrderDetailPhoto;
+            $OrderDetailPhoto->photo_path = $dataPhoto;
+            $OrderDetailPhoto->save();
 //                if(!empty()){
 //                    $idOrderPath = OrderDetailPhoto::where('order_id', Session::get('orderId'))->first()->id;
 //
@@ -229,7 +253,6 @@
             /*
             * Save End
             */
-
         }
 
 
