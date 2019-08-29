@@ -17,92 +17,87 @@
 
     class Index extends Controller
     {
-        public function home(Request $request)
+
+        public function home()
         {
+            //If (isset Session ('userId')('orderId'))  get id User Order
+            $user = Session::has('userId') ? User::where('id', Session::get('userId'))->first() : null;
+            $order = Session::has('orderId') ? Order::where('id', Session::get('orderId'))->first() : null;
 
-            if ($request->isMethod('get')) {
-                if (Session::has('userId') && Session::has('orderId')) {
-                    $order = Order::where('id', Session::get('orderId'))->get();
-                    $user = User::where('id', Session::get('userId'))->get();
-
-                    return view('home', ['order' => $order, 'user' => $user]);
-                } else {
-                    return view('home');
-                }
-            }
-
-            if ($request->isMethod('post')) {
-                /*
-                 * Validate Start
-                 */
-                $validator = Validator::make($request->all(), [
-                    'bedroom' => 'required|in:1,2,3,4,5,6,7,8,9,10',
-                    'bathroom' => 'required|in:1,1.5,2,2.5,3,3.5,4,4.5,5',
-                    'zip_code' => 'required|max:10',
-                    'email' => 'required|email|max:150',
-                ]);
-
-                if ($validator->fails()) {
-                    return back()
-                        ->withErrors($validator)
-                        ->withInput();
-                }
-                /*
-                 * Validate End
-                 */
-
-                /*
-                * Save start
-                */
-                $dataUser = $request->except(
-                    'user_id',
-                    '_token',
-                    'bedroom',
-                    'zip_code',
-                    'bathroom'
-                );
-
-                //Add User in Database
-                User::updateOrcreate($dataUser);
-
-                //Add Session userId
-                $user = User::where('email', $dataUser)->first()->id;
-                Session::put('userId', "$user");
-
-
-                //Add Order in Database
-                $idUser = Session::get('userId');
-                $dataOrder = $request->except('email', '_token');
-                $dataOrder['user_id'] = $idUser;
-
-                Order::updateOrCreate($dataOrder);
-
-                //Add Session orderId
-                $order = Order::where('user_id', $user)->first()->id;
-                Session::put('orderId', $order);
-
-                return redirect(route('info'));
-                /*
-                 * Save end
-                 */
-            }
+            return view('home', ['order' => $order, 'user' => $user]);
         }
 
-        public function personalInfo(Request $request)
+
+        public function homePost(Request $request)
         {
-            if ($request->isMethod('get')) {
+            /*
+             * Validate Start
+             */
+            $validator = Validator::make($request->all(), [
+                'bedroom' => 'required|max:10',
+                'bathroom' => 'required|max:5',
+                'zip_code' => 'required|max:10',
+                'email' => 'required|email|max:150',
+            ]);
 
-                if (Session::has('cleaning_frequency') && Session::has('first_name')) {
-                    $order = Order::where('id', Session::get('orderId'))->get();
-                    $user = User::where('id', Session::get('userId'))->get();
-
-                    return view('personal_info', ['order' => $order, 'user' => $user]);
-                } else {
-                    return view('personal_info');
-                }
-
+            if ($validator->fails()) {
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
+            /*
+             * Validate End
+             */
 
+            /*
+            * Save start
+            */
+            $dataUser = $request->except(
+                'user_id',
+                '_token',
+                'bedroom',
+                'zip_code',
+                'bathroom'
+            );
+
+            //Add User in Database
+            User::updateOrcreate($dataUser);
+
+            //Add Session userId
+            $user = User::where('email', $dataUser)->first()->id;
+            Session::put('userId', "$user");
+
+
+            //Add Order in Database
+            $idUser = Session::get('userId');
+            $dataOrder = $request->except('email', '_token');
+            $dataOrder['user_id'] = $idUser;
+
+            Order::updateOrCreate($dataOrder);
+
+            //Add Session orderId
+            $order = Order::where('user_id', $user)->first()->id;
+            Session::put('orderId', $order);
+
+            return redirect(route('info'));
+            /*
+             * Save end
+             */
+        }
+
+
+        public function personalInfo()
+        {
+            //If (isset Session ('userId')(orderId))  get id User, Order
+            $user = Session::has('userId') ? User::where('id', Session::get('userId'))->first() : null;
+            $order = Session::has('orderId') ? Order::where('id', Session::get('orderId'))->first() : null;
+
+            return view('personal_info', ['order' => $order, 'user' => $user]);
+        }
+
+
+        public function personalInfoPost(Request $request)
+        {
             if ($request->isMethod('post')) {
                 /*
                 * Validate Start
@@ -171,272 +166,249 @@
             }
         }
 
+
         public function yourHome(Request $request)
         {
-            if ($request->isMethod('get')) {
+            //If (isset Session ('idOrderDetail'))  get id OrderDetail
+            $orderDetails = Session::has('idOrderDetail') ? OrderDetail::where('id',
+                Session::get('idOrderDetail'))->first() : null;
 
-                if (Session::has('idOrderDetail')) {
-                    $orderDetails = OrderDetail::where('id', Session::get('idOrderDetail'))->get();
+            return view('your_home', ['orderDetails' => $orderDetails]);
+        }
 
-                    if (!empty(Session::get('idOrderPath'))) {
-                        $orderPath = OrderDetailPhoto::where('id', Session::get('idOrderPath'))->get();
 
-                        return view('your_home', ['orderDetails' => $orderDetails, 'orderPath' => $orderPath]);
-                    } else {
-                        return view('your_home', ['orderDetails' => $orderDetails]);
-                    }
+        public function yourHomePost(Request $request)
+        {
+            /*
+            * Validate Start
+            */
+            $validator = Validator::make($request->all(), [
+                'dogs_or_cats' => 'required|in:none,dog,cat,both',
+                'pets_total' => 'required|in:pet_1,pet_2,pet_3_more',
+                'adults' => 'required|in:none,1_2,3_4,5_and_more',
+                'children' => 'required|in:none_children,1,2,3_and_more',
+                'rate_cleanliness' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+                'cleaned_2_months_ago' => 'required|in:yes,no',
+                'differently' => 'required|max:255',
+                'photo' => 'max:255|',
+            ]);
 
-                } else {
-                    return view('your_home');
-                }
+            if ($validator->fails()) {
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
+            /*
+            * Validate End
+            */
+            /*
+            * Save Start
+            */
+            $id = Session::get('orderId');
+            $data = $request->except('_token', 'photo');
+            $data['order_id'] = $id;
 
-            if ($request->isMethod('post')) {
-                /*
-                * Validate Start
-                */
-                $validator = Validator::make($request->all(), [
-                    'dogs_or_cats' => 'required|in:none,dog,cat,both',
-                    'pets_total' => 'required|in:pet_1,pet_2,pet_3_more',
-                    'adults' => 'required|in:none,1_2,3_4,5_and_more',
-                    'children' => 'required|in:none_children,1,2,3_and_more',
-                    'rate_cleanliness' => 'required|in:1,2,3,4,5,6,7,8,9,10',
-                    'cleaned_2_months_ago' => 'required|in:yes,no',
-                    'differently' => 'required|max:255',
-                    'photo' => 'max:255|',
-                ]);
 
-                if ($validator->fails()) {
-                    return back()
-                        ->withErrors($validator)
-                        ->withInput();
-                }
-                /*
-                * Validate End
-                */
-                /*
-                * Save Start
-                */
-                $id = session::get('orderId');
-                $data = $request->except('_token', 'photo');
-                $data['order_id'] = $id;
-
-                $dataPhoto = $request->except(
-                    '_token',
-                    'differently',
-                    'cleaned_2_months_ago',
-                    'children',
-                    'adults',
-                    'pets_total',
-                    'dogs_or_cats'
-                );
-
-                OrderDetail::updateOrCreate(["order_id" => $id], $data);
+            OrderDetail::updateOrCreate(["order_id" => $id], $data);
 
 
 //                OrderDetailPhoto::updateOrCreate(["order_id"=>$id], $dataPhoto);
 
 //                if(!empty()){
-//                    $idOrderPath = OrderDetailPhoto::where('order_id', session::get('orderId'))->first()->id;
+//                    $idOrderPath = OrderDetailPhoto::where('order_id', Session::get('orderId'))->first()->id;
 //
 //                    Session::put('idOrderPath', $idOrderPath);
 //                }
 
-                $idOrderDetail = OrderDetail::where('order_id', session::get('orderId'))->first()->id;
+            $idOrderDetail = OrderDetail::where('order_id', $id)->first()->id;
 
-                Session::put('idOrderDetail', $idOrderDetail);
+            Session::put('idOrderDetail', $idOrderDetail);
 
 
-                return redirect(route('materials'));
-                /*
-                * Save End
-                */
-            }
+            return redirect(route('materials'));
+            /*
+            * Save End
+            */
+
         }
 
-        public function materials(Request $request)
+
+        public function materials()
         {
-            if ($request->isMethod('get')) {
-//                if (session::has('order') && session::has('user')) {
-//
-//                }
+            //If (isset Session ('idMaterialsCountertop')('idMaterialsFloor')('idMaterialsDetail'))  get id OrderMaterialsFloor OrderMaterialsCountertop OrderMaterialsDetail
+            $MaterialsFloor = session::has('idMaterialsFloor') ? OrderMaterialsFloor::where('id',
+                session::get('idMaterialsFloor'))->first() : null;
+            $MaterialsCountertop = session::has('idMaterialsCountertop') ? OrderMaterialsCountertop::where('id',
+                session::get('idMaterialsCountertop'))->first() : null;
+            $MaterialsDetail = session::has('idMaterialsDetail') ? OrderMaterialsDetail::where('id',
+                session::get('idMaterialsDetail'))->first() : null;
 
-                return view('materials');
-            }
-
-            if ($request->isMethod('post')) {
-                /*
-                 * Validate Start
-                 */
-                $validator = Validator::make($request->all(), [
-//                    Floor
-                    'hardwood' => 'boolean',
-                    'cork' => 'boolean',
-                    'vinyl' => 'boolean',
-                    'concrete' => 'boolean',
-                    'carpet' => 'boolean',
-                    'natural_stone' => 'boolean',
-                    'tile' => 'boolean',
-                    'laminate' => 'boolean',
-//                    Floor
-//                    Countertop
-                    'concrete_c' => 'boolean',
-                    'quartz' => 'boolean',
-                    'formica' => 'boolean',
-                    'granite' => 'boolean',
-                    'marble' => 'boolean',
-                    'tile_c' => 'boolean',
-                    'paper_stone' => 'boolean',
-                    'butcher_block' => 'boolean',
-//                    Countertop
-//                    Detail
-                    'stainless_steel_appliances' => 'required|in:1,0',
-                    'stove_type' => 'required|in:yes,no',
-                    'shawer_doors_glass' => 'required|in:yes,no',
-                    'mold' => 'required|in:yes,no',
-                    'areas_special_attention' => 'max:255',
-                    'anything_know' => 'max:255',
-//                    Detail
-                ]);
-
-                if ($validator->fails()) {
-                    return back()
-                        ->withErrors($validator)
-                        ->withInput();
-                }
-                /*
-                * Validate End
-                */
-                /*
-                * Save Start
-                */
-                $id = session::get('orderId');
-                $dataDetails = $request->except(
-                    '_token',
-                    //countertops
-                    'concrete_c',
-                    'quartz',
-                    'formica',
-                    'granite',
-                    'marble',
-                    'tile_c',
-                    'paper_stone',
-                    'butcher_block',
-                    //floors
-                    'hardwood',
-                    'cork',
-                    'vinyl',
-                    'concrete',
-                    'carpet',
-                    'natural_stone',
-                    'tile',
-                    'laminate'
-                );
-
-                OrderMaterialsDetail::updateOrCreate(["order_id" => $id], $dataDetails);
-
-                $dataFloors = $request->except(
-                    '_token',
-                    'stainless_steel_appliances',
-                    'stove_type',
-                    'shawer_doors_glass',
-                    'mold',
-                    'areas_special_attention',
-                    'anything_know',
-
-                    //countertops
-                    'concrete_c',
-                    'quartz',
-                    'formica',
-                    'granite',
-                    'marble',
-                    'tile_c',
-                    'paper_stone',
-                    'butcher_block'
-                );
-
-                OrderMaterialsFloor::updateOrCreate(["order_id" => $id], $dataFloors);
-
-                $dataCountertops = $request->except(
-                    '_token',
-                    'stainless_steel_appliances',
-                    'stove_type',
-                    'shawer_doors_glass',
-                    'mold',
-                    'areas_special_attention',
-                    'anything_know',
-
-                    //floors
-                    'hardwood',
-                    'cork',
-                    'vinyl',
-                    'concrete',
-                    'carpet',
-                    'natural_stone',
-                    'tile',
-                    'laminate'
-                );
-
-                OrderMaterialsCountertop::updateOrCreate(["order_id" => $id], $dataCountertops);
-
-                return redirect(route('extras'));
-                /*
-                * Save End
-                */
-            }
+            return view('materials', [
+                'MaterialsFloor' => $MaterialsFloor,
+                'MaterialsCountertop' => $MaterialsCountertop,
+                'MaterialsDetail' => $MaterialsDetail,
+            ]);
         }
 
-        public function extras(Request $request)
-        {
-            if ($request->isMethod('get')) {
-                return view('extras');
-            }
 
-            if ($request->isMethod('post')) {
-                /*
-                * Validate Start
-                */
-                $validator = Validator::make($request->all(), [
+        public function materialsPost(Request $request)
+        {
+            /*
+             * Validate Start
+             */
+            $validator = Validator::make($request->all(), [
+//                    Floor
+                'hardwood' => 'boolean',
+                'cork' => 'boolean',
+                'vinyl' => 'boolean',
+                'concrete' => 'boolean',
+                'carpet' => 'boolean',
+                'natural_stone' => 'boolean',
+                'tile' => 'boolean',
+                'laminate' => 'boolean',
+//                    Floor
+//                    Countertop
+                'concrete_c' => 'boolean',
+                'quartz' => 'boolean',
+                'formica' => 'boolean',
+                'granite' => 'boolean',
+                'marble' => 'boolean',
+                'tile_c' => 'boolean',
+                'paper_stone' => 'boolean',
+                'butcher_block' => 'boolean',
+//                    Countertop
+//                    Detail
+                'stainless_steel_appliances' => 'required|in:yes,no',
+                'stove_type' => 'required|in:yes,no',
+                'shawer_doors_glass' => 'required|in:yes,no',
+                'mold' => 'required|in:yes,no',
+                'areas_special_attention' => 'max:255',
+                'anything_know' => 'max:255',
+//                    Detail
+            ]);
+
+            if ($validator->fails()) {
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+            /*
+            * Validate End
+            */
+
+            /*
+            * Save Start
+            */
+            //Request Array
+            $data = $request->toArray();
+            $dataCountertops = $request->toArray();
+
+            //When checkbox is not selected add 0
+            $data['hardwood'] = $request->has('hardwood') ? 1 : 0;
+            $data['cork'] = $request->has('cork') ? 1 : 0;
+            $data['vinyl'] = $request->has('vinyl') ? 1 : 0;
+            $data['concrete'] = $request->has('concrete') ? 1 : 0;
+            $data['carpet'] = $request->has('carpet') ? 1 : 0;
+            $data['natural_stone'] = $request->has('natural_stone') ? 1 : 0;
+            $data['tile'] = $request->has('tile') ? 1 : 0;
+            $data['laminate'] = $request->has('laminate') ? 1 : 0;
+
+            //When checkbox is not selected add 0
+            $dataCountertops['concrete_c'] = $request->has('concrete_c') ? 1 : 0;
+            $dataCountertops['quartz'] = $request->has('quartz') ? 1 : 0;
+            $dataCountertops['formica'] = $request->has('formica') ? 1 : 0;
+            $dataCountertops['granite'] = $request->has('granite') ? 1 : 0;
+            $dataCountertops['marble'] = $request->has('marble') ? 1 : 0;
+            $dataCountertops['tile_c'] = $request->has('tile_c') ? 1 : 0;
+            $dataCountertops['paper_stone'] = $request->has('paper_stone') ? 1 : 0;
+            $dataCountertops['butcher_block'] = $request->has('butcher_block') ? 1 : 0;
+
+            $id = Session::get('orderId');
+
+            $dataCountertops['order_id'] = $id;
+
+            //Add DataBase
+            OrderMaterialsDetail::updateOrCreate(["order_id" => $id], $data);
+            OrderMaterialsFloor::updateOrCreate(["order_id" => $id], $data);
+            OrderMaterialsCountertop::updateOrCreate(["order_id" => $id], $dataCountertops);
+
+            $idMaterialsDetail = OrderMaterialsDetail::where('order_id', $id)->first()->id;
+            $idMaterialsFloor = OrderMaterialsFloor::where('order_id', $id)->first()->id;
+            $idMaterialsCountertop = OrderMaterialsCountertop::where('order_id', $id)->first()->id;
+
+            //Add Session
+            Session::put('idMaterialsDetail', $idMaterialsDetail);
+            Session::put('idMaterialsFloor', $idMaterialsFloor);
+            Session::put('idMaterialsCountertop', $idMaterialsCountertop);
+
+            return redirect(route('extras'));
+            /*
+            * Save End
+            */
+
+        }
+
+
+        public function extras()
+        {
+            //If (isset Session ('idOrderExtras'))  get id OrderExtras
+            $OrderExtras = Session::has('idOrderExtras') ? OrderExtras::where('id',
+                Session::get('idOrderExtras'))->first() : null;
+
+            return view('extras', ['OrderExtras' => $OrderExtras]);
+        }
+
+
+        public function extrasPost(Request $request)
+        {
+            /*
+            * Validate Start
+            */
+            $validator = Validator::make($request->all(), [
 //                    Select extras
-                    'inside_fridge' => 'boolean',
-                    'inside_oven' => 'boolean',
-                    'garage_swept' => 'boolean',
-                    'blinds_cleaning' => 'boolean',
-                    'laundry_wash_dry' => 'boolean',
+                'inside_fridge' => 'boolean',
+                'inside_oven' => 'boolean',
+                'garage_swept' => 'boolean',
+                'blinds_cleaning' => 'boolean',
+                'laundry_wash_dry' => 'boolean',
 
-                    'service_weekend' => 'required|in:yes,no',
-                    'carpet' => 'required|in:yes,no',
-                ]);
+                'service_weekend' => 'required|in:yes,no',
+                'carpet' => 'required|in:yes,no',
+            ]);
 
-                if ($validator->fails()) {
-                    return back()
-                        ->withErrors($validator)
-                        ->withInput();
-                }
-                /*
-                * Validate End
-                */
-                /*
-                * Save Start
-                */
-                $OrderExtras = new OrderExtras;
-
-                $OrderExtras->inside_fridge = $request->inside_fridge;
-                $OrderExtras->inside_oven = $request->inside_oven;
-                $OrderExtras->garage_swept = $request->garage_swept;
-                $OrderExtras->blinds_cleaning = $request->blinds_cleaning;
-                $OrderExtras->laundry_wash_dry = $request->laundry_wash_dry;
-                $OrderExtras->service_weekend = $request->service_weekend;
-                $OrderExtras->carpet = $request->carpet;
-
-                if (!$OrderExtras->save()) {
-                    abort('404');
-                }
-
-                return back();
-                /*
-                * Save End
-                */
+            if ($validator->fails()) {
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
             }
+            /*
+            * Validate End
+            */
+            /*
+            * Save Start
+            */
+            $id = Session::get('orderId');
+            $data = $request->toArray();
+
+            //When checkbox is not selected add 0
+            $data['inside_fridge'] = $request->has('inside_fridge') ? 1 : 0;
+            $data['inside_oven'] = $request->has('inside_oven') ? 1 : 0;
+            $data['garage_swept'] = $request->has('garage_swept') ? 1 : 0;
+            $data['blinds_cleaning'] = $request->has('blinds_cleaning') ? 1 : 0;
+            $data['laundry_wash_dry'] = $request->has('laundry_wash_dry') ? 1 : 0;
+
+            //Add DataBase
+            OrderExtras::updateOrCreate(["order_id" => $id], $data);
+
+            //Add Session
+            $idOrderExtras = OrderExtras::where('order_id', $id)->first()->id;
+            Session::put('idOrderExtras', $idOrderExtras);
+
+            $request->session()->flush();
+
+            return back();
+            /*
+            * Save End
+            */
         }
     }

@@ -10,12 +10,12 @@ class OrderMaterialsCountertop extends Model
 
     protected $fillable = [
         'order_id',
-        'concrete',
+        'concrete_c',
         'quartz',
         'formica',
         'granite',
         'marble',
-        'tile',
+        'tile_c',
         'paper_stone',
         'butcher_block',
     ];

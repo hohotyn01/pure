@@ -39,22 +39,22 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="dogs_or_cats" id="none" value="none"
-                                    {{!empty($orderDetails[0]->dogs_or_cats) && ($orderDetails[0]->dogs_or_cats == 'none') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'none') ? 'checked' : ''}}>
                             <label class="form-check-label" for="none">None</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="dogs_or_cats" id="dog" value="dog"
-                                    {{!empty($orderDetails[0]->dogs_or_cats) && ($orderDetails[0]->dogs_or_cats == 'dog') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'dog') ? 'checked' : ''}}>
                             <label class="form-check-label" for="dog">Dog</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="dogs_or_cats" id="cat" value="cat"
-                                    {{!empty($orderDetails[0]->dogs_or_cats) && ($orderDetails[0]->dogs_or_cats == 'cat') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'cat') ? 'checked' : ''}}>
                             <label class="form-check-label" for="cat">Cat</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="dogs_or_cats" id="both" value="both"
-                                    {{!empty($orderDetails[0]->dogs_or_cats) && ($orderDetails[0]->dogs_or_cats == 'both') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'both') ? 'checked' : ''}}>
                             <label class="form-check-label" for="both">Both</label>
                         </div>
                     </div>
@@ -64,17 +64,17 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pets_total" id="pet_1" value="pet_1"
-                                    {{!empty($orderDetails[0]->pets_total) && ($orderDetails[0]->pets_total == 'pet_1') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_1') ? 'checked' : ''}}>
                             <label class="form-check-label" for="pet_1">1</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pets_total" id="pet_2" value="pet_2"
-                                    {{!empty($orderDetails[0]->pets_total) && ($orderDetails[0]->pets_total == 'pet_2') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_2') ? 'checked' : ''}}>
                             <label class="form-check-label" for="pet_2">2</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pets_total" id="pet_3_more"
-                                   value="pet_3_more" {{!empty($orderDetails[0]->pets_total) && ($orderDetails[0]->pets_total == 'pet_3_more') ? 'checked' : ''}}>
+                                   value="pet_3_more" {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_3_more') ? 'checked' : ''}}>
                             <label class="form-check-label" for="pet_3_more">3+</label>
                         </div>
                     </div>
@@ -84,22 +84,22 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="adults" id="none_adults" value="none"
-                                    {{!empty($orderDetails[0]->adults) && ($orderDetails[0]->adults == 'none') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->adults) && ($orderDetails->adults == 'none') ? 'checked' : ''}}>
                             <label class="form-check-label" for="none_adults">None</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="adults" id="1_2" value="1_2"
-                                    {{!empty($orderDetails[0]->adults) && ($orderDetails[0]->adults == '1_2') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->adults) && ($orderDetails->adults == '1_2') ? 'checked' : ''}}>
                             <label class="form-check-label" for="1_2">1 - 2</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="adults" id="3_4" value="3_4"
-                                    {{!empty($orderDetails[0]->adults) && ($orderDetails[0]->adults == '3_4') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->adults) && ($orderDetails->adults == '3_4') ? 'checked' : ''}}>
                             <label class="form-check-label" for="3_4">3 - 4</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="adults" id="5_and_more"
-                                   value="5_and_more" {{!empty($orderDetails[0]->adults) && ($orderDetails[0]->adults == '5_and_more') ? 'checked' : ''}}>
+                                   value="5_and_more" {{!empty($orderDetails->adults) && ($orderDetails->adults == '5_and_more') ? 'checked' : ''}}>
                             <label class="form-check-label" for="5_and_more">5 and more</label>
                         </div>
                     </div>
@@ -109,22 +109,22 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="children" id="none_children"
-                                   value="none_children" {{!empty($orderDetails[0]->children) && ($orderDetails[0]->children == 'none_children') ? 'checked' : ''}}>
+                                   value="none_children" {{!empty($orderDetails->children) && ($orderDetails->children == 'none_children') ? 'checked' : ''}}>
                             <label class="form-check-label" for="none_children">None</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="children" id="1" value="1"
-                                    {{!empty($orderDetails[0]->children) && ($orderDetails[0]->children == '1') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->children) && ($orderDetails->children == '1') ? 'checked' : ''}}>
                             <label class="form-check-label" for="1">1</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="children" id="2" value="2"
-                                    {{!empty($orderDetails[0]->children) && ($orderDetails[0]->children == '2') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->children) && ($orderDetails->children == '2') ? 'checked' : ''}}>
                             <label class="form-check-label" for="2">2</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="children" id="3_and_more"
-                                   value="3_and_more" {{!empty($orderDetails[0]->children) && ($orderDetails[0]->children == '3_and_more') ? 'checked' : ''}}>
+                                   value="3_and_more" {{!empty($orderDetails->children) && ($orderDetails->children == '3_and_more') ? 'checked' : ''}}>
                             <label class="form-check-label" for="3_and_more">3 and more</label>
                         </div>
                     </div>
@@ -147,7 +147,7 @@
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="rate_cleanliness"
                                        id="rate_{{$rates}}" value="{{$rates}}"
-                                        {{!empty($orderDetails[0]->rate_cleanliness) && ($orderDetails[0]->rate_cleanliness == $rates) ? 'checked' : ''}}>
+                                        {{!empty($orderDetails->rate_cleanliness) && ($orderDetails->rate_cleanliness == $rates) ? 'checked' : ''}}>
                                 <label class="form-check-label" for="rate_{{$rates}}">{{$rates}}</label>
                             </div>
                         @endforeach
@@ -157,7 +157,6 @@
                         {{--<option {{!empty($bathroom) && ($bathroms == $bathroom) ? 'selected': ''}} value="{{$bathroms}}">{{$bathroms.' Bathroms'}}</option>--}}
                         {{--@endforeach--}}
                         {{--</select>--}}
-
                     </div>
                 </div>
             </div>
@@ -175,12 +174,12 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="cleaned_2_months_ago" id="yes"
-                                   value="yes" {{!empty($orderDetails[0]->cleaned_2_months_ago) && ($orderDetails[0]->cleaned_2_months_ago == 'yes') ? 'checked' : ''}}>
+                                   value="yes" {{!empty($orderDetails->cleaned_2_months_ago) && ($orderDetails->cleaned_2_months_ago == 'yes') ? 'checked' : ''}}>
                             <label class="form-check-label" for="yes">yes</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="cleaned_2_months_ago" id="no" value="no"
-                                    {{!empty($orderDetails[0]->cleaned_2_months_ago) && ($orderDetails[0]->cleaned_2_months_ago == 'no') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->cleaned_2_months_ago) && ($orderDetails->cleaned_2_months_ago == 'no') ? 'checked' : ''}}>
                             <label class="form-check-label" for="no">no</label>
                         </div>
                     </div>
@@ -198,7 +197,7 @@
                     <div class="col-md-12">
                         <label for="differently"><strong>What would you like us to do differently?</strong></label>
                         <textarea class="form-control" name="differently" id="differently"
-                                  rows="3">{{!empty($orderDetails[0]->differently) ? $orderDetails[0]->differently : ''}}</textarea>
+                                  rows="3">{{!empty($orderDetails->differently) ? $orderDetails->differently : ''}}</textarea>
                     </div>
                 </div>
             </div>

@@ -12,16 +12,16 @@
     */
 
     Route::get('/', 'Index@home')->name('index');
-    Route::post('/', 'Index@home');
+    Route::post('/', 'Index@homePost');
 
     Route::get('/personal_info', 'Index@personalInfo')->name('info');
-    Route::post('/personal_info', 'Index@personalInfo');
+    Route::post('/personal_info', 'Index@personalInfoPost');
 
     Route::get('/your_home', 'Index@yourHome')->name('home');
-    Route::post('/your_home', 'Index@yourHome');
+    Route::post('/your_home', 'Index@yourHomePost');
 
     Route::get('/materials', 'Index@materials')->name('materials');
-    Route::post('/materials', 'Index@materials');
+    Route::post('/materials', 'Index@materialsPost');
 
     Route::get('/extras', 'Index@extras')->name('extras');
-    Route::post('/extras', 'Index@extras');
+    Route::post('/extras', 'Index@extrasPost');
