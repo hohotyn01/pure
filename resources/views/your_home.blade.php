@@ -151,12 +151,6 @@
                                 <label class="form-check-label" for="rate_{{$rates}}">{{$rates}}</label>
                             </div>
                         @endforeach
-
-                        {{--<select class="form-control" name="bathroom">--}}
-                        {{--@foreach($bathromRange as $bathroms)--}}
-                        {{--<option {{!empty($bathroom) && ($bathroms == $bathroom) ? 'selected': ''}} value="{{$bathroms}}">{{$bathroms.' Bathroms'}}</option>--}}
-                        {{--@endforeach--}}
-                        {{--</select>--}}
                     </div>
                 </div>
             </div>
