@@ -108,6 +108,13 @@
                     <div class="p-3 mb-2 border rounded">
                         <div class="text-center">
                             <p>One-Time Cleaning</p>
+                            <small>This week</small>
+                            <p></p>
+                        </div>
+                        <hr>
+                        <div class="justify-content-between total" >
+                            <p class="">Total</p>
+                            <p>$367</p>
                         </div>
                     </div>
                 </div>
