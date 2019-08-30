@@ -40,28 +40,28 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="inside_fridge" id="inside_fridge"
-                                   value="1" {{!empty($OrderExtras->inside_fridge) ? 'checked' : ''}}>
+                                   value="1" {{!empty($orderExtras->inside_fridge) ? 'checked' : ''}}>
                             <label class="form-check-label" for="inside_fridge">Inside Fridge</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="inside_oven" id="inside_oven"
-                                   value="1" {{!empty($OrderExtras->inside_oven) ? 'checked' : ''}}>
+                                   value="1" {{!empty($orderExtras->inside_oven) ? 'checked' : ''}}>
                             <label class="form-check-label" for="inside_oven">Inside Oven</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="garage_swept" id="garage_swept"
-                                   value="1" {{!empty($OrderExtras->garage_swept) ? 'checked' : ''}}>
+                                   value="1" {{!empty($orderExtras->garage_swept) ? 'checked' : ''}}>
                             <label class="form-check-label" for="garage_swept">Garage Swept</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="blinds_cleaning" id="blinds_cleaning"
-                                   value="1" {{!empty($OrderExtras->blinds_cleaning) ? 'checked' : ''}}>
+                                   value="1" {{!empty($orderExtras->blinds_cleaning) ? 'checked' : ''}}>
                             <label class="form-check-label" for="blinds_cleaning">Blinds Cleaning</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="laundry_wash_dry"
                                    id="laundry_wash_dry" value="1"
-                                    {{!empty($OrderExtras->laundry_wash_dry) ? 'checked' : ''}}>
+                                    {{!empty($orderExtras->laundry_wash_dry) ? 'checked' : ''}}>
                             <label class="form-check-label" for="laundry_wash_dry">Laundry Wash&Dry</label>
                         </div>
                         <hr>
@@ -73,12 +73,12 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="service_weekend" id="weekend_yes"
-                                   value="yes" {{!empty($OrderExtras->service_weekend) && ($OrderExtras->service_weekend == 'yes') ? 'checked' : ''}}>
+                                   value="yes" {{!empty($orderExtras->service_weekend) && ($orderExtras->service_weekend == 'yes') ? 'checked' : ''}}>
                             <label class="form-check-label" for="weekend_yes">Yes</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="service_weekend" id="weekend_no"
-                                   value="no" {{!empty($OrderExtras->service_weekend) && ($OrderExtras->service_weekend == 'no') ? 'checked' : ''}}>
+                                   value="no" {{!empty($orderExtras->service_weekend) && ($orderExtras->service_weekend == 'no') ? 'checked' : ''}}>
                             <label class="form-check-label" for="weekend_no">No</label>
                         </div>
                         <hr>
@@ -90,12 +90,12 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="carpet" id="carpet_yes"
-                                   value="yes" {{!empty($OrderExtras->carpet) && ($OrderExtras->carpet == 'yes') ? 'checked' : ''}}>
+                                   value="yes" {{!empty($orderExtras->carpet) && ($orderExtras->carpet == 'yes') ? 'checked' : ''}}>
                             <label class="form-check-label" for="carpet_yes">Yes</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="carpet" id="carpet_no"
-                                   value="no" {{!empty($OrderExtras->carpet) && ($OrderExtras->carpet == 'no') ? 'checked' : ''}}>
+                                   value="no" {{!empty($orderExtras->carpet) && ($orderExtras->carpet == 'no') ? 'checked' : ''}}>
                             <label class="form-check-label" for="carpet_no">No</label>
                         </div>
 
@@ -108,7 +108,14 @@
                     <div class="p-3 mb-2 border rounded">
                         <div class="text-center">
                             <p>One-Time Cleaning</p>
+                            <small>This week</small>
+                            <br>
+                            <small>{{$bedroomExtras}} bed, {{$bathroomExtras}} bath - {{$homeFootageExtras}} sq. ft</small>
                         </div>
+                        <hr>
+                        <div class="justify-content-between total" >
+                            <p>Total</p>
+                            <p>$367</p>
                     </div>
                 </div>
             </div>

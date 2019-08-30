@@ -33,7 +33,9 @@
 
 
 <!-- Bootstrap core JavaScript -->
-<script src="{{asset('assets/vendor/jquery/jquery.min.js')}}"></script>
+{{--<script src="{{asset('assets/vendor/jquery/jquery.min.js')}}"></script>--}}
+<script src="{{asset('assets/vendor/jquery/jquery-3.4.1.min.js')}}"></script>
+<script src="{{asset('assets/vendor/jquery/my-jquery.js')}}"></script>
 <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 </body>
 </html>

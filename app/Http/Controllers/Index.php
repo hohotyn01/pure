@@ -77,8 +77,14 @@
 
             //Add Session orderId
             $order = Order::where('user_id', $user)->first()->id;
+
             Session::put('orderId', $order);
 
+            $bedroom = Order::where('user_id', $user)->first()->bedroom;
+            $bathroom = Order::where('user_id', $user)->first()->bathroom;
+
+            Session::put('bedroomExtras', $bedroom);
+            Session::put('bathroomExtras', $bathroom);
 
             return redirect(route('info'));
             /*
@@ -151,9 +157,10 @@
             User::where('id', Session::get('userId'))->update($dataUser);
 
             $first_name = User::where('id', Session::get('userId'))->first()->first_name;
+            $homeFootageExtras = Order::where('id', Session::get('orderId'))->first()->home_footage;
 
             Session::put('first_name', $first_name);
-
+            Session::put('homeFootageExtras', $homeFootageExtras);
 
             return redirect(route('home'));
 
@@ -351,10 +358,18 @@
         public function extras()
         {
             //If (isset Session ('idOrderExtras'))  get id OrderExtras
-            $OrderExtras = Session::has('idOrderExtras') ? OrderExtras::where('id',
+            $bedroomExtras = Session::get('bedroomExtras');
+            $bathroomExtras = Session::get('bathroomExtras');
+            $homeFootageExtras = Session::get('homeFootageExtras');
+            $orderExtras = Session::has('idOrderExtras') ? OrderExtras::where('id',
                 Session::get('idOrderExtras'))->first() : null;
 
-            return view('extras', ['OrderExtras' => $OrderExtras]);
+            return view('extras', [
+                'orderExtras' => $orderExtras,
+                'bedroomExtras' => $bedroomExtras,
+                'bathroomExtras' => $bathroomExtras,
+                'homeFootageExtras' => $homeFootageExtras
+            ]);
         }
 
 
