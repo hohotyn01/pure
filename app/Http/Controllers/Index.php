@@ -150,13 +150,10 @@
             Order::where('id', Session::get('orderId'))->update($dataOrder);
             User::where('id', Session::get('userId'))->update($dataUser);
 
-            $cleaning_frequency = Order::where('id', Session::get('orderId'))->first()->cleaning_frequency;
             $first_name = User::where('id', Session::get('userId'))->first()->first_name;
 
-            if (!empty($cleaning_frequency) && !empty($first_name)) {
-                Session::put('cleaning_frequency', $cleaning_frequency);
-                Session::put('first_name', $first_name);
-            }
+            Session::put('first_name', $first_name);
+
 
             return redirect(route('home'));
 
