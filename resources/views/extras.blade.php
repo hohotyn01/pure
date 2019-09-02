@@ -16,7 +16,7 @@
             </h5>
         </div>
         <hr>
-        <form action="" method="post">
+        <form id="priceForm" action="" method="post">
             @csrf
             @if(count($errors) > 0)
                 <div class="alert alert-danger">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
                 {{--
-                    Right Block
+                    Right Block Holder
                 --}}
                 <div class="col-sm-3">
                     <div class="p-3 mb-2 border rounded">
@@ -113,14 +113,15 @@
                             <small>{{$bedroomExtras}} bed, {{$bathroomExtras}} bath - {{$homeFootageExtras}} sq. ft</small>
                         </div>
                         <hr>
-                        <div class="justify-content-between total" >
+                        <div class="justify-content-between total">
                             <p>Total</p>
-                            <p>$367</p>
+                            <div id="priceHolder">100.00</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="text-center mt-5 mb-5">
-                <input type="submit" class="btn btn-danger" value="Reserve a Cleaning">
+                <div class="text-center mt-5 mb-5">
+                    <input type="submit" class="btn btn-danger" value="Reserve a Cleaning">
+                </div>
             </div>
         </form>
     </div>
