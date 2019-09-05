@@ -1,5 +1,9 @@
 @extends('layouts.site')
 
+@section('title')
+    Personal Info
+@endsection
+
 @section('header')
     @include('site.header')
 @endsection

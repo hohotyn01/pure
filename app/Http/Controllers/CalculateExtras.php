@@ -1,20 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+    namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Calculate;
+    use Illuminate\Http\Request;
+    use App\Models\Calculate;
 
-class CalculateExtras extends Controller
-{
-    public function calculate(){
+    class CalculateExtras extends Controller
+    {
+        public function calculate(Request $request)
+        {
 
-//        dd($request);
+            $serviceWeekend = $request->serviceWeekend;
+            $carpet = $request->carpet;
+            $valueCheckbox = $request->valueCheckbox;
+            $nameCheckbox = $request->nameCheckbox;
 
-        if ($_POST["serviceWeekend"] == 'yes'){
-            echo 50;
-        } else {
-            echo 0;
+            $dataExtras = [$serviceWeekend, $carpet, $valueCheckbox, $nameCheckbox];
+
+            $calculate = new Calculate($dataExtras);
+            $calculate->getSum();
+
         }
     }
-}

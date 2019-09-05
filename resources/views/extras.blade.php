@@ -1,5 +1,9 @@
 @extends('layouts.site')
 
+@section('title')
+    Extras
+@endsection
+
 @section('header')
     @include('site.header')
 @endsection
@@ -110,7 +114,8 @@
                             <p>One-Time Cleaning</p>
                             <small>This week</small>
                             <br>
-                            <small>{{$bedroomExtras}} bed, {{$bathroomExtras}} bath - {{$homeFootageExtras}} sq. ft</small>
+                            <small>{{$bedroomExtras}} bed, {{$bathroomExtras}} bath - {{$homeFootageExtras}} sq. ft
+                            </small>
                         </div>
                         <hr>
                         <div class="justify-content-between total">

@@ -117,7 +117,7 @@
                 'street_address' => 'required|max:150',
                 'apt' => 'max:15',
                 'city' => 'required|max:150',
-                'home_footage' => 'required|max:10',
+                'home_footage' => 'required|max:4',
                 'mobile_phone' => 'required|between:9,15',
                 'about_us' => 'required|in:cleaning_for_reason'
             ]);

@@ -1,5 +1,9 @@
 @extends('layouts.site')
 
+@section('title')
+    Pure
+@endsection
+
 @section('header')
     @include('site.header_home')
 @endsection
