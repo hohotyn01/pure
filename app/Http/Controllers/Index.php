@@ -53,46 +53,33 @@
             /*
             * Save start
             */
-            $dataUser = $request->except(
-                'user_id',
-                '_token',
-                'bedroom',
-                'zip_code',
-                'bathroom'
-            );
+            $dataUser = $request->only('email');
 
             //Add User in Database
-            User::updateOrcreate($dataUser);
+            $user = User::firstOrCreate($dataUser);
 
             //Add Session userId
-            $user = User::where('email', $dataUser)->first()->id;
-            Session::put('userId', "$user");
+            Session::put('userId', $user->id);
 
 
             //Add Order in Database
-            $idUser = Session::get('userId');
             $dataOrder = $request->except('email', '_token');
-            $dataOrder['user_id'] = $idUser;
+            $dataOrder['user_id'] = Session::get('userId');
 
-            Order::updateOrCreate($dataOrder);
-
-            //Add Session orderId
-            $order = Order::where('user_id', $user)->first()->id;
-
-            Session::put('orderId', $order);
-
-            $bedroom = Order::where('user_id', $user)->first()->bedroom;
-            $bathroom = Order::where('user_id', $user)->first()->bathroom;
-
-            Session::put('bedroomExtras', $bedroom);
-            Session::put('bathroomExtras', $bathroom);
+            //Save
+            $order = Order::updateOrCreate(['id' => Session::get('orderId'), 'user_id' => Session::get('userId')], $dataOrder);
 
             //get Calculate summ
-            $calculate = new Calculate($order);
+            $culcSum = new Calculate($order->id);
+            $order->update([
+                'per_cleaning' => $culcSum->homeSum()
+            ]);
 
-            $perCleaning = Order::find($order);
-            $perCleaning->per_cleaning = $calculate->homeSum();
-            $perCleaning->save();
+
+            Session::put('orderId', $order->id);
+            Session::put('bedroomExtras', $order->bedroom);
+            Session::put('bathroomExtras', $order->bathroom);
+
 
             return redirect(route('info'));
             /*
@@ -160,23 +147,25 @@
                 'about_us'
             );
 
+
             //Update Database Order and User
-            Order::where('id', Session::get('orderId'))->update($dataOrder);
-            User::where('id', Session::get('userId'))->update($dataUser);
+            Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
+            User::updateOrCreate(['id' => Session::get('userId')], $dataUser);
+
+
+            //get Calculate summ
+            $culcSum = new Calculate(Session::get('orderId'));
+
+            $perCleaning = Order::find(Session::get('orderId'));
+            $perCleaning->per_cleaning = $culcSum->personalInfoSum();
+            $perCleaning->save();
+
 
             $first_name = User::where('id', Session::get('userId'))->first()->first_name;
             $homeFootageExtras = Order::where('id', Session::get('orderId'))->first()->home_footage;
 
             Session::put('first_name', $first_name);
             Session::put('homeFootageExtras', $homeFootageExtras);
-
-            //get Calculate summ
-            $calculate = new Calculate(Session::get('orderId'));
-
-
-            $perCleaning = Order::find(Session::get('orderId'));
-            $perCleaning->per_cleaning += $calculate->personalInfoSum();
-            $perCleaning->save();
 
             return redirect(route('home'));
 
@@ -230,6 +219,13 @@
             $data['order_id'] = $id;
 
             OrderDetail::updateOrCreate(["order_id" => $id], $data);
+
+            //get Calculate summ
+            $culcSum = new Calculate($id);
+            $perCleaning = Order::find($id);
+            $perCleaning->per_cleaning = $culcSum->yourHome();
+            $perCleaning->save();
+
 
             if (!empty($request->file('photo'))) {
                 foreach ($request->file('photo') as $photo) {

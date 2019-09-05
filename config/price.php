@@ -71,24 +71,28 @@
             '5_and_more' => 100,
         ],
         'children' => [
+            'none_children' => 0,
             '1' => 20,
             '2' => 40,
             '3_and_more' => 60,
         ],
         'rate_cleanliness' => [
-            'rate_1' => 100,
-            'rate_2' => 90,
-            'rate_3' => 80,
-            'rate_4' => 70,
-            'rate_5' => 60,
-            'rate_6' => 50,
-            'rate_7' => 30,
-            'rate_8' => 20,
-            'rate_9' => 15,
-            'rate_10' => 0,
+            '1' => 100,
+            '2' => 90,
+            '3' => 80,
+            '4' => 70,
+            '5' => 60,
+            '6' => 50,
+            '7' => 30,
+            '8' => 20,
+            '9' => 15,
+            '10' => 0,
         ],
 
-        'cleaned_2_months_ago' => 30,
+        'cleaned_2_months_ago' => [
+            'yes' => 30,
+            'no' => 0
+        ],
 
         //materials
         'flooring ' => [
