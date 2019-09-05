@@ -14,6 +14,7 @@
     use App\Models\OrderMaterialsDetail;
     use App\Models\OrderMaterialsFloor;
     use App\Models\User;
+    use App\Models\Calculate;
 
     class Index extends Controller
     {
@@ -85,6 +86,13 @@
 
             Session::put('bedroomExtras', $bedroom);
             Session::put('bathroomExtras', $bathroom);
+
+            //get Calculate summ
+            $calculate = new Calculate($order);
+
+            $perCleaning = Order::find($order);
+            $perCleaning->per_cleaning = $calculate->homeSum();
+            $perCleaning->save();
 
             return redirect(route('info'));
             /*
@@ -162,6 +170,14 @@
             Session::put('first_name', $first_name);
             Session::put('homeFootageExtras', $homeFootageExtras);
 
+            //get Calculate summ
+            $calculate = new Calculate(Session::get('orderId'));
+
+
+            $perCleaning = Order::find(Session::get('orderId'));
+            $perCleaning->per_cleaning += $calculate->personalInfoSum();
+            $perCleaning->save();
+
             return redirect(route('home'));
 
             /*
@@ -230,6 +246,7 @@
             $idOrderDetail = OrderDetail::where('order_id', $id)->first()->id;
 
             Session::put('idOrderDetail', $idOrderDetail);
+
 
 
             return redirect(route('materials'));

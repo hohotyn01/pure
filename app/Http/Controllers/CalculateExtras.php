@@ -4,6 +4,8 @@
 
     use Illuminate\Http\Request;
     use App\Models\Calculate;
+    use Session;
+
 
     class CalculateExtras extends Controller
     {
@@ -17,8 +19,12 @@
 
             $dataExtras = [$serviceWeekend, $carpet, $valueCheckbox, $nameCheckbox];
 
-            $calculate = new Calculate($dataExtras);
+            $orderId = session::get('orderId');
+
+            $calculate = new Calculate($orderId, $dataExtras);
             $calculate->getSum();
+
+            return route('extras');
 
         }
     }

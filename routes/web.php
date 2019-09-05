@@ -32,7 +32,7 @@
                 Route::post('/materials', 'Index@materialsPost');
 
                 Route::get('/extras', 'Index@extras')->name('extras')->middleware('redirectMaterials');
-                Route::post('/extras', 'Index@extrasPost')->middleware('redirectMaterials');
+                Route::post('/extras', 'CalculateExtras@calculate')->middleware('redirectMaterials');
 
                 Route::post('/extrasCalculate', 'CalculateExtras@calculate')->name('calculate');
 

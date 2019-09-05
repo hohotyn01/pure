@@ -20,7 +20,7 @@ $(document).ready(function () {
                 console.log('Please wait')
             },
             success: function (data) {
-                alert(data)
+                // alert(data)
             }
         });
 
@@ -41,7 +41,7 @@ $(document).ready(function () {
                 console.log('Please wait')
             },
             success: function (data) {
-                alert(data)
+                // alert(data)
             }
         });
 
@@ -64,7 +64,7 @@ $(document).ready(function () {
                 console.log('Please wait')
             },
             success: function (data) {
-                alert(data);
+                // alert(data);
             }
         });
 
