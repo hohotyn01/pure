@@ -351,14 +351,26 @@
             OrderMaterialsFloor::updateOrCreate(["order_id" => $id], $data);
             OrderMaterialsCountertop::updateOrCreate(["order_id" => $id], $dataCountertops);
 
+            //get Calculate summ
+            $getCulc = new Calculate($id);
+            $total_sum = Order::find($id);
+            $total_sum->total_sum = $getCulc->materials();
+            $total_sum->per_cleaning = $getCulc->materials();
+            $total_sum->save();
+
+            /*
+             * Add Session
+             */
             $idMaterialsDetail = OrderMaterialsDetail::where('order_id', $id)->first()->id;
             $idMaterialsFloor = OrderMaterialsFloor::where('order_id', $id)->first()->id;
             $idMaterialsCountertop = OrderMaterialsCountertop::where('order_id', $id)->first()->id;
 
-            //Add Session
             Session::put('idMaterialsDetail', $idMaterialsDetail);
             Session::put('idMaterialsFloor', $idMaterialsFloor);
             Session::put('idMaterialsCountertop', $idMaterialsCountertop);
+            /*
+             *
+             */
 
             return redirect(route('extras'));
             /*
@@ -426,6 +438,13 @@
 
             //Add DataBase
             OrderExtras::updateOrCreate(["order_id" => $id], $data);
+
+            //get Calculate summ
+            $getCulc = new Calculate(Session::get('orderId'));
+            $per_cleaning = Order::find(Session::get('orderId'));
+            dd($getCulc->extras());
+            $per_cleaning->per_cleaning = $getCulc->extras();
+            $per_cleaning->save();
 
             //Add Session
             $idOrderExtras = OrderExtras::where('order_id', $id)->first()->id;

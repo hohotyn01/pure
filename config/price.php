@@ -95,50 +95,129 @@
         ],
 
         //materials
-        'flooring ' => [
-            'hardwood' => 20,
-            'cork' => 20,
-            'vinyl' => 20,
-            'concrete' => 20,
-            'carpet' => 20,
-            'natural_stone' => 20,
-            'tile' => 20,
-            'laminate' => 20,
+        'flooring' => [
+            'hardwood' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'cork' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'vinyl' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'concrete' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'carpet' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'natural_stone' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'tile' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'laminate' => [
+                '1' => 20,
+                '0' => 0
+            ],
         ],
 
-        'countertops ' => [
-            'concrete_c' => 20,
-            'quartz' => 20,
-            'formica' => 20,
-            'granite' => 20,
-            'marble' => 20,
-            'tile_c' => 20,
-            'paper_stone' => 20,
-            'butcher_block' => 20,
+        'countertops' => [
+            'concrete_c' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'quartz' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'formica' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'granite' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'marble' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'tile_c' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'paper_stone' => [
+                '1' => 20,
+                '0' => 0
+            ],
+            'butcher_block' => [
+                '1' => 20,
+                '0' => 0
+            ],
         ],
 
-        'stainless_steel_appliances' => 20,
+        'stainless_steel_appliances' => [
+            'yes' => 20,
+            'no' => 0
+        ],
 
-        'stove_type' => 20,
+        'stove_type' => [
+            'yes' => 20,
+            'no' => 0
+        ],
 
+        'shawer_doors_glass' => [
+            'yes' => 20,
+            'no' => 0
+        ],
 
-        'shawer_doors_glass' => 20,
-
-
-        'mold' => 30,
+        'mold' => [
+            'yes' => 30,
+            'no' => 0
+        ],
 
 
         //Extras
         'selectExtras' => [
-            'inside_fridge' => 10,
-            'inside_oven' => 10,
-            'garage_swept' => 10,
-            'blinds_cleaning' => 10,
-            'laundry_wash_dry' => 10,
+            'inside_fridge' => [
+                '1' => 10,
+                '0' => 0
+            ],
+            'inside_oven' => [
+                '1' => 10,
+                '0' => 0
+            ],
+            'garage_swept' => [
+                '1' => 10,
+                '0' => 0
+            ],
+            'blinds_cleaning' => [
+                '1' => 10,
+                '0' => 0
+            ],
+            'laundry_wash_dry' => [
+                '1' => 10,
+                '0' => 0
+            ],
         ],
 
-        'service_weekend' => 50,
-        'carpet' => 10,
+        'service_weekend' => [
+            'yes' => 50,
+            'no' => 0,
+        ],
+        'carpet' => [
+            'yes' => 10,
+            'no' => 0
+        ],
 
 
     ];
