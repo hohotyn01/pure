@@ -14,49 +14,62 @@
 
     class Calculate extends Model
     {
-        private $dataExtras;
         private $order;
 
-        public function __construct($orderId, $dataExtras = [])
+        //type hint Order $order
+        public function __construct(Order $order)
         {
-            if (!empty($dataExtras)) {
-                $this->dataExtras = $dataExtras;
-            }
-
-            $this->order = Order::find($orderId);
-
+            $this->order = $order;
         }
 
+        public function getSum()
+        {
+            $price = (
+                $this->getHomePrice() +
+                $this->getPersonalInfoPrice() +
+                $this->getYourHomePrice() +
+                $this->getMaterialsPrice() +
+                $this->getExtrasPrise()
+            );
 
-        public function homeSum()
+            return $price;
+
+
+//            $model = OrderExtras::where('order_id', $this->order->id)->first();
+//
+//            $insideFridge = Config::get("price.selectExtrasTwo.inside_fridge")[$this->dataExtras[3] == 'inside_fridge' ? $this->dataExtras[2] : 'false'];
+//            $insideOven = Config::get("price.selectExtrasTwo.inside_oven")[isset($this->dataExtras[3]) && $this->dataExtras[3] == 'inside_oven' ? $this->dataExtras[2] : 'false'];
+//            $garageSwept = Config::get("price.selectExtrasTwo.garage_swept")[isset($this->dataExtras[3])? $this->dataExtras[2]:'false'];
+//            $blindsCleaning = Config::get("price.selectExtrasTwo.blinds_cleaning")[isset($this->dataExtras[3])? $this->dataExtras[2]:'false'];
+//            $laundryWash = Config::get("price.selectExtrasTwo.laundry_wash_dry")[isset($this->dataExtras[3])? $this->dataExtras[2]:'false'];
+////
+//            $serviceWeekend = Config::get("price.service_weekend")[$model->service_weekend];
+//            $carpet = Config::get("price.carpet")[$model->carpet];
+
+//            return [$insideFridge, $insideOven];
+        }
+
+        protected function getHomePrice()
         {
             $sumBedroom = $this->order->bedroom * Config::get('price.bedroom')[$this->order->bedroom];
             $sumBathroom = $this->order->bathroom * Config::get('price.bathroom')[$this->order->bathroom];
 
             return $sumBedroom + $sumBathroom;
-
         }
 
-        public function personalInfoSum()
+        protected function getPersonalInfoPrice()
         {
-            $personalInfoSum = $this->homeSum();
-
             $cleaning_frequency = Config::get('price.cleaning_frequency')[$this->order->cleaning_frequency];
             $cleaning_type = Config::get('price.cleaning_type')[$this->order->cleaning_type];
             $cleaning_date = Config::get('price.cleaning_date')[$this->order->cleaning_date];
             $home_footage = Config::get('price.home_footage') * $this->order->home_footage;
 
-            $personalInfoSum += $cleaning_frequency + $cleaning_type + $cleaning_date + $home_footage;
-
-            return $personalInfoSum;
-
+            return $cleaning_frequency + $cleaning_type + $cleaning_date + $home_footage;
         }
 
-        public function yourHome()
+        protected function getYourHomePrice()
         {
-            $yourHome = $this->personalInfoSum();
-
-            $model = OrderDetail::where('order_id', $this->order->id)->first();
+            $model = $this->order->orderDetail;
 
             $dogs_or_cats = Config::get('price.dogs_or_cats')[$model->dogs_or_cats];
             $pets_total = Config::get('price.pets_total')[$model->pets_total];
@@ -65,19 +78,14 @@
             $rate_cleanliness = Config::get('price.rate_cleanliness')[$model->rate_cleanliness];
             $cleaned_2_months_ago = Config::get('price.cleaned_2_months_ago')[$model->cleaned_2_months_ago];
 
-            $yourHome += $dogs_or_cats + $pets_total + $adults + $children + $rate_cleanliness + $cleaned_2_months_ago;
-
-            return $yourHome;
-
+            return $dogs_or_cats + $pets_total + $adults + $children + $rate_cleanliness + $cleaned_2_months_ago;
         }
 
-        public function materials()
+        protected function getMaterialsPrice()
         {
-            $materials = $this->yourHome();
-
-            $modelFloor = OrderMaterialsFloor::where('order_id', $this->order->id)->first();
-            $modelCountertop = OrderMaterialsCountertop::where('order_id', $this->order->id)->first();
-            $modelDetail = OrderMaterialsDetail::where('order_id', $this->order->id)->first();
+            $modelFloor = $this->order->OrderMaterialsFloor;
+            $modelCountertop = $this->order->OrderMaterialsCountertop;
+            $modelDetail = $this->order->OrderMaterialsDetail;
 
             //modelFloor getting price
             $hardwood = Config::get('price.flooring.hardwood')[$modelFloor->hardwood];
@@ -108,27 +116,30 @@
 
 
             $summa = $concrete_c + $quartz + $formica + $granite + $marble + $tile_c + $paper_stone + $butcher_block +
-                $stainlessSteel + $stoveType + $shawerDoors + $mold + $hardwood + $cork + $vinyl + $concrete +
-                $carpet + $naturalStone + $tile + $laminate;
+                $stainlessSteel + $stoveType + $shawerDoors + $mold +
+                $hardwood + $cork + $vinyl + $concrete + $carpet + $naturalStone + $tile + $laminate;
 
-            return $summa + $materials;
-
+            return $summa;
         }
 
-        public function extras()
+        protected function getExtrasPrise()
         {
-            $extras = $this->materials();
-
-            $model = OrderExtras::where('order_id', $this->order->id)->first();
+            $model = $this->order->OrderExtras;
 
             $insideFridge = Config::get('price.selectExtras.inside_fridge')[$model->inside_fridge];
-            $inside_oven = Config::get('price.selectExtras.inside_oven')[$model->inside_oven];
-            $garage_swept = Config::get('price.selectExtras.garage_swept')[$model->garage_swept];
-            $blinds_cleaning = Config::get('price.selectExtras.blinds_cleaning')[$model->blinds_cleaning];
-            $laundry_wash_dry = Config::get('price.selectExtras.laundry_wash_dry')[$model->laundry_wash_dry];
+            $insideOven = Config::get('price.selectExtras.inside_oven')[$model->inside_oven];
+            $garageSwept = Config::get('price.selectExtras.garage_swept')[$model->garage_swept];
+            $blindsCleaning = Config::get('price.selectExtras.blinds_cleaning')[$model->blinds_cleaning];
+            $laundryWash = Config::get('price.selectExtras.laundry_wash_dry')[$model->laundry_wash_dry];
 
-            $w = Config::get('price.service_weekend')[$model->service_weekend];
+            $serviceWeekend = Config::get('price.service_weekend')[$model->service_weekend];
+            $carpet = Config::get('price.carpet')[$model->carpet];
 
-            return [$insideFridge,$inside_oven,$garage_swept,$blinds_cleaning,$laundry_wash_dry];
+            $summa = $insideFridge + $insideOven + $garageSwept + $blindsCleaning + $laundryWash +
+                $serviceWeekend + $carpet;
+
+            return $summa;
         }
+
+
     }

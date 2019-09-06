@@ -48,17 +48,18 @@
             'next_week' => 10,
             'this_month' => 5,
             'i_am_flexible' => 0,
-            'just_need_a_quote' => 30,
+            'just_need_a_quote' => 0,
         ],
 
 
         //your home
         'dogs_or_cats' => [
             'none' => 0,
-            'dog' => 10,
-            'cat' => 15,
+            'dog' => 15,
+            'cat' => 10,
             'both' => 20,
         ],
+        //add hide
         'pets_total' => [
             'pet_1' => 0,
             'pet_2' => 20,
@@ -207,6 +208,29 @@
             'laundry_wash_dry' => [
                 '1' => 10,
                 '0' => 0
+            ],
+        ],
+
+        'selectExtrasTwo' => [
+            'inside_fridge' => [
+                'true' => 10,
+                'false' => 0
+            ],
+            'inside_oven' => [
+                'true' => 10,
+                'false' => 0
+            ],
+            'garage_swept' => [
+                'true' => 10,
+                'false' => 0
+            ],
+            'blinds_cleaning' => [
+                'true' => 10,
+                'false' => 0
+            ],
+            'laundry_wash_dry' => [
+                'true' => 10,
+                'false' => 0
             ],
         ],
 

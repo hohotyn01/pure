@@ -67,14 +67,8 @@
             $dataOrder['user_id'] = Session::get('userId');
 
             //Save
-            $order = Order::updateOrCreate(['id' => Session::get('orderId'), 'user_id' => Session::get('userId')], $dataOrder);
-
-            //get Calculate summ
-            $culcSum = new Calculate($order->id);
-            $order->update([
-                'per_cleaning' => $culcSum->homeSum()
-            ]);
-
+            $order = Order::updateOrCreate(['id' => Session::get('orderId'), 'user_id' => Session::get('userId')],
+                $dataOrder);
 
             Session::put('orderId', $order->id);
             Session::put('bedroomExtras', $order->bedroom);
@@ -149,17 +143,8 @@
 
 
             //Update Database Order and User
-            Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
+            $ord = Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
             User::updateOrCreate(['id' => Session::get('userId')], $dataUser);
-
-
-            //get Calculate summ
-            $culcSum = new Calculate(Session::get('orderId'));
-
-            $perCleaning = Order::find(Session::get('orderId'));
-            $perCleaning->per_cleaning = $culcSum->personalInfoSum();
-            $perCleaning->save();
-
 
             $first_name = User::where('id', Session::get('userId'))->first()->first_name;
             $homeFootageExtras = Order::where('id', Session::get('orderId'))->first()->home_footage;
@@ -220,13 +205,6 @@
 
             OrderDetail::updateOrCreate(["order_id" => $id], $data);
 
-            //get Calculate summ
-            $culcSum = new Calculate($id);
-            $perCleaning = Order::find($id);
-            $perCleaning->per_cleaning = $culcSum->yourHome();
-            $perCleaning->save();
-
-
             if (!empty($request->file('photo'))) {
                 foreach ($request->file('photo') as $photo) {
                     $filename = $photo->hashName();
@@ -242,7 +220,6 @@
             $idOrderDetail = OrderDetail::where('order_id', $id)->first()->id;
 
             Session::put('idOrderDetail', $idOrderDetail);
-
 
 
             return redirect(route('materials'));
@@ -352,11 +329,10 @@
             OrderMaterialsCountertop::updateOrCreate(["order_id" => $id], $dataCountertops);
 
             //get Calculate summ
-            $getCulc = new Calculate($id);
-            $total_sum = Order::find($id);
-            $total_sum->total_sum = $getCulc->materials();
-            $total_sum->per_cleaning = $getCulc->materials();
-            $total_sum->save();
+            $getCulc = new Calculate(Order::where('id',$id)->first());
+            $perCleaning = Order::find($id);
+            $perCleaning->per_cleaning = $getCulc->getSum();
+            $perCleaning->save();
 
             /*
              * Add Session
@@ -440,11 +416,10 @@
             OrderExtras::updateOrCreate(["order_id" => $id], $data);
 
             //get Calculate summ
-            $getCulc = new Calculate(Session::get('orderId'));
-            $per_cleaning = Order::find(Session::get('orderId'));
-            dd($getCulc->extras());
-            $per_cleaning->per_cleaning = $getCulc->extras();
-            $per_cleaning->save();
+            $getCulc = new Calculate($id);
+            $totalSum = Order::find($id);
+            $totalSum->per_cleaning = $getCulc->extras();
+            $totalSum->save();
 
             //Add Session
             $idOrderExtras = OrderExtras::where('order_id', $id)->first()->id;

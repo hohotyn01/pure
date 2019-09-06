@@ -20,7 +20,7 @@ $(document).ready(function () {
                 console.log('Please wait')
             },
             success: function (data) {
-                // alert(data)
+                console.log(data)
             }
         });
 
@@ -41,15 +41,18 @@ $(document).ready(function () {
                 console.log('Please wait')
             },
             success: function (data) {
-                // alert(data)
+                console.log(data)
             }
         });
 
     });
 
+
     $('input[type=checkbox]').on('change', function () {
         let valueCheckbox = $(this).is(":checked");
         let nameCheckbox = $(this).attr("name");
+
+
 
         $.ajax({
             url: 'extrasCalculate',
@@ -64,7 +67,9 @@ $(document).ready(function () {
                 console.log('Please wait')
             },
             success: function (data) {
-                // alert(data);
+
+                $('#priceHolder').text((parseFloat(data)).toFixed(2))
+                console.log(data);
             }
         });
 

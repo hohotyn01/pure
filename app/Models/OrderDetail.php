@@ -17,5 +17,10 @@
             'rate_cleanliness',
             'cleaned_2_months_ago',
             'differently'
-    ];
-}
+        ];
+
+        public function order()
+        {
+            return $this->belongsTo('App\Models\Order');
+        }
+    }
