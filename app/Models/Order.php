@@ -4,7 +4,6 @@
 
     use Illuminate\Database\Eloquent\Model;
 
-
     class Order extends Model
     {
         protected $table = "orders";
@@ -32,7 +31,6 @@
             return $this->hasOne('App\Models\OrderDetail');
         }
 
-
         public function OrderMaterialsFloor()
         {
             return $this->hasOne('App\Models\OrderMaterialsFloor');
@@ -47,7 +45,6 @@
         {
             return $this->hasOne('App\Models\OrderMaterialsDetail');
         }
-
 
         public function orderExtras()
         {

@@ -39,10 +39,10 @@ $(document).ready(function () {
         sendMyAjax(
             extrasData,
             function () {
-                console.log('beforeSend: ', extrasData);
+                $('#priceHolder').text('Please wait');
             },
             function (res) {
-                console.log('onSuccess: ', res);
+                $('#priceHolder').text(JSON.parse(res).data);
             }
         );
     }

@@ -13,59 +13,27 @@
     {
         public function calculate(Request $request)
         {
+            // Add Session
             $orderId = Session::get('orderId');
+
+            // Getting data form ajax
             $requestData = $request->input('data');
+
+            // Eager loading OrderExtras
             $order = Order::with('orderExtras')->findOrFail($orderId);
+
             if ($order->orderExtras === null) {
                 $orderExtras = new OrderExtras($requestData);
-                // foreach ($requestData as $key => $value) {
-                //     $orderExtras->$key = $value;
-                // }
-                // unset($key, $value);
                 $order->orderExtras()->save($orderExtras);
             } else {
                 $order->orderExtras->update($requestData);
             }
 
+            // Calculate
             $orderPricing = new OrderPricing($order);
 
             return response()->json([
-                'data' => [
-                    'price' => $orderPricing->calculate()
-                ]
+                'data' => $orderPricing->calculate()
             ]);
-
-
-
-
-
-
-
-
-//            //            $serviceWeekend = $request->serviceWeekend;
-////            $carpet = $request->carpet;
-////            $valueCheckbox = $request->valueCheckbox;
-////            $nameCheckbox = $request->nameCheckbox;
-//
-////            $extras = new OrderExtras;
-////            $extras->carpet = $carpet;
-//
-//            $id = Session::get('orderId');
-//            $data = $request->except('_token', '');
-//            $data['order_id'] = $id;
-//
-//            $order = Order::where('id', Session::get('orderId'))->first();
-//
-////            $dataExtras = [$serviceWeekend, $carpet, $valueCheckbox, $nameCheckbox];
-//
-//
-//            $calculate = new Calculate($order);
-//            $calculate->getSum();
-//
-//            return $calculate->getSum();
-
-
-
-
         }
     }

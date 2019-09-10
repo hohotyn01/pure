@@ -23,7 +23,7 @@
                 $this->getPersonalInfoPrice() +
                 $this->getYourHomePrice() +
                 $this->getMaterialsPrice() +
-                $this->getExtrasPrise()
+                $this->getExtrasPrice()
             );
 
             return $price;
@@ -31,34 +31,49 @@
 
         protected function getHomePrice()
         {
-            $sumBedroom = $this->order->bedroom * Config::get('price.bedroom')[$this->order->bedroom];
-            $sumBathroom = $this->order->bathroom * Config::get('price.bathroom')[$this->order->bathroom];
+            $sumBedroom = $this->order->bedroom * $this->getPriceRateByKey('price.bedroom', $this->order->bedroom);
+            $sumBathroom = $this->order->bathroom * $this->getPriceRateByKey('price.bathroom', $this->order->bathroom);
 
-            return $sumBedroom + $sumBathroom;
+            return (
+                $sumBedroom +
+                $sumBathroom
+            );
         }
 
         protected function getPersonalInfoPrice()
         {
-            $cleaning_frequency = Config::get('price.cleaning_frequency')[$this->order->cleaning_frequency];
-            $cleaning_type = Config::get('price.cleaning_type')[$this->order->cleaning_type];
-            $cleaning_date = Config::get('price.cleaning_date')[$this->order->cleaning_date];
+            $cleaning_frequency = $this->getPriceRateByKey('price.cleaning_frequency', $this->order->cleaning_frequency);
+            $cleaning_type = $this->getPriceRateByKey('price.cleaning_type', $this->order->cleaning_type);
+            $cleaning_date = $this->getPriceRateByKey('price.cleaning_date', $this->order->cleaning_date);
             $home_footage = Config::get('price.home_footage') * $this->order->home_footage;
 
-            return $cleaning_frequency + $cleaning_type + $cleaning_date + $home_footage;
+            return (
+                $cleaning_frequency +
+                $cleaning_type +
+                $cleaning_date +
+                $home_footage
+            );
         }
 
         protected function getYourHomePrice()
         {
             $model = $this->order->orderDetail;
 
-            $dogs_or_cats = Config::get('price.dogs_or_cats')[$model->dogs_or_cats];
-            $pets_total = Config::get('price.pets_total')[$model->pets_total];
-            $adults = Config::get('price.adults')[$model->adults];
-            $children = Config::get('price.children')[$model->children];
-            $rate_cleanliness = Config::get('price.rate_cleanliness')[$model->rate_cleanliness];
-            $cleaned_2_months_ago = Config::get('price.cleaned_2_months_ago')[$model->cleaned_2_months_ago];
+            $dogs_or_cats = $this->getPriceRateByKey('price.dogs_or_cats', $model->dogs_or_cats);
+            $pets_total = $this->getPriceRateByKey('price.pets_total', $model->pets_total);
+            $adults = $this->getPriceRateByKey('price.adults', $model->adults);
+            $children = $this->getPriceRateByKey('price.children', $model->children);
+            $rate_cleanliness = $this->getPriceRateByKey('price.rate_cleanliness', $model->rate_cleanliness);
+            $cleaned_2_months_ago = $this->getPriceRateByKey('price.cleaned_2_months_ago', $model->cleaned_2_months_ago);
 
-            return $dogs_or_cats + $pets_total + $adults + $children + $rate_cleanliness + $cleaned_2_months_ago;
+            return (
+                $dogs_or_cats +
+                $pets_total +
+                $adults +
+                $children +
+                $rate_cleanliness +
+                $cleaned_2_months_ago
+            );
         }
 
         protected function getMaterialsPrice()
@@ -68,70 +83,87 @@
             $modelDetail = $this->order->OrderMaterialsDetail;
 
             //modelFloor getting price
-            $hardwood = Config::get('price.flooring.hardwood')[$modelFloor->hardwood];
-            $cork = Config::get('price.flooring.cork')[$modelFloor->cork];
-            $vinyl = Config::get('price.flooring.vinyl')[$modelFloor->vinyl];
-            $concrete = Config::get('price.flooring.concrete')[$modelFloor->concrete];
-            $carpet = Config::get('price.flooring.carpet')[$modelFloor->carpet];
-            $naturalStone = Config::get('price.flooring.natural_stone')[$modelFloor->natural_stone];
-            $tile = Config::get('price.flooring.tile')[$modelFloor->tile];
-            $laminate = Config::get('price.flooring.laminate')[$modelFloor->laminate];
+            $hardwood = $this->getPriceRateByKey('price.flooring.hardwood', $modelFloor->hardwood);
+            $cork = $this->getPriceRateByKey('price.flooring.cork', $modelFloor->cork);
+            $vinyl = $this->getPriceRateByKey('price.flooring.vinyl', $modelFloor->vinyl);
+            $concrete = $this->getPriceRateByKey('price.flooring.concrete', $modelFloor->concrete);
+            $carpet = $this->getPriceRateByKey('price.flooring.carpet', $modelFloor->carpet);
+            $naturalStone = $this->getPriceRateByKey('price.flooring.natural_stone', $modelFloor->natural_stone);
+            $tile = $this->getPriceRateByKey('price.flooring.tile', $modelFloor->tile);
+            $laminate = $this->getPriceRateByKey('price.flooring.laminate', $modelFloor->laminate);
 
 
             //modelCountertop getting price
-            $concrete_c = Config::get('price.countertops.concrete_c')[$modelCountertop->concrete_c];
-            $quartz = Config::get('price.countertops.quartz')[$modelCountertop->quartz];
-            $formica = Config::get('price.countertops.formica')[$modelCountertop->formica];
-            $granite = Config::get('price.countertops.granite')[$modelCountertop->granite];
-            $marble = Config::get('price.countertops.marble')[$modelCountertop->marble];
-            $tile_c = Config::get('price.countertops.tile_c')[$modelCountertop->tile_c];
-            $paper_stone = Config::get('price.countertops.paper_stone')[$modelCountertop->paper_stone];
-            $butcher_block = Config::get('price.countertops.butcher_block')[$modelCountertop->butcher_block];
+            $concrete_c = $this->getPriceRateByKey('price.countertops.concrete_c', $modelCountertop->concrete_c);
+            $quartz = $this->getPriceRateByKey('price.countertops.quartz', $modelCountertop->quartz);
+            $formica = $this->getPriceRateByKey('price.countertops.formica', $modelCountertop->formica);
+            $granite = $this->getPriceRateByKey('price.countertops.granite', $modelCountertop->granite);
+            $marble = $this->getPriceRateByKey('price.countertops.marble', $modelCountertop->marble);
+            $tile_c = $this->getPriceRateByKey('price.countertops.tile_c', $modelCountertop->tile_c);
+            $paper_stone = $this->getPriceRateByKey('price.countertops.paper_stone', $modelCountertop->paper_stone);
+            $butcher_block = $this->getPriceRateByKey('price.countertops.butcher_block', $modelCountertop->butcher_block);
 
             //modelDetail getting price
-            $stainlessSteel = Config::get('price.stainless_steel_appliances')[$modelDetail->stainless_steel_appliances];
-            $stoveType = Config::get('price.stove_type')[$modelDetail->stove_type];
-            $shawerDoors = Config::get('price.shawer_doors_glass')[$modelDetail->shawer_doors_glass];
-            $mold = Config::get('price.mold')[$modelDetail->mold];
+            $stainlessSteel = $this->getPriceRateByKey('price.stainless_steel_appliances', $modelDetail->stainless_steel_appliances);
+            $stoveType = $this->getPriceRateByKey('price.stove_type', $modelDetail->stove_type);
+            $shawerDoors = $this->getPriceRateByKey('price.shawer_doors_glass', $modelDetail->shawer_doors_glass);
+            $mold = $this->getPriceRateByKey('price.mold', $modelDetail->mold);
 
 
-            $summa = $concrete_c + $quartz + $formica + $granite + $marble + $tile_c + $paper_stone + $butcher_block +
-                $stainlessSteel + $stoveType + $shawerDoors + $mold +
-                $hardwood + $cork + $vinyl + $concrete + $carpet + $naturalStone + $tile + $laminate;
-
-            return $summa;
+            return (
+                $concrete_c + 
+                $quartz + 
+                $formica +
+                $granite +
+                $marble +
+                $tile_c +
+                $paper_stone +
+                $butcher_block +
+                $stainlessSteel +
+                $stoveType +
+                $shawerDoors +
+                $mold +
+                $hardwood +
+                $cork +
+                $vinyl +
+                $concrete +
+                $carpet +
+                $naturalStone +
+                $tile +
+                $laminate
+            );
         }
 
-        protected function getExtrasPrise()
+        protected function getExtrasPrice()
         {
-            $model = $this->order->OrderExtras;
 
-            $insideFridge = Config::get('price.selectExtras.inside_fridge')[$model->inside_fridge];
-            $insideOven = Config::get('price.selectExtras.inside_oven')[$model->inside_oven];
-            $garageSwept = Config::get('price.selectExtras.garage_swept')[$model->garage_swept];
-            $blindsCleaning = Config::get('price.selectExtras.blinds_cleaning')[$model->blinds_cleaning];
-            $laundryWash = Config::get('price.selectExtras.laundry_wash_dry')[$model->laundry_wash_dry];
+            $insideFridge = $this->getPriceRateByKey('price.selectExtras.inside_fridge', $this->order->orderExtras->inside_fridge);
+            $insideOven = $this->getPriceRateByKey('price.selectExtras.inside_oven', $this->order->orderExtras->inside_oven);
+            $garageSwept = $this->getPriceRateByKey('price.selectExtras.garage_swept', $this->order->orderExtras->garage_swept);
+            $blindsCleaning = $this->getPriceRateByKey('price.selectExtras.blinds_cleaning', $this->order->orderExtras->blinds_cleaning);
+            $laundryWash = $this->getPriceRateByKey('price.selectExtras.laundry_wash_dry', $this->order->orderExtras->laundry_wash_dry);
+            $serviceWeekend = $this->getPriceRateByKey('price.service_weekend', $this->order->orderExtras->service_weekend);
+            $carpet = $this->getPriceRateByKey('price.carpet', $this->order->orderExtras->carpet);
 
-            $serviceWeekend = Config::get('price.service_weekend')[$model->service_weekend];
-            $carpet = Config::get('price.carpet')[$model->carpet];
+            return (
+                $insideFridge +
+                $insideOven +
+                $garageSwept +
+                $blindsCleaning +
+                $laundryWash +
+                $serviceWeekend +
+                $carpet
+            );
+        }
 
-            $summa = $insideFridge + $insideOven + $garageSwept + $blindsCleaning + $laundryWash +
-                $serviceWeekend + $carpet;
+        protected function getPriceRateByKey(string $key, string $value) {
+            if (!isset(Config::get($key)[$value])) {
+                throw new \Exception('Incorrect Price Rate Key or Value Provided!');
+            }
 
-            return $summa;
+            return (
+                Config::get($key)[$value]
+            );
         }
 
     }
-
-    //            dd((bool)$model->service_weekend);
-
-    //            met ($model, 'selectExtras');
-    //            $sum = 0;
-    //            foreach ($model as $key => $value) {
-    //                if ($value) {
-    //                    $sum += Config::get('price.' . $key);
-    //                }
-    //            }
-    //
-    //            return $sum;
-    //            dd($model->service_weekend);

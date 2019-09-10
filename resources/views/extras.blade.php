@@ -102,7 +102,6 @@
                                    value="0" {{!empty($orderExtras->carpet) && ($orderExtras->carpet == '0') ? 'checked' : ''}}>
                             <label class="form-check-label" for="carpet_no">No</label>
                         </div>
-
                     </div>
                 </div>
                 {{--
@@ -120,7 +119,7 @@
                         <hr>
                         <div class="justify-content-between total">
                             <p>Total</p>
-                            <div id="priceHolder">100.00</div>
+                            <div id="priceHolder">{{$data}}</div>
                         </div>
                     </div>
                 </div>

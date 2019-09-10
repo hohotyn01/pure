@@ -14,6 +14,7 @@
     use App\Models\OrderMaterialsFloor;
     use App\Models\User;
     use App\Models\Calculate;
+    use App\Library\OrderPricing;
 
     class Index extends Controller
     {
@@ -87,7 +88,7 @@
             $user = Session::has('userId') ? User::find(Session::get('userId')) : null;
             $order = Session::has('orderId') ? Order::find(Session::get('orderId')) : null;
             $session = Session::get('orderId');
-            return view('personal_info', ['order' => $order, 'user' => $user, 'session' =>$session]);
+            return view('personal_info', ['order' => $order, 'user' => $user, 'session' => $session]);
         }
 
 
@@ -142,7 +143,7 @@
 
 
             //Update Database Order and User
-            $ord = Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
+            Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
             User::updateOrCreate(['id' => Session::get('userId')], $dataUser);
 
             $first_name = User::where('id', Session::get('userId'))->first()->first_name;
@@ -359,11 +360,15 @@
             $orderExtras = Session::has('idOrderExtras') ? OrderExtras::where('id',
                 Session::get('idOrderExtras'))->first() : null;
 
+            $orderPricing = new OrderPricing(Order::find(Session::get('orderId')));
+            $data = $orderPricing->calculate();
+
             return view('extras', [
                 'orderExtras' => $orderExtras,
                 'bedroomExtras' => $bedroomExtras,
                 'bathroomExtras' => $bathroomExtras,
-                'homeFootageExtras' => $homeFootageExtras
+                'homeFootageExtras' => $homeFootageExtras,
+                'data' => $data
             ]);
         }
 
@@ -406,7 +411,7 @@
             $data['blinds_cleaning'] = $request->has('blinds_cleaning') ? 1 : 0;
             $data['laundry_wash_dry'] = $request->has('laundry_wash_dry') ? 1 : 0;
 
-            dd($request->all());
+//            dd($request->all());
             //Add DataBase
             OrderExtras::updateOrCreate(["order_id" => $id], $data);
 
