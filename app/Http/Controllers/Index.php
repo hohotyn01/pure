@@ -2,7 +2,6 @@
 
     namespace App\Http\Controllers;
 
-    use Illuminate\Support\Facades\DB;
     use Session;
     use Validator;
     use Illuminate\Http\Request;
@@ -85,10 +84,10 @@
         public function personalInfo()
         {
             //If (isset Session ('userId')(orderId))  get id User, Order
-            $user = Session::has('userId') ? User::where('id', Session::get('userId'))->first() : null;
-            $order = Session::has('orderId') ? Order::where('id', Session::get('orderId'))->first() : null;
-
-            return view('personal_info', ['order' => $order, 'user' => $user]);
+            $user = Session::has('userId') ? User::find(Session::get('userId')) : null;
+            $order = Session::has('orderId') ? Order::find(Session::get('orderId')) : null;
+            $session = Session::get('orderId');
+            return view('personal_info', ['order' => $order, 'user' => $user, 'session' =>$session]);
         }
 
 
@@ -328,11 +327,6 @@
             OrderMaterialsFloor::updateOrCreate(["order_id" => $id], $data);
             OrderMaterialsCountertop::updateOrCreate(["order_id" => $id], $dataCountertops);
 
-            //get Calculate summ
-            $getCulc = new Calculate(Order::where('id',$id)->first());
-            $perCleaning = Order::find($id);
-            $perCleaning->per_cleaning = $getCulc->getSum();
-            $perCleaning->save();
 
             /*
              * Add Session
@@ -412,6 +406,7 @@
             $data['blinds_cleaning'] = $request->has('blinds_cleaning') ? 1 : 0;
             $data['laundry_wash_dry'] = $request->has('laundry_wash_dry') ? 1 : 0;
 
+            dd($request->all());
             //Add DataBase
             OrderExtras::updateOrCreate(["order_id" => $id], $data);
 
@@ -421,9 +416,9 @@
             $totalSum->per_cleaning = $getCulc->extras();
             $totalSum->save();
 
-            //Add Session
-            $idOrderExtras = OrderExtras::where('order_id', $id)->first()->id;
-            Session::put('idOrderExtras', $idOrderExtras);
+//            //Add Session
+//            $idOrderExtras = OrderExtras::where('order_id', $id)->first()->id;
+//            Session::put('idOrderExtras', $idOrderExtras);
 
             $request->session()->flush();
 

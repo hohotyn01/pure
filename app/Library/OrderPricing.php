@@ -1,18 +1,12 @@
 <?php
 
-    namespace App\Models;
+    namespace App\Library;
 
-    use Illuminate\Database\Eloquent\Model;
     use Config;
     use App\Models\Order;
-    use App\Models\OrderDetail;
-    use App\Models\OrderMaterialsCountertop;
-    use App\Models\OrderMaterialsFloor;
-    use App\Models\OrderMaterialsDetail;
-    use App\Models\OrderExtras;
 
 
-    class Calculate extends Model
+    class OrderPricing
     {
         private $order;
 
@@ -22,7 +16,7 @@
             $this->order = $order;
         }
 
-        public function getSum()
+        public function calculate()
         {
             $price = (
                 $this->getHomePrice() +
@@ -32,22 +26,7 @@
                 $this->getExtrasPrise()
             );
 
-
             return $price;
-//            return response()->json($data, 200, $headers);
-
-//            $model = OrderExtras::where('order_id', $this->order->id)->first();
-//
-//            $insideFridge = Config::get("price.selectExtrasTwo.inside_fridge")[$this->dataExtras[3] == 'inside_fridge' ? $this->dataExtras[2] : 'false'];
-//            $insideOven = Config::get("price.selectExtrasTwo.inside_oven")[isset($this->dataExtras[3]) && $this->dataExtras[3] == 'inside_oven' ? $this->dataExtras[2] : 'false'];
-//            $garageSwept = Config::get("price.selectExtrasTwo.garage_swept")[isset($this->dataExtras[3])? $this->dataExtras[2]:'false'];
-//            $blindsCleaning = Config::get("price.selectExtrasTwo.blinds_cleaning")[isset($this->dataExtras[3])? $this->dataExtras[2]:'false'];
-//            $laundryWash = Config::get("price.selectExtrasTwo.laundry_wash_dry")[isset($this->dataExtras[3])? $this->dataExtras[2]:'false'];
-////
-//            $serviceWeekend = Config::get("price.service_weekend")[$model->service_weekend];
-//            $carpet = Config::get("price.carpet")[$model->carpet];
-
-//            return [$insideFridge, $insideOven];
         }
 
         protected function getHomePrice()
@@ -142,5 +121,17 @@
             return $summa;
         }
 
-
     }
+
+    //            dd((bool)$model->service_weekend);
+
+    //            met ($model, 'selectExtras');
+    //            $sum = 0;
+    //            foreach ($model as $key => $value) {
+    //                if ($value) {
+    //                    $sum += Config::get('price.' . $key);
+    //                }
+    //            }
+    //
+    //            return $sum;
+    //            dd($model->service_weekend);

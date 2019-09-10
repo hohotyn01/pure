@@ -77,12 +77,12 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="service_weekend" id="weekend_yes"
-                                   value="yes" {{!empty($orderExtras->service_weekend) && ($orderExtras->service_weekend == 'yes') ? 'checked' : ''}}>
+                                   value="1" {{!empty($orderExtras->service_weekend) && ($orderExtras->service_weekend == '1') ? 'checked' : ''}}>
                             <label class="form-check-label" for="weekend_yes">Yes</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="service_weekend" id="weekend_no"
-                                   value="no" {{!empty($orderExtras->service_weekend) && ($orderExtras->service_weekend == 'no') ? 'checked' : ''}}>
+                                   value="0" {{!empty($orderExtras->service_weekend) && ($orderExtras->service_weekend == '0') ? 'checked' : ''}}>
                             <label class="form-check-label" for="weekend_no">No</label>
                         </div>
                         <hr>
@@ -94,12 +94,12 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="carpet" id="carpet_yes"
-                                   value="yes" {{!empty($orderExtras->carpet) && ($orderExtras->carpet == 'yes') ? 'checked' : ''}}>
+                                   value="1" {{!empty($orderExtras->carpet) && ($orderExtras->carpet == '1') ? 'checked' : ''}}>
                             <label class="form-check-label" for="carpet_yes">Yes</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="carpet" id="carpet_no"
-                                   value="no" {{!empty($orderExtras->carpet) && ($orderExtras->carpet == 'no') ? 'checked' : ''}}>
+                                   value="0" {{!empty($orderExtras->carpet) && ($orderExtras->carpet == '0') ? 'checked' : ''}}>
                             <label class="form-check-label" for="carpet_no">No</label>
                         </div>
 
