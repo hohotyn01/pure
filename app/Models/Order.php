@@ -31,7 +31,7 @@
             return $this->hasOne('App\Models\OrderDetail');
         }
 
-        public function OrderMaterialsFloor()
+        public function orderMaterialsFloor()
         {
             return $this->hasOne('App\Models\OrderMaterialsFloor');
         }
@@ -41,7 +41,7 @@
             return $this->hasOne('App\Models\OrderMaterialsCountertop');
         }
 
-        public function OrderMaterialsDetail()
+        public function orderMaterialsDetail()
         {
             return $this->hasOne('App\Models\OrderMaterialsDetail');
         }

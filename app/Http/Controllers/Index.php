@@ -178,7 +178,7 @@
             */
             $validator = Validator::make($request->all(), [
                 'dogs_or_cats' => 'required|in:none,dog,cat,both',
-                'pets_total' => 'required|in:pet_1,pet_2,pet_3_more',
+                'pets_total' => 'in:pet_1,pet_2,pet_3_more|required_if:dogs_or_cats,dog,cat,both',
                 'adults' => 'required|in:none,1_2,3_4,5_and_more',
                 'children' => 'required|in:none_children,1,2,3_and_more',
                 'rate_cleanliness' => 'required|max:10',
@@ -323,6 +323,14 @@
 
             $dataCountertops['order_id'] = $id;
 
+
+            $order = Order::find($id);
+            $orderPricing = new OrderPricing($order);
+
+            $order->per_cleaning = $orderPricing->beforeExstras();
+            $order->save();
+
+
             //Add DataBase
             OrderMaterialsDetail::updateOrCreate(["order_id" => $id], $data);
             OrderMaterialsFloor::updateOrCreate(["order_id" => $id], $data);
@@ -361,7 +369,7 @@
                 Session::get('idOrderExtras'))->first() : null;
 
             $orderPricing = new OrderPricing(Order::find(Session::get('orderId')));
-            $data = $orderPricing->calculate();
+            $data = $orderPricing->beforeExstras();
 
             return view('extras', [
                 'orderExtras' => $orderExtras,
@@ -386,8 +394,8 @@
                 'blinds_cleaning' => 'boolean',
                 'laundry_wash_dry' => 'boolean',
 
-                'service_weekend' => 'required|in:yes,no',
-                'carpet' => 'required|in:yes,no',
+                'service_weekend' => 'required|in:1,0',
+                'carpet' => 'required|in:1,0',
             ]);
 
             if ($validator->fails()) {
@@ -411,19 +419,15 @@
             $data['blinds_cleaning'] = $request->has('blinds_cleaning') ? 1 : 0;
             $data['laundry_wash_dry'] = $request->has('laundry_wash_dry') ? 1 : 0;
 
-//            dd($request->all());
             //Add DataBase
             OrderExtras::updateOrCreate(["order_id" => $id], $data);
 
-            //get Calculate summ
-            $getCulc = new Calculate($id);
-            $totalSum = Order::find($id);
-            $totalSum->per_cleaning = $getCulc->extras();
-            $totalSum->save();
 
-//            //Add Session
-//            $idOrderExtras = OrderExtras::where('order_id', $id)->first()->id;
-//            Session::put('idOrderExtras', $idOrderExtras);
+            $order = Order::find($id);
+            // Get calculate sum
+            $orderPricing = new OrderPricing($order);
+            $order->total_sum = $orderPricing->calculate();
+            $order->save();
 
             $request->session()->flush();
 
