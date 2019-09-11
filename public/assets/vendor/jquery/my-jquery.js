@@ -5,6 +5,7 @@ $(document).ready(function () {
         }
     });
 
+
     function sendMyAjax(data, onBeforeSend, onSuccess) {
         $.ajax({
             url: 'extrasCalculate',
@@ -77,6 +78,30 @@ $(document).ready(function () {
     });
     $('#carpet_no').on('change', function () {
         updateExtras();
+    });
+
+
+    $('#none').on('change', function () {
+        $('#pet_1').prop('checked', false).attr('disabled', 'true');
+        $('#pet_2').prop('checked', false).attr('disabled', 'true');
+        $('#pet_3_more').prop('checked', false).attr('disabled', 'true');
+    });
+
+
+    $('#dog').on('change', function () {
+        $('#pet_1').removeAttr('disabled');
+        $('#pet_2').removeAttr('disabled');
+        $('#pet_3_more').removeAttr('disabled');
+    });
+    $('#cat').on('change', function () {
+        $('#pet_1').removeAttr('disabled');
+        $('#pet_2').removeAttr('disabled');
+        $('#pet_3_more').removeAttr('disabled');
+    });
+    $('#both').on('change', function () {
+        $('#pet_1').removeAttr('disabled');
+        $('#pet_2').removeAttr('disabled');
+        $('#pet_3_more').removeAttr('disabled');
     });
 
 

@@ -15,6 +15,13 @@
     use App\Models\User;
     use App\Models\Calculate;
     use App\Library\OrderPricing;
+    //Requests
+    use App\Http\Requests\RequestHomePost;
+    use App\Http\Requests\RequestPersonalInfo;
+    use App\Http\Requests\RequestYourHome;
+    use App\Http\Requests\RequestMaterialsPost;
+    use App\Http\Requests\RequestExtrasPost;
+
 
     class Index extends Controller
     {
@@ -29,30 +36,8 @@
         }
 
 
-        public function homePost(Request $request)
+        public function homePost(RequestHomePost $request)
         {
-            /*
-             * Validate Start
-             */
-            $validator = Validator::make($request->all(), [
-                'bedroom' => 'required|max:10',
-                'bathroom' => 'required|max:5',
-                'zip_code' => 'required|max:10',
-                'email' => 'required|email|max:150',
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-             * Validate End
-             */
-
-            /*
-            * Save start
-            */
             $dataUser = $request->only('email');
 
             //Add User in Database
@@ -76,9 +61,7 @@
 
 
             return redirect(route('info'));
-            /*
-             * Save end
-             */
+
         }
 
 
@@ -92,37 +75,8 @@
         }
 
 
-        public function personalInfoPost(Request $request)
+        public function personalInfoPost(RequestPersonalInfo $request)
         {
-            /*
-            * Validate Start
-            */
-            $validator = Validator::make($request->all(), [
-                'cleaning_frequency' => 'required|in:once,weekly,biweekly,monthly',
-                'cleaning_type' => 'required|in:deep_or_spring,move_in,move_out,post_remodeling',
-                'cleaning_date' => 'required|in:next_available,this_week,next_week,this_month,i_am_flexible,just_need_a_quote',
-                'first_name' => 'required|max:150',
-                'last_name' => 'required|max:150',
-                'street_address' => 'required|max:150',
-                'apt' => 'max:15',
-                'city' => 'required|max:150',
-                'home_footage' => 'required|max:4',
-                'mobile_phone' => 'required|between:9,15',
-                'about_us' => 'required|in:cleaning_for_reason'
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-             * Validate End
-             */
-
-            /*
-            * Save start
-            */
             $dataOrder = $request->except(
                 '_token',
                 'first_name',
@@ -154,10 +108,6 @@
 
             return redirect(route('home'));
 
-            /*
-            * Save End
-            */
-
         }
 
 
@@ -171,34 +121,11 @@
         }
 
 
-        public function yourHomePost(Request $request)
+        public function yourHomePost(RequestYourHome $request)
         {
-            /*
-            * Validate Start
-            */
-            $validator = Validator::make($request->all(), [
-                'dogs_or_cats' => 'required|in:none,dog,cat,both',
-                'pets_total' => 'in:pet_1,pet_2,pet_3_more|required_if:dogs_or_cats,dog,cat,both',
-                'adults' => 'required|in:none,1_2,3_4,5_and_more',
-                'children' => 'required|in:none_children,1,2,3_and_more',
-                'rate_cleanliness' => 'required|max:10',
-                'cleaned_2_months_ago' => 'required|in:yes,no',
-                'differently' => 'required|max:255',
-                'photo.*' => 'image|mimes:jpeg,png,jpg',
-                'photo' => 'max:8',
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
+            if($request->dogs_or_cats == 'none'){
+                $request->pets_total = null;
             }
-            /*
-            * Validate End
-            */
-            /*
-            * Save Start
-            */
             $id = Session::get('orderId');
             $data = $request->except('_token', 'photo');
             $data['order_id'] = $id;
@@ -223,9 +150,7 @@
 
 
             return redirect(route('materials'));
-            /*
-            * Save End
-            */
+
         }
 
 
@@ -247,54 +172,8 @@
         }
 
 
-        public function materialsPost(Request $request)
+        public function materialsPost(RequestMaterialsPost $request)
         {
-            /*
-             * Validate Start
-             */
-            $validator = Validator::make($request->all(), [
-//                    Floor
-                'hardwood' => 'boolean',
-                'cork' => 'boolean',
-                'vinyl' => 'boolean',
-                'concrete' => 'boolean',
-                'carpet' => 'boolean',
-                'natural_stone' => 'boolean',
-                'tile' => 'boolean',
-                'laminate' => 'boolean',
-//                    Floor
-//                    Countertop
-                'concrete_c' => 'boolean',
-                'quartz' => 'boolean',
-                'formica' => 'boolean',
-                'granite' => 'boolean',
-                'marble' => 'boolean',
-                'tile_c' => 'boolean',
-                'paper_stone' => 'boolean',
-                'butcher_block' => 'boolean',
-//                    Countertop
-//                    Detail
-                'stainless_steel_appliances' => 'required|in:yes,no',
-                'stove_type' => 'required|in:yes,no',
-                'shawer_doors_glass' => 'required|in:yes,no',
-                'mold' => 'required|in:yes,no',
-                'areas_special_attention' => 'max:255',
-                'anything_know' => 'max:255',
-//                    Detail
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-            * Validate End
-            */
-
-            /*
-            * Save Start
-            */
             //Request Array
             $data = $request->toArray();
             $dataCountertops = $request->toArray();
@@ -348,14 +227,10 @@
             Session::put('idMaterialsFloor', $idMaterialsFloor);
             Session::put('idMaterialsCountertop', $idMaterialsCountertop);
             /*
-             *
+             * Add Session
              */
 
             return redirect(route('extras'));
-            /*
-            * Save End
-            */
-
         }
 
 
@@ -381,45 +256,19 @@
         }
 
 
-        public function extrasPost(Request $request)
+        public function extrasPost(RequestExtrasPost $request)
         {
-            /*
-            * Validate Start
-            */
-            $validator = Validator::make($request->all(), [
-//                    Select extras
-                'inside_fridge' => 'boolean',
-                'inside_oven' => 'boolean',
-                'garage_swept' => 'boolean',
-                'blinds_cleaning' => 'boolean',
-                'laundry_wash_dry' => 'boolean',
-
-                'service_weekend' => 'required|in:1,0',
-                'carpet' => 'required|in:1,0',
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-            * Validate End
-            */
-            /*
-            * Save Start
-            */
             $id = Session::get('orderId');
             $data = $request->toArray();
 
-            //When checkbox is not selected add 0
+            // When checkbox is not selected add 0
             $data['inside_fridge'] = $request->has('inside_fridge') ? 1 : 0;
             $data['inside_oven'] = $request->has('inside_oven') ? 1 : 0;
             $data['garage_swept'] = $request->has('garage_swept') ? 1 : 0;
             $data['blinds_cleaning'] = $request->has('blinds_cleaning') ? 1 : 0;
             $data['laundry_wash_dry'] = $request->has('laundry_wash_dry') ? 1 : 0;
 
-            //Add DataBase
+            // Add DataBase
             OrderExtras::updateOrCreate(["order_id" => $id], $data);
 
 
@@ -432,8 +281,5 @@
             $request->session()->flush();
 
             return back();
-            /*
-            * Save End
-            */
         }
     }

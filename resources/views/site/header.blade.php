@@ -16,9 +16,9 @@
                 <li class="nav-item px-lg-4">
                     <a class="nav-link text-uppercase text-expanded" href="{{route('materials')}}">Materials</a>
                 </li>
-                <li class="nav-item px-lg-4">
-                    <a class="nav-link text-uppercase text-expanded" href="{{route('extras')}}">Extras</a>
-                </li>
+                {{--<li class="nav-item px-lg-4">--}}
+                    {{--<a class="nav-link text-uppercase text-expanded" href="{{route('extras')}}">Extras</a>--}}
+                {{--</li>--}}
             </ul>
         </div>
     </div>
