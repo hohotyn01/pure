@@ -43,12 +43,12 @@
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="dogs_or_cats" id="none" value="none"
-                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'none') ? 'checked' : ''}}>
+                                    {{(!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'none')) || old('dogs_or_cats') == 'none' ? 'checked' : ''}}>
                             <label class="form-check-label" for="none">None</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="dogs_or_cats" id="dog" value="dog"
-                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'dog') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'dog') || old('dogs_or_cats') == 'dog' ? 'checked' : ''}}>
                             <label class="form-check-label" for="dog">Dog</label>
                         </div>
                         <div class="form-check form-check-inline">
@@ -195,7 +195,7 @@
                     <div class="col-md-12">
                         <label for="differently"><strong>What would you like us to do differently?</strong></label>
                         <textarea class="form-control" name="differently" id="differently"
-                                  rows="3">{{!empty($orderDetails->differently) ? $orderDetails->differently : ''}}</textarea>
+                                  rows="3">{{!empty($orderDetails->differently) ?  $orderDetails->differently : old('differently') }}</textarea>
                     </div>
                 </div>
             </div>

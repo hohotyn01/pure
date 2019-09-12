@@ -78,23 +78,12 @@
         public function personalInfoPost(RequestPersonalInfo $request)
         {
             $dataOrder = $request->except(
-                '_token',
-                'first_name',
-                'last_name',
-                'mobile_phone'
+                '_token'
+
             );
             $dataUser = $request->except(
-                '_token',
-                'cleaning_frequency',
-                'cleaning_type',
-                'cleaning_date',
-                'street_address',
-                'apt',
-                'city',
-                'home_footage',
-                'about_us'
+                '_token'
             );
-
 
             //Update Database Order and User
             Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
@@ -206,7 +195,7 @@
             $order = Order::find($id);
             $orderPricing = new OrderPricing($order);
 
-            $order->per_cleaning = $orderPricing->beforeExstras();
+            $order->per_cleaning = $orderPricing->calculate();
             $order->save();
 
 
@@ -244,7 +233,7 @@
                 Session::get('idOrderExtras'))->first() : null;
 
             $orderPricing = new OrderPricing(Order::find(Session::get('orderId')));
-            $data = $orderPricing->beforeExstras();
+            $data = $orderPricing->calculate();
 
             return view('extras', [
                 'orderExtras' => $orderExtras,

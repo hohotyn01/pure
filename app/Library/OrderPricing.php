@@ -31,30 +31,22 @@
             return $price;
         }
 
-        public function beforeExstras()
-        {
-            $price = (
-                $this->getHomePrice() +
-                $this->getPersonalInfoPrice() +
-                $this->getYourHomePrice() +
-                $this->getMaterialsFloor() +
-                $this->getMaterialsCountertop() +
-                $this->getMaterialsDetail()
-            );
-
-            return $price;
-        }
-
         protected function getHomePrice()
         {
-            $sumBedroom = $this->order->bedroom * $this->getPriceRateByKey(
+            $sumBedroom = (
+                $this->order->bedroom *
+                $this->getPriceRateByKey(
                     'price.bedroom',
                     $this->order->bedroom
-                );
-            $sumBathroom = $this->order->bathroom * $this->getPriceRateByKey(
+                )
+            );
+            $sumBathroom = (
+                $this->order->bathroom *
+                $this->getPriceRateByKey(
                     'price.bathroom',
                     $this->order->bathroom
-                );
+                )
+            );
 
             return (
                 $sumBedroom +
@@ -87,33 +79,36 @@
 
         protected function getYourHomePrice()
         {
-            $model = $this->order->orderDetail;
+            if ($this->order->orderDetail === null) {
+                return 0;
+            }
+
 
             $dogs_or_cats = $this->getPriceRateByKey(
                 'price.dogs_or_cats',
-                $model->dogs_or_cats
+                $this->order->orderDetail->dogs_or_cats
             );
-            if ($model->pets_total === null) {
+            if ($this->order->orderDetail->pets_total === null) {
                 $pets_total = 0;
             } else {
                 $pets_total = $this->getPriceRateByKey(
                     'price.pets_total',
-                    $model->pets_total
+                    $this->order->orderDetail->pets_total
                 );
             }
             $adults = $this->getPriceRateByKey(
-                'price.adults', $model->adults
+                'price.adults', $this->order->orderDetail->adults
             );
             $children = $this->getPriceRateByKey(
-                'price.children', $model->children
+                'price.children', $this->order->orderDetail->children
             );
             $rate_cleanliness = $this->getPriceRateByKey(
                 'price.rate_cleanliness',
-                $model->rate_cleanliness
+                $this->order->orderDetail->rate_cleanliness
             );
             $cleaned_2_months_ago = $this->getPriceRateByKey(
                 'price.cleaned_2_months_ago',
-                $model->cleaned_2_months_ago
+                $this->order->orderDetail->cleaned_2_months_ago
             );
 
             return (
@@ -179,6 +174,9 @@
 
         protected function getMaterialsCountertop()
         {
+            if ($this->order->orderMaterialsCountertop === null) {
+                return 0;
+            }
 
             //modelCountertop getting price
             $concrete_c = $this->getPriceRateByKey(
@@ -229,6 +227,10 @@
 
             protected function getMaterialsDetail()
             {
+            if ($this->order->orderMaterialsDetail === null) {
+                return 0;
+            }
+
             //modelDetail getting price
             $stainlessSteel = $this->getPriceRateByKey(
                 'price.stainless_steel_appliances',
@@ -258,6 +260,9 @@
 
         protected function getExtrasPrice()
         {
+            if ($this->order->orderExtras === null) {
+                return 0;
+            }
 
             $insideFridge = $this->getPriceRateByKey(
                 'price.selectExtras.inside_fridge',
