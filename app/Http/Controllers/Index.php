@@ -2,6 +2,7 @@
 
     namespace App\Http\Controllers;
 
+    use http\Env\Response;
     use Session;
     use Validator;
     use Illuminate\Http\Request;
@@ -109,6 +110,34 @@
             return view('your_home', ['orderDetails' => $orderDetails]);
         }
 
+        public function yourHomePostPhoto(){
+
+            if(isset($_FILES['upl']) && $_FILES['upl']['error'] == 0){
+
+                $extension = pathinfo($_FILES['upl']['name'], PATHINFO_EXTENSION);
+
+                if(!in_array(strtolower($extension), ['png', 'jpg', 'gif', 'bmp'])){
+                    echo '{"status":"error"}';
+                    exit;
+                }
+
+                if(move_uploaded_file($_FILES['upl']['tmp_name'], 'storage/'.$_FILES['upl']['name'])){
+
+                    if ( !OrderDetailPhoto::where('photo_path', '=', $_FILES['upl']['name'])->exists() ){
+                        $orderDetailPhoto = new OrderDetailPhoto;
+                        $orderDetailPhoto->photo_path = $_FILES['upl']['name'];
+                        $orderDetailPhoto->order_id = Session::get('orderId');
+                        $orderDetailPhoto->save();
+                        return response()->json(["status"=>"success"], 200) ;
+                    }
+
+                    return response()->json(["status"=>"error"], 200) ;
+                }
+            }
+
+            echo '{"status":"error"}';
+            exit;
+        }
 
         public function yourHomePost(RequestYourHome $request)
         {
@@ -121,22 +150,9 @@
 
             OrderDetail::updateOrCreate(["order_id" => $id], $data);
 
-            if (!empty($request->file('photo'))) {
-                foreach ($request->file('photo') as $photo) {
-                    $filename = $photo->hashName();
-                    $photo->store('upload', 'public');
-
-                    $orderDetailPhoto = new OrderDetailPhoto;
-                    $orderDetailPhoto->photo_path = $filename;
-                    $orderDetailPhoto->order_id = $id;
-                    $orderDetailPhoto->save();
-                }
-            }
-
             $idOrderDetail = OrderDetail::where('order_id', $id)->first()->id;
 
             Session::put('idOrderDetail', $idOrderDetail);
-
 
             return redirect(route('materials'));
 

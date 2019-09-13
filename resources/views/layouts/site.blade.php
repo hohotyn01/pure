@@ -20,9 +20,12 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet">
-
+    <!-- Google web fonts -->
+    <link href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700" rel='stylesheet' />
     <!-- Custom styles for this template -->
     <link href="{{asset('assets/css/business-casual.min.css')}}" rel="stylesheet">
+
+    <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
 
 </head>
 
@@ -39,6 +42,14 @@
 {{--<script src="{{asset('assets/vendor/jquery/jquery.min.js')}}"></script>--}}
 <script src="{{asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <script src="{{asset('assets/vendor/jquery/jquery-3.4.1.min.js')}}"></script>
+
+{{-- File Upload two plugins --}}
+<script src="{{'assets/vendor/jquery/jquery.knob.js'}}"></script>
+<script src="{{'assets/vendor/jquery/jquery.ui.widget.js'}}"></script>
+<script src="{{'assets/vendor/jquery/jquery.iframe-transport.js'}}"></script>
+<script src="{{'assets/vendor/jquery/jquery.fileupload.js'}}"></script>
+
+<!-- main JS file -->
 <script src="{{asset('assets/vendor/jquery/my-jquery.js')}}"></script>
 </body>
 </html>

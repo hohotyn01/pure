@@ -24,6 +24,7 @@
 
             Route::get('/your_home', 'Index@yourHome')->name('home');
             Route::post('/your_home', 'Index@yourHomePost');
+            Route::post('/your_home_photo', 'Index@yourHomePostPhoto');
 
 
             Route::group(['middleware' => ['redirectYourHome']], function () {

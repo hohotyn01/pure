@@ -48,7 +48,7 @@ $(document).ready(function () {
         );
     }
 
-    //checkbox
+    // Checkbox
     $('#inside_fridge').on('change', function () {
         updateExtras();
     });
@@ -65,7 +65,7 @@ $(document).ready(function () {
         updateExtras();
     });
 
-    //radio
+    // Radio
     $('#weekend_yes').on('change', function () {
         updateExtras();
     });
@@ -81,139 +81,114 @@ $(document).ready(function () {
     });
 
 
+    // Hide pets total
     $('#none').on('change', function () {
-        $('#pet_1').prop('checked', false).attr('disabled', 'true');
-        $('#pet_2').prop('checked', false).attr('disabled', 'true');
-        $('#pet_3_more').prop('checked', false).attr('disabled', 'true');
+        $('#pets').hide(1000);
     });
 
-
+    // Show pets total
     $('#dog').on('change', function () {
-        $('#pet_1').removeAttr('disabled');
-        $('#pet_2').removeAttr('disabled');
-        $('#pet_3_more').removeAttr('disabled');
+        $('#pets').show(1000);
     });
+
     $('#cat').on('change', function () {
-        $('#pet_1').removeAttr('disabled');
-        $('#pet_2').removeAttr('disabled');
-        $('#pet_3_more').removeAttr('disabled');
+        $('#pets').show(1000);
     });
+
     $('#both').on('change', function () {
-        $('#pet_1').removeAttr('disabled');
-        $('#pet_2').removeAttr('disabled');
-        $('#pet_3_more').removeAttr('disabled');
+        $('#pets').show(1000);
     });
 
 
-    // $('input[name=service_weekend]').on('change', function () {
-    //
-    //     let serviceWeekend = $(this).val();//1
-    //
-    //     $.ajax({//++
-    //         url: 'extrasCalculate',
-    //         type: 'POST',
-    //         cache: false,
-    //         data: {
-    //             'serviceWeekend': serviceWeekend,//1
-    //         },
-    //         dataType: 'html',
-    //         beforeSend: function () {
-    //             console.log('Please wait')//1
-    //         },
-    //         success: function (data) {
-    //             console.log(data)//1
-    //
-    //         }
-    //     });
-    // });
+    // jQuery start Upload
+    $(function () {
+        var ul = $('#upload ul');
 
+        $('#drop a').click(function () {
+            // Click simulation file selection field
+            $(this).parent().find('input').click();
+        });
 
-    // $('input[type=radio], input[type=checkbox]').on('change', function () {
-    //     return false;
-    //     let carpet = $('input[name=carpet]:checked').val();
-    //     let serviceWeekend = $('input[name=service_weekend]:checked').val();
-    //
-    //     let insideFridge = $('input[name=inside_fridge]').prop('checked');
-    //
-    //
-    //
-    //     // let carpetkey = $(this).attr('name');
-    //
-    //     $.ajax({
-    //         url: 'extrasCalculate',
-    //         type: 'POST',
-    //         cache: false,
-    //         data: {
-    //             'carpet': carpet,
-    //             // 'serviceWeekend': serviceWeekend,
-    //             // nameCheckbox: valueCheckbox,
-    //             'inside_fridge': insideFridge
-    //         },
-    //         dataType: 'html',
-    //         beforeSend: function () {
-    //             console.log(insideFridge )
-    //         },
-    //         success: function (data) {
-    //              console.log(data)
-    //         }
-    //     });
-    //
-    // });
+        // Initialization File Upload plugin
+        $('#upload').fileupload({
 
+            // This item will accept files dragged onto it
+            dropZone: $('#drop'),
 
-    //
-    //
-    // $('input[type=checkbox]').on('change', function () {
-    //     let valueCheckbox = $(this).is(":checked");
-    //     let nameCheckbox = $(this).attr("name");
-    //
-    //     $.ajax({
-    //         url: 'extrasCalculate',
-    //         type: 'POST',
-    //         cache: false,
-    //         data: {
-    //             'valueCheckbox': valueCheckbox,
-    //             'nameCheckbox': nameCheckbox,
-    //         },
-    //         dataType: 'html',
-    //         beforeSend: function () {
-    //             console.log('Please wait')
-    //         },
-    //         success: function (data) {
-    //
-    //             $('#priceHolder').text((parseFloat(data)).toFixed(2))
-    //             console.log(data);
-    //         }
-    //     });
-    //
-    // })
+            // The function will be called when the file is queued
+            add: function (e, data) {
 
+                var tpl = $(
+                    '<li><input type="text" value="0" data-width="48" data-height="48"' +
+                    ' data-fgColor="#0788a5" data-readOnly="1" data-bgColor="#3e4043" />' +
+                    '<p></p><span></span></li>'
+                );
 
-    // console.log('Hello')
-    // var name;
-    // name = $('input[name=service_weekend]:checked').val();
-    //
-    // axios.post('/api/extras_json', {name: name})
-    //     .then(response => {
-    //                    document.getElementById('priceHolder').innerHTML = response.data
-    //     });
-    // .catch(error => console.log(error));
+                // Output file name and size
+                tpl.find('p').text(data.files[0].name)
+                    .append('<i>' + formatFileSize(data.files[0].size) + '</i>');
 
+                data.context = tpl.appendTo(ul);
 
-    // var basePrice = parseFloat($('#priceHolder').text());
-    // // console.log(basePrice);
-    // //
-    // // '#priceForm'
-    // $('input[name=service_weekend]', '#priceForm').on('change', function () {
-    //     $.post('/extras_json', {
-    //             serviceWeekend: $('input[name=service_weekend]:checked').val()
-    //         },
-    //         function (data) {
-    //             var web = data == 50 ? 50 : 0;
-    //
-    //             $('#priceHolder').text((basePrice + parseFloat(web)).toFixed(2))
-    //         });
-    // });
+                //  Initialization jQuery Knob plugin
+                tpl.find('input').knob();
 
+                // Track usage of cancel button
+                tpl.find('span').click(function () {
+
+                    if (tpl.hasClass('working')) {
+                        jqXHR.abort();
+                    }
+
+                    tpl.fadeOut(function () {
+                        tpl.remove();
+                    });
+
+                });
+
+                // File is automatically loaded when added to the queue
+                var jqXHR = data.submit();
+            },
+
+            progress: function (e, data) {
+
+                // Download Percentage Calculation
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+
+                // Update the scale
+                data.context.find('input').val(progress).change();
+
+                if (progress == 100) {
+                    data.context.removeClass('working');
+                }
+            },
+
+            fail: function (e, data) {
+                // Error
+                data.context.addClass('error');
+            }
+        });
+
+        $(document).on('drop dragover', function (e) {
+            e.preventDefault();
+        });
+
+        // вспомогательная функция, которая форматирует размер файла
+        function formatFileSize(bytes) {
+            if (typeof bytes !== 'number') {
+                return '';
+            }
+
+            if (bytes >= 1000000000) {
+                return (bytes / 1000000000).toFixed(2) + ' GB';
+            }
+
+            if (bytes >= 1000000) {
+                return (bytes / 1000000).toFixed(2) + ' MB';
+            }
+
+            return (bytes / 1000).toFixed(2) + ' KB';
+        }
+    });
 
 });

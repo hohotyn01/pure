@@ -53,32 +53,33 @@
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="dogs_or_cats" id="cat" value="cat"
-                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'cat') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'cat') || old('dogs_or_cats') == 'cat' ? 'checked' : ''}}>
                             <label class="form-check-label" for="cat">Cat</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="dogs_or_cats" id="both" value="both"
-                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'both') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'both') || old('dogs_or_cats') == 'both' ? 'checked' : ''}}>
                             <label class="form-check-label" for="both">Both</label>
                         </div>
                     </div>
-                    <div class="col-md-12 mt-2">
+                    <div class="col-md-12 mt-2" id="pets"
+                         style="{{(!empty($orderDetails->dogs_or_cats) && ($orderDetails->dogs_or_cats == 'none')) || old('dogs_or_cats') == 'none' ? 'display: none;' : ''}}">
                         {{--How many pets total?--}}
                         <strong>How many pets total?</strong>
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pets_total" id="pet_1" value="pet_1"
-                                    {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_1') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_1') || old('pets_total') == 'pet_1' ? 'checked' : ''}}>
                             <label class="form-check-label" for="pet_1">1</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pets_total" id="pet_2" value="pet_2"
-                                    {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_2') ? 'checked' : ''}}>
+                                    {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_2') || old('pets_total') == 'pet_2' ? 'checked' : ''}}>
                             <label class="form-check-label" for="pet_2">2</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="pets_total" id="pet_3_more"
-                                   value="pet_3_more" {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_3_more') ? 'checked' : ''}}>
+                                   value="pet_3_more" {{!empty($orderDetails->pets_total) && ($orderDetails->pets_total == 'pet_3_more') || old('pets_total') == 'pet_3_more' ? 'checked' : ''}}>
                             <label class="form-check-label" for="pet_3_more">3+</label>
                         </div>
                     </div>
@@ -200,9 +201,12 @@
                 </div>
             </div>
             <hr>
-            {{--
-                UPLOAD PHOTOS
-            --}}
+        </form>
+
+        {{--
+            UPLOAD PHOTOS
+        --}}
+        <form action="your_home_photo" method="post" enctype="multipart/form-data">
             <div class="form-group row mt-4 md-4">
                 {{--LEFT LABEL--}}
                 <label class="col-sm-3 col-form-label align-self-center">HOME PHOTOS</label>
@@ -213,6 +217,18 @@
                             <strong>Do you have any photos of your home?</strong><br>
                             <small>You can upload more than one photo at a time. Up to 8 photos in total</small>
                         </label>
+                        <br>
+                        <div id="upload">
+                            <div id="drop">
+                                Drop Here
+
+                                <a>Browse</a>
+                                <input type="file" name="upl" multiple/>
+                            </div>
+                            <ul>
+
+                            </ul>
+                        </div>
                         <br>
                         <div class="custom-file">
                             <input class="custom-file-input" type="file" accept="image/png, image/jpeg, image/jpg"
