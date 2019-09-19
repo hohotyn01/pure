@@ -50,4 +50,8 @@
         {
             return $this->hasOne('App\Models\OrderExtras');
         }
+        public function decryptionType()
+        {
+            return $this->hasOne('App\Models\DecryptionType', 'original_type', 'cleaning_type');
+        }
     }

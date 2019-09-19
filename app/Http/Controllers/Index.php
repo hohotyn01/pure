@@ -6,6 +6,11 @@
     use Session;
     use Validator;
     use Illuminate\Http\Request;
+    // Mail Facade
+    use Illuminate\Support\Facades\Mail;
+    // Mail Model
+    use App\Mail\OrderShipped;
+    // Models
     use App\Models\Order;
     use App\Models\OrderDetail;
     use App\Models\OrderDetailPhoto;
@@ -15,8 +20,9 @@
     use App\Models\OrderMaterialsFloor;
     use App\Models\User;
     use App\Models\Calculate;
+    use App\Models\DecryptionType;
     use App\Library\OrderPricing;
-    //Requests
+    // Requests
     use App\Http\Requests\RequestHomePost;
     use App\Http\Requests\RequestPersonalInfo;
     use App\Http\Requests\RequestYourHome;
@@ -26,7 +32,6 @@
 
     class Index extends Controller
     {
-
         public function home()
         {
             //If (isset Session ('userId')('orderId'))  get id User Order
@@ -60,7 +65,6 @@
             Session::put('bedroomExtras', $order->bedroom);
             Session::put('bathroomExtras', $order->bathroom);
 
-
             return redirect(route('info'));
 
         }
@@ -87,8 +91,12 @@
             );
 
             //Update Database Order and User
-            Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
+            $orderModel  = Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
             User::updateOrCreate(['id' => Session::get('userId')], $dataUser);
+
+            $orderPricing = new OrderPricing(Order::find(Session::get('orderId')));
+            $orderModel->total_sum = $orderPricing->calculate();
+            $orderModel->save();
 
             $first_name = User::where('id', Session::get('userId'))->first()->first_name;
             $homeFootageExtras = Order::where('id', Session::get('orderId'))->first()->home_footage;
@@ -152,12 +160,15 @@
 
             $idOrderDetail = OrderDetail::where('order_id', $id)->first()->id;
 
+//            $orderPricing = new OrderPricing());
+//            $orderModel->total_sum = $orderPricing->calculate();
+//            $orderModel->save();
+
             Session::put('idOrderDetail', $idOrderDetail);
 
             return redirect(route('materials'));
 
         }
-
 
         public function materials()
         {
@@ -238,7 +249,6 @@
             return redirect(route('extras'));
         }
 
-
         public function extras()
         {
             //If (isset Session ('idOrderExtras'))  get id OrderExtras
@@ -276,13 +286,18 @@
             // Add DataBase
             OrderExtras::updateOrCreate(["order_id" => $id], $data);
 
+            $order = Order::with('decryptionType')->find($id);
 
-            $order = Order::find($id);
             // Get calculate sum
             $orderPricing = new OrderPricing($order);
             $order->total_sum = $orderPricing->calculate();
             $order->save();
 
+            $user = User::findOrFail($order->user_id);
+
+            // Send mail
+            Mail::to('vasa@gmail.com')->send(new OrderShipped($order, $user));
+            dd(1);
             $request->session()->flush();
 
             return back();

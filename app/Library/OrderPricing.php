@@ -56,18 +56,21 @@
 
         protected function getPersonalInfoPrice()
         {
-            $cleaning_frequency = $this->getPriceRateByKey(
+
+            $cleaning_frequency =  $this->getPriceRateByKey(
                 'price.cleaning_frequency',
                 $this->order->cleaning_frequency
             );
             $cleaning_type = $this->getPriceRateByKey(
-                'price.cleaning_type', $this->order->cleaning_type
+                'price.cleaning_type',
+                $this->order->cleaning_type
             );
             $cleaning_date = $this->getPriceRateByKey(
                 'price.cleaning_date',
                 $this->order->cleaning_date
             );
-            $home_footage = Config::get('price.home_footage') * $this->order->home_footage;
+            $home_footage = Config::get('price.home_footage') *
+                $this->order->home_footage;
 
             return (
                 $cleaning_frequency +
@@ -225,8 +228,8 @@
         }
 
 
-            protected function getMaterialsDetail()
-            {
+        protected function getMaterialsDetail()
+        {
             if ($this->order->orderMaterialsDetail === null) {
                 return 0;
             }
