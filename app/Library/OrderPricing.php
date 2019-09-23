@@ -57,7 +57,7 @@
         protected function getPersonalInfoPrice()
         {
 
-            $cleaning_frequency =  $this->getPriceRateByKey(
+            $cleaning_frequency = $this->getPriceRateByKey(
                 'price.cleaning_frequency',
                 $this->order->cleaning_frequency
             );

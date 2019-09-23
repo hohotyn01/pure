@@ -13,7 +13,8 @@
     Route::get('/', 'Index@home')->name('index');
     Route::post('/', 'Index@homePost');
 
-
+//    Route::resource('/fake', 'FakeController');
+    
     Route::group(['middleware' => ['redirectUserId']], function () {
 
         Route::get('/personal_info', 'Index@personalInfo')->name('info');

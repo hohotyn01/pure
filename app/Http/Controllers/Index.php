@@ -2,7 +2,7 @@
 
     namespace App\Http\Controllers;
 
-    use http\Env\Response;
+//    use http\Env\Response;
     use Session;
     use Validator;
     use Illuminate\Http\Request;
@@ -20,7 +20,6 @@
     use App\Models\OrderMaterialsFloor;
     use App\Models\User;
     use App\Models\Calculate;
-    use App\Models\DecryptionType;
     use App\Library\OrderPricing;
     // Requests
     use App\Http\Requests\RequestHomePost;
@@ -34,7 +33,7 @@
     {
         public function home()
         {
-            //If (isset Session ('userId')('orderId'))  get id User Order
+            // If (isset Session ('userId')('orderId'))  get id User Order
             $user = Session::has('userId') ? User::where('id', Session::get('userId'))->first() : null;
             $order = Session::has('orderId') ? Order::where('id', Session::get('orderId'))->first() : null;
 
@@ -46,18 +45,18 @@
         {
             $dataUser = $request->only('email');
 
-            //Add User in Database
+            // Add User in Database
             $user = User::firstOrCreate($dataUser);
 
-            //Add Session userId
+            // Add Session userId
             Session::put('userId', $user->id);
 
 
-            //Add Order in Database
+            // Add Order in Database
             $dataOrder = $request->except('email', '_token');
             $dataOrder['user_id'] = Session::get('userId');
 
-            //Save
+            // Save
             $order = Order::updateOrCreate(['id' => Session::get('orderId'), 'user_id' => Session::get('userId')],
                 $dataOrder);
 
@@ -72,7 +71,7 @@
 
         public function personalInfo()
         {
-            //If (isset Session ('userId')(orderId))  get id User, Order
+            // If (isset Session ('userId')(orderId))  get id User, Order
             $user = Session::has('userId') ? User::find(Session::get('userId')) : null;
             $order = Session::has('orderId') ? Order::find(Session::get('orderId')) : null;
             $session = Session::get('orderId');
