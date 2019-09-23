@@ -8,8 +8,47 @@
 
     namespace App\Repositories;
 
+    use Illuminate\Database\Eloquent\Model;
+    use App\Repositories\Interfaces\BaseInterface;
+    use Throwable;
 
-    abstract class BaseRepository
+    abstract class BaseRepository implements BaseInterface
     {
+        protected $model;
+
+        public function __construct(Model $model)
+        {
+            $this->setModel($model);
+        }
+
+        public function find(int $id)
+        {
+            try{
+                return $this->model->find($id);
+            }catch (Throwable $error){
+            }
+        }
+
+        public function firstOrCreate(array $id)
+        {
+            return $this->model->firstOrCreate($id);
+        }
+
+        public function updateOrCreate (array $array)
+        {
+            return $this->model->updateOrCreate($array);
+        }
+
+        public function setModel (Model $model)
+        {
+            $this->model = $model;
+
+            return $this;
+        }
+
+//        public function findWithRelation (int $id, string $relation)
+//        {
+//            return $this->model->with($relation)->find($id);
+//        }
 
     }

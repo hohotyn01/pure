@@ -27,15 +27,27 @@
     use App\Http\Requests\RequestYourHome;
     use App\Http\Requests\RequestMaterialsPost;
     use App\Http\Requests\RequestExtrasPost;
+    //Services
+    use App\Services\OrderServices;
+    use App\Services\UserServices;
 
 
     class Index extends Controller
     {
+        protected $orderServices;
+        protected $userServices;
+
+        public function __construct(OrderServices $orderServices, UserServices $userServices)
+        {
+            $this->orderServices = $orderServices;
+            $this->userServices = $userServices;
+        }
+
         public function home()
         {
-            // If (isset Session ('userId')('orderId'))  get id User Order
-            $user = Session::has('userId') ? User::where('id', Session::get('userId'))->first() : null;
-            $order = Session::has('orderId') ? Order::where('id', Session::get('orderId'))->first() : null;
+            // If (isset Session ('userId')('orderId'))  get id User OrderRepository
+            $user = Session::has('userId') ? User::find(Session::get('userId')) : null;
+            $order = Session::has('orderId') ? $this->orderServices->find(Session::get('orderId')) : null;
 
             return view('home', ['order' => $order, 'user' => $user]);
         }
@@ -43,21 +55,19 @@
 
         public function homePost(RequestHomePost $request)
         {
-            $dataUser = $request->only('email');
-
             // Add User in Database
-            $user = User::firstOrCreate($dataUser);
+            $user = User::firstOrCreate($request->only('email'));
 
             // Add Session userId
             Session::put('userId', $user->id);
 
 
-            // Add Order in Database
+            // Add OrderRepository in Database
             $dataOrder = $request->except('email', '_token');
             $dataOrder['user_id'] = Session::get('userId');
 
             // Save
-            $order = Order::updateOrCreate(['id' => Session::get('orderId'), 'user_id' => Session::get('userId')],
+            $order = $this->orderServices->updateOrCreate(['id' => Session::get('orderId'), 'user_id' => Session::get('userId')],
                 $dataOrder);
 
             Session::put('orderId', $order->id);
@@ -71,9 +81,9 @@
 
         public function personalInfo()
         {
-            // If (isset Session ('userId')(orderId))  get id User, Order
+            // If (isset Session ('userId')(orderId))  get id User, OrderRepository
             $user = Session::has('userId') ? User::find(Session::get('userId')) : null;
-            $order = Session::has('orderId') ? Order::find(Session::get('orderId')) : null;
+            $order = Session::has('orderId') ? $this->orderServices->find(Session::get('orderId')) : null;
             $session = Session::get('orderId');
             return view('personal_info', ['order' => $order, 'user' => $user, 'session' => $session]);
         }
@@ -89,16 +99,16 @@
                 '_token'
             );
 
-            //Update Database Order and User
-            $orderModel  = Order::updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
+            //Update Database OrderRepository and User
+            $orderModel  = $this->orderServices->updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
             User::updateOrCreate(['id' => Session::get('userId')], $dataUser);
 
-            $orderPricing = new OrderPricing(Order::find(Session::get('orderId')));
+            $orderPricing = new OrderPricing($this->orderServices->find(Session::get('orderId')));
             $orderModel->total_sum = $orderPricing->calculate();
             $orderModel->save();
 
             $first_name = User::where('id', Session::get('userId'))->first()->first_name;
-            $homeFootageExtras = Order::where('id', Session::get('orderId'))->first()->home_footage;
+            $homeFootageExtras = $this->orderServices->find(Session::get('orderId'))->home_footage;
 
             Session::put('first_name', $first_name);
             Session::put('homeFootageExtras', $homeFootageExtras);
@@ -218,7 +228,7 @@
             $dataCountertops['order_id'] = $id;
 
 
-            $order = Order::find($id);
+            $order = $this->orderServices->find($id);
             $orderPricing = new OrderPricing($order);
 
             $order->per_cleaning = $orderPricing->calculate();
@@ -257,7 +267,7 @@
             $orderExtras = Session::has('idOrderExtras') ? OrderExtras::where('id',
                 Session::get('idOrderExtras'))->first() : null;
 
-            $orderPricing = new OrderPricing(Order::find(Session::get('orderId')));
+            $orderPricing = new OrderPricing($this->orderServices->find(Session::get('orderId')));
             $data = $orderPricing->calculate();
 
             return view('extras', [
