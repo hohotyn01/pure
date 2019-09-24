@@ -12,4 +12,9 @@
         {
             $this->model = $orderRepository;
         }
+
+        public function findWithRelation (int $id, string $relation)
+        {
+            return $this->model->findWithRelation ($id, $relation);
+        }
     }

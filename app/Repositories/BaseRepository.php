@@ -16,27 +16,28 @@
     {
         protected $model;
 
-        public function __construct(Model $model)
+        public function __construct (Model $model)
         {
-            $this->setModel($model);
+            $this->setModel ($model);
         }
 
-        public function find(int $id)
+        public function find (int $id)
         {
             try{
-                return $this->model->find($id);
+                return $this->model->find ($id);
             }catch (Throwable $error){
+                dd($error->getMessage());
             }
         }
 
-        public function firstOrCreate(array $id)
+        public function firstOrCreate (array $id)
         {
             return $this->model->firstOrCreate($id);
         }
 
-        public function updateOrCreate (array $array)
+        public function updateOrCreate (array $id, array $updateData)
         {
-            return $this->model->updateOrCreate($array);
+            return $this->model->updateOrCreate ($id, $updateData);
         }
 
         public function setModel (Model $model)
@@ -46,9 +47,5 @@
             return $this;
         }
 
-//        public function findWithRelation (int $id, string $relation)
-//        {
-//            return $this->model->with($relation)->find($id);
-//        }
 
     }

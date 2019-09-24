@@ -2,10 +2,8 @@
 
     namespace App\Http\Controllers;
 
-//    use http\Env\Response;
     use Session;
     use Validator;
-    use Illuminate\Http\Request;
     // Mail Facade
     use Illuminate\Support\Facades\Mail;
     // Mail Model
@@ -46,7 +44,7 @@
         public function home()
         {
             // If (isset Session ('userId')('orderId'))  get id User OrderRepository
-            $user = Session::has('userId') ? User::find(Session::get('userId')) : null;
+            $user = Session::has('userId') ? $this->userServices->find(Session::get('userId')) : null;
             $order = Session::has('orderId') ? $this->orderServices->find(Session::get('orderId')) : null;
 
             return view('home', ['order' => $order, 'user' => $user]);
@@ -56,7 +54,7 @@
         public function homePost(RequestHomePost $request)
         {
             // Add User in Database
-            $user = User::firstOrCreate($request->only('email'));
+            $user = $this->userServices->firstOrCreate($request->only('email'));
 
             // Add Session userId
             Session::put('userId', $user->id);
@@ -67,7 +65,10 @@
             $dataOrder['user_id'] = Session::get('userId');
 
             // Save
-            $order = $this->orderServices->updateOrCreate(['id' => Session::get('orderId'), 'user_id' => Session::get('userId')],
+            $order = $this->orderServices->updateOrCreate([
+                'id' => Session::get('orderId'),
+                'user_id' => Session::get('userId')
+            ],
                 $dataOrder);
 
             Session::put('orderId', $order->id);
@@ -82,10 +83,13 @@
         public function personalInfo()
         {
             // If (isset Session ('userId')(orderId))  get id User, OrderRepository
-            $user = Session::has('userId') ? User::find(Session::get('userId')) : null;
+            $user = Session::has('userId') ? $this->userServices->find(Session::get('userId')) : null;
             $order = Session::has('orderId') ? $this->orderServices->find(Session::get('orderId')) : null;
             $session = Session::get('orderId');
-            return view('personal_info', ['order' => $order, 'user' => $user, 'session' => $session]);
+            return view('personal_info', [
+                'order' => $order,
+                'user' => $user, 'session' => $session
+            ]);
         }
 
 
@@ -101,13 +105,13 @@
 
             //Update Database OrderRepository and User
             $orderModel  = $this->orderServices->updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
-            User::updateOrCreate(['id' => Session::get('userId')], $dataUser);
+            $this->userServices->updateOrCreate(['id' => Session::get('userId')], $dataUser);
 
             $orderPricing = new OrderPricing($this->orderServices->find(Session::get('orderId')));
             $orderModel->total_sum = $orderPricing->calculate();
             $orderModel->save();
 
-            $first_name = User::where('id', Session::get('userId'))->first()->first_name;
+            $first_name = $this->userServices->find(Session::get('userId'))->first_name;
             $homeFootageExtras = $this->orderServices->find(Session::get('orderId'))->home_footage;
 
             Session::put('first_name', $first_name);
@@ -295,14 +299,14 @@
             // Add DataBase
             OrderExtras::updateOrCreate(["order_id" => $id], $data);
 
-            $order = Order::with('decryptionType')->find($id);
+            $order = $this->orderServices->findWithRelation( $id,'decryptionType');
 
             // Get calculate sum
             $orderPricing = new OrderPricing($order);
             $order->total_sum = $orderPricing->calculate();
             $order->save();
 
-            $user = User::findOrFail($order->user_id);
+            $user = $this->userServices->find($order->user_id);
 
             // Send mail
             Mail::to('vasa@gmail.com')->send(new OrderShipped($order, $user));
