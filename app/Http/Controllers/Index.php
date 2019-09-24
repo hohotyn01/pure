@@ -28,131 +28,139 @@
     //Services
     use App\Services\OrderServices;
     use App\Services\UserServices;
+    use App\Services\OrderDetailService;
 
 
     class Index extends Controller
     {
         protected $orderServices;
         protected $userServices;
+        protected $orderDetailRepository;
 
-        public function __construct(OrderServices $orderServices, UserServices $userServices)
-        {
+        public function __construct (
+            OrderServices $orderServices,
+            UserServices $userServices,
+            OrderDetailService $orderDetailRepository
+        ) {
             $this->orderServices = $orderServices;
             $this->userServices = $userServices;
+            $this->orderDetailRepository = $orderDetailRepository;
         }
 
-        public function home()
+        public function home ()
         {
             // If (isset Session ('userId')('orderId'))  get id User OrderRepository
-            $user = Session::has('userId') ? $this->userServices->find(Session::get('userId')) : null;
-            $order = Session::has('orderId') ? $this->orderServices->find(Session::get('orderId')) : null;
+            $user = Session::has ('userId') ? $this->userServices->find (Session::get ('userId')) : null;
+            $order = Session::has ('orderId') ? $this->orderServices->find (Session::get ('orderId')) : null;
 
-            return view('home', ['order' => $order, 'user' => $user]);
+            return view ('home', ['order' => $order, 'user' => $user]);
         }
 
 
-        public function homePost(RequestHomePost $request)
+        public function homePost (RequestHomePost $request)
         {
             // Add User in Database
-            $user = $this->userServices->firstOrCreate($request->only('email'));
+            $user = $this->userServices->firstOrCreate ($request->only ('email'));
 
             // Add Session userId
-            Session::put('userId', $user->id);
+            Session::put ('userId', $user->id);
 
 
             // Add OrderRepository in Database
-            $dataOrder = $request->except('email', '_token');
-            $dataOrder['user_id'] = Session::get('userId');
+            $dataOrder = $request->except ('email', '_token');
+            $dataOrder['user_id'] = Session::get ('userId');
 
             // Save
-            $order = $this->orderServices->updateOrCreate([
-                'id' => Session::get('orderId'),
-                'user_id' => Session::get('userId')
+            $order = $this->orderServices->updateOrCreate ([
+                'id' => Session::get ('orderId'),
+                'user_id' => Session::get ('userId')
             ],
                 $dataOrder);
 
-            Session::put('orderId', $order->id);
-            Session::put('bedroomExtras', $order->bedroom);
-            Session::put('bathroomExtras', $order->bathroom);
+            Session::put ('orderId', $order->id);
+            Session::put ('bedroomExtras', $order->bedroom);
+            Session::put ('bathroomExtras', $order->bathroom);
 
-            return redirect(route('info'));
+            return redirect (route ('info'));
 
         }
 
 
-        public function personalInfo()
+        public function personalInfo ()
         {
             // If (isset Session ('userId')(orderId))  get id User, OrderRepository
-            $user = Session::has('userId') ? $this->userServices->find(Session::get('userId')) : null;
-            $order = Session::has('orderId') ? $this->orderServices->find(Session::get('orderId')) : null;
-            $session = Session::get('orderId');
-            return view('personal_info', [
+            $user = Session::has ('userId') ? $this->userServices->find (Session::get ('userId')) : null;
+            $order = Session::has ('orderId') ? $this->orderServices->find (Session::get ('orderId')) : null;
+            $session = Session::get ('orderId');
+            return view ('personal_info', [
                 'order' => $order,
-                'user' => $user, 'session' => $session
+                'user' => $user,
+                'session' => $session
             ]);
         }
 
 
-        public function personalInfoPost(RequestPersonalInfo $request)
+        public function personalInfoPost (RequestPersonalInfo $request)
         {
-            $dataOrder = $request->except(
+            $dataOrder = $request->except (
                 '_token'
 
             );
-            $dataUser = $request->except(
+            $dataUser = $request->except (
                 '_token'
             );
 
             //Update Database OrderRepository and User
-            $orderModel  = $this->orderServices->updateOrCreate(['id' => Session::get('orderId')], $dataOrder);
-            $this->userServices->updateOrCreate(['id' => Session::get('userId')], $dataUser);
+            $orderModel = $this->orderServices->updateOrCreate (['id' => Session::get ('orderId')], $dataOrder);
+            $this->userServices->updateOrCreate (['id' => Session::get ('userId')], $dataUser);
 
-            $orderPricing = new OrderPricing($this->orderServices->find(Session::get('orderId')));
-            $orderModel->total_sum = $orderPricing->calculate();
-            $orderModel->save();
+            $orderPricing = new OrderPricing($this->orderServices->find (Session::get ('orderId')));
+            $orderModel->total_sum = $orderPricing->calculate ();
+            $orderModel->save ();
 
-            $first_name = $this->userServices->find(Session::get('userId'))->first_name;
-            $homeFootageExtras = $this->orderServices->find(Session::get('orderId'))->home_footage;
+            $first_name = $this->userServices->find (Session::get ('userId'))->first_name;
+            $homeFootageExtras = $this->orderServices->find (Session::get ('orderId'))->home_footage;
 
-            Session::put('first_name', $first_name);
-            Session::put('homeFootageExtras', $homeFootageExtras);
+            Session::put ('first_name', $first_name);
+            Session::put ('homeFootageExtras', $homeFootageExtras);
 
-            return redirect(route('home'));
+            return redirect (route ('home'));
 
         }
 
 
-        public function yourHome()
+        public function yourHome ()
         {
             //If (isset Session ('idOrderDetail'))  get id OrderDetail
-            $orderDetails = Session::has('idOrderDetail') ? OrderDetail::where('id',
-                Session::get('idOrderDetail'))->first() : null;
+            $orderDetails = Session::has ('idOrderDetail') ? $this->orderDetailRepository->find (
+                Session::get ('idOrderDetail')) : null;
 
-            return view('your_home', ['orderDetails' => $orderDetails]);
+            return view ('your_home', ['orderDetails' => $orderDetails]);
         }
 
-        public function yourHomePostPhoto(){
+        public function yourHomePostPhoto ()
+        {
 
-            if(isset($_FILES['upl']) && $_FILES['upl']['error'] == 0){
+            if (isset($_FILES['upl']) && $_FILES['upl']['error'] == 0) {
 
-                $extension = pathinfo($_FILES['upl']['name'], PATHINFO_EXTENSION);
+                $extension = pathinfo ($_FILES['upl']['name'], PATHINFO_EXTENSION);
 
-                if(!in_array(strtolower($extension), ['png', 'jpg', 'gif', 'bmp'])){
+                if (!in_array (strtolower ($extension), ['png', 'jpg', 'gif', 'bmp'])) {
                     echo '{"status":"error"}';
                     exit;
                 }
 
-                if(move_uploaded_file($_FILES['upl']['tmp_name'], 'storage/'.$_FILES['upl']['name'])){
+                if (move_uploaded_file ($_FILES['upl']['tmp_name'], 'storage/' . $_FILES['upl']['name'])) {
 
-                    if ( !OrderDetailPhoto::where('photo_path', '=', $_FILES['upl']['name'])->exists() ){
+                    if (!OrderDetailPhoto::where ('photo_path', '=', $_FILES['upl']['name'])->exists ()) {
                         $orderDetailPhoto = new OrderDetailPhoto;
                         $orderDetailPhoto->photo_path = $_FILES['upl']['name'];
-                        $orderDetailPhoto->order_id = Session::get('orderId');
-                        $orderDetailPhoto->save();
-                        return response()->json(["status"=>"success"], 200) ;
+                        $orderDetailPhoto->order_id = Session::get ('orderId');
+                        $orderDetailPhoto->save ();
+                        return response ()->json (["status" => "success"], 200);
                     }
 
-                    return response()->json(["status"=>"error"], 200) ;
+                    return response ()->json (["status" => "error"], 200);
                 }
             }
 
@@ -160,40 +168,40 @@
             exit;
         }
 
-        public function yourHomePost(RequestYourHome $request)
+        public function yourHomePost (RequestYourHome $request)
         {
-            if($request->dogs_or_cats == 'none'){
+            if ($request->dogs_or_cats == 'none') {
                 $request->pets_total = null;
             }
-            $id = Session::get('orderId');
-            $data = $request->except('_token', 'photo');
+            $id = Session::get ('orderId');
+            $data = $request->except ('_token', 'photo');
             $data['order_id'] = $id;
 
-            OrderDetail::updateOrCreate(["order_id" => $id], $data);
+            $this->orderDetailRepository->updateOrCreate (["order_id" => $id], $data);
 
-            $idOrderDetail = OrderDetail::where('order_id', $id)->first()->id;
+            $idOrderDetail = $this->orderDetailRepository->whereGetId ('order_id', $id);
 
-//            $orderPricing = new OrderPricing());
-//            $orderModel->total_sum = $orderPricing->calculate();
-//            $orderModel->save();
+            //            $orderPricing = new OrderPricing());
+            //            $orderModel->total_sum = $orderPricing->calculate();
+            //            $orderModel->save();
 
-            Session::put('idOrderDetail', $idOrderDetail);
+            Session::put ('idOrderDetail', $idOrderDetail);
 
-            return redirect(route('materials'));
+            return redirect (route ('materials'));
 
         }
 
-        public function materials()
+        public function materials ()
         {
             //If (isset Session ('idMaterialsCountertop')('idMaterialsFloor')('idMaterialsDetail'))  get id OrderMaterialsFloor OrderMaterialsCountertop OrderMaterialsDetail
-            $MaterialsFloor = session::has('idMaterialsFloor') ? OrderMaterialsFloor::where('id',
-                session::get('idMaterialsFloor'))->first() : null;
-            $MaterialsCountertop = session::has('idMaterialsCountertop') ? OrderMaterialsCountertop::where('id',
-                session::get('idMaterialsCountertop'))->first() : null;
-            $MaterialsDetail = session::has('idMaterialsDetail') ? OrderMaterialsDetail::where('id',
-                session::get('idMaterialsDetail'))->first() : null;
+            $MaterialsFloor = session::has ('idMaterialsFloor') ? OrderMaterialsFloor::where ('id',
+                session::get ('idMaterialsFloor'))->first () : null;
+            $MaterialsCountertop = session::has ('idMaterialsCountertop') ? OrderMaterialsCountertop::where ('id',
+                session::get ('idMaterialsCountertop'))->first () : null;
+            $MaterialsDetail = session::has ('idMaterialsDetail') ? OrderMaterialsDetail::where ('id',
+                session::get ('idMaterialsDetail'))->first () : null;
 
-            return view('materials', [
+            return view ('materials', [
                 'MaterialsFloor' => $MaterialsFloor,
                 'MaterialsCountertop' => $MaterialsCountertop,
                 'MaterialsDetail' => $MaterialsDetail,
@@ -201,80 +209,80 @@
         }
 
 
-        public function materialsPost(RequestMaterialsPost $request)
+        public function materialsPost (RequestMaterialsPost $request)
         {
             //Request Array
-            $data = $request->toArray();
-            $dataCountertops = $request->toArray();
+            $data = $request->toArray ();
+            $dataCountertops = $request->toArray ();
 
             //When checkbox is not selected add 0
-            $data['hardwood'] = $request->has('hardwood') ? 1 : 0;
-            $data['cork'] = $request->has('cork') ? 1 : 0;
-            $data['vinyl'] = $request->has('vinyl') ? 1 : 0;
-            $data['concrete'] = $request->has('concrete') ? 1 : 0;
-            $data['carpet'] = $request->has('carpet') ? 1 : 0;
-            $data['natural_stone'] = $request->has('natural_stone') ? 1 : 0;
-            $data['tile'] = $request->has('tile') ? 1 : 0;
-            $data['laminate'] = $request->has('laminate') ? 1 : 0;
+            $data['hardwood'] = $request->has ('hardwood') ? 1 : 0;
+            $data['cork'] = $request->has ('cork') ? 1 : 0;
+            $data['vinyl'] = $request->has ('vinyl') ? 1 : 0;
+            $data['concrete'] = $request->has ('concrete') ? 1 : 0;
+            $data['carpet'] = $request->has ('carpet') ? 1 : 0;
+            $data['natural_stone'] = $request->has ('natural_stone') ? 1 : 0;
+            $data['tile'] = $request->has ('tile') ? 1 : 0;
+            $data['laminate'] = $request->has ('laminate') ? 1 : 0;
 
             //When checkbox is not selected add 0
-            $dataCountertops['concrete_c'] = $request->has('concrete_c') ? 1 : 0;
-            $dataCountertops['quartz'] = $request->has('quartz') ? 1 : 0;
-            $dataCountertops['formica'] = $request->has('formica') ? 1 : 0;
-            $dataCountertops['granite'] = $request->has('granite') ? 1 : 0;
-            $dataCountertops['marble'] = $request->has('marble') ? 1 : 0;
-            $dataCountertops['tile_c'] = $request->has('tile_c') ? 1 : 0;
-            $dataCountertops['paper_stone'] = $request->has('paper_stone') ? 1 : 0;
-            $dataCountertops['butcher_block'] = $request->has('butcher_block') ? 1 : 0;
+            $dataCountertops['concrete_c'] = $request->has ('concrete_c') ? 1 : 0;
+            $dataCountertops['quartz'] = $request->has ('quartz') ? 1 : 0;
+            $dataCountertops['formica'] = $request->has ('formica') ? 1 : 0;
+            $dataCountertops['granite'] = $request->has ('granite') ? 1 : 0;
+            $dataCountertops['marble'] = $request->has ('marble') ? 1 : 0;
+            $dataCountertops['tile_c'] = $request->has ('tile_c') ? 1 : 0;
+            $dataCountertops['paper_stone'] = $request->has ('paper_stone') ? 1 : 0;
+            $dataCountertops['butcher_block'] = $request->has ('butcher_block') ? 1 : 0;
 
-            $id = Session::get('orderId');
+            $id = Session::get ('orderId');
 
             $dataCountertops['order_id'] = $id;
 
 
-            $order = $this->orderServices->find($id);
+            $order = $this->orderServices->find ($id);
             $orderPricing = new OrderPricing($order);
 
-            $order->per_cleaning = $orderPricing->calculate();
-            $order->save();
+            $order->per_cleaning = $orderPricing->calculate ();
+            $order->save ();
 
 
             //Add DataBase
-            OrderMaterialsDetail::updateOrCreate(["order_id" => $id], $data);
-            OrderMaterialsFloor::updateOrCreate(["order_id" => $id], $data);
-            OrderMaterialsCountertop::updateOrCreate(["order_id" => $id], $dataCountertops);
+            OrderMaterialsDetail::updateOrCreate (["order_id" => $id], $data);
+            OrderMaterialsFloor::updateOrCreate (["order_id" => $id], $data);
+            OrderMaterialsCountertop::updateOrCreate (["order_id" => $id], $dataCountertops);
 
 
             /*
              * Add Session
              */
-            $idMaterialsDetail = OrderMaterialsDetail::where('order_id', $id)->first()->id;
-            $idMaterialsFloor = OrderMaterialsFloor::where('order_id', $id)->first()->id;
-            $idMaterialsCountertop = OrderMaterialsCountertop::where('order_id', $id)->first()->id;
+            $idMaterialsDetail = OrderMaterialsDetail::where ('order_id', $id)->first ()->id;
+            $idMaterialsFloor = OrderMaterialsFloor::where ('order_id', $id)->first ()->id;
+            $idMaterialsCountertop = OrderMaterialsCountertop::where ('order_id', $id)->first ()->id;
 
-            Session::put('idMaterialsDetail', $idMaterialsDetail);
-            Session::put('idMaterialsFloor', $idMaterialsFloor);
-            Session::put('idMaterialsCountertop', $idMaterialsCountertop);
+            Session::put ('idMaterialsDetail', $idMaterialsDetail);
+            Session::put ('idMaterialsFloor', $idMaterialsFloor);
+            Session::put ('idMaterialsCountertop', $idMaterialsCountertop);
             /*
              * Add Session
              */
 
-            return redirect(route('extras'));
+            return redirect (route ('extras'));
         }
 
-        public function extras()
+        public function extras ()
         {
             //If (isset Session ('idOrderExtras'))  get id OrderExtras
-            $bedroomExtras = Session::get('bedroomExtras');
-            $bathroomExtras = Session::get('bathroomExtras');
-            $homeFootageExtras = Session::get('homeFootageExtras');
-            $orderExtras = Session::has('idOrderExtras') ? OrderExtras::where('id',
-                Session::get('idOrderExtras'))->first() : null;
+            $bedroomExtras = Session::get ('bedroomExtras');
+            $bathroomExtras = Session::get ('bathroomExtras');
+            $homeFootageExtras = Session::get ('homeFootageExtras');
+            $orderExtras = Session::has ('idOrderExtras') ? OrderExtras::where ('id',
+                Session::get ('idOrderExtras'))->first () : null;
 
-            $orderPricing = new OrderPricing($this->orderServices->find(Session::get('orderId')));
-            $data = $orderPricing->calculate();
+            $orderPricing = new OrderPricing($this->orderServices->find (Session::get ('orderId')));
+            $data = $orderPricing->calculate ();
 
-            return view('extras', [
+            return view ('extras', [
                 'orderExtras' => $orderExtras,
                 'bedroomExtras' => $bedroomExtras,
                 'bathroomExtras' => $bathroomExtras,
@@ -284,35 +292,35 @@
         }
 
 
-        public function extrasPost(RequestExtrasPost $request)
+        public function extrasPost (RequestExtrasPost $request)
         {
-            $id = Session::get('orderId');
-            $data = $request->toArray();
+            $id = Session::get ('orderId');
+            $data = $request->toArray ();
 
             // When checkbox is not selected add 0
-            $data['inside_fridge'] = $request->has('inside_fridge') ? 1 : 0;
-            $data['inside_oven'] = $request->has('inside_oven') ? 1 : 0;
-            $data['garage_swept'] = $request->has('garage_swept') ? 1 : 0;
-            $data['blinds_cleaning'] = $request->has('blinds_cleaning') ? 1 : 0;
-            $data['laundry_wash_dry'] = $request->has('laundry_wash_dry') ? 1 : 0;
+            $data['inside_fridge'] = $request->has ('inside_fridge') ? 1 : 0;
+            $data['inside_oven'] = $request->has ('inside_oven') ? 1 : 0;
+            $data['garage_swept'] = $request->has ('garage_swept') ? 1 : 0;
+            $data['blinds_cleaning'] = $request->has ('blinds_cleaning') ? 1 : 0;
+            $data['laundry_wash_dry'] = $request->has ('laundry_wash_dry') ? 1 : 0;
 
             // Add DataBase
-            OrderExtras::updateOrCreate(["order_id" => $id], $data);
+            OrderExtras::updateOrCreate (["order_id" => $id], $data);
 
-            $order = $this->orderServices->findWithRelation( $id,'decryptionType');
+            $order = $this->orderServices->findWithRelation ($id, 'decryptionType');
 
             // Get calculate sum
             $orderPricing = new OrderPricing($order);
-            $order->total_sum = $orderPricing->calculate();
-            $order->save();
+            $order->total_sum = $orderPricing->calculate ();
+            $order->save ();
 
-            $user = $this->userServices->find($order->user_id);
+            $user = $this->userServices->find ($order->user_id);
 
             // Send mail
-            Mail::to('vasa@gmail.com')->send(new OrderShipped($order, $user));
-            dd(1);
-            $request->session()->flush();
+            Mail::to ('vasa@gmail.com')->send (new OrderShipped($order, $user));
+            dd (1);
+            $request->session ()->flush ();
 
-            return back();
+            return back ();
         }
     }

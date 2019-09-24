@@ -23,21 +23,26 @@
 
         public function find (int $id)
         {
-            try{
+            try {
                 return $this->model->find ($id);
-            }catch (Throwable $error){
-                dd($error->getMessage());
+            } catch (Throwable $error) {
+                dd ($error->getMessage ());
             }
         }
 
         public function firstOrCreate (array $id)
         {
-            return $this->model->firstOrCreate($id);
+            return $this->model->firstOrCreate ($id);
         }
 
         public function updateOrCreate (array $id, array $updateData)
         {
             return $this->model->updateOrCreate ($id, $updateData);
+        }
+
+        public function where (string $column, $value)
+        {
+            return $this->model->where ($column, $value)->first ();
         }
 
         public function setModel (Model $model)
@@ -46,6 +51,5 @@
 
             return $this;
         }
-
 
     }

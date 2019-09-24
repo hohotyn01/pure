@@ -18,6 +18,8 @@
 
         public function updateOrCreate (array $id, array $updateData);
 
+        public function where (string $column, $value);
+
         public function setModel (Model $model);
 
     }
