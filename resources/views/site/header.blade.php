@@ -8,6 +8,9 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item  px-lg-4">
+                    <a class="nav-link text-uppercase text-expanded" href="{{route('index')}}">Home</a>
+                </li>
+                <li class="nav-item  px-lg-4">
                     <a class="nav-link text-uppercase text-expanded" href="{{route('info')}}">Personal Info</a>
                 </li>
                 <li class="nav-item px-lg-4">

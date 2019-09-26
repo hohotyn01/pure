@@ -12,14 +12,20 @@
 
     interface BaseInterface
     {
-        public function find (int $id);
+        public function find(int $id);
 
-        public function firstOrCreate (array $array);
+        public function create(array $data);
 
-        public function updateOrCreate (array $id, array $updateData);
+        public function update(array $data);
 
-        public function where (string $column, $value);
+        public function firstOrCreate(array $array);
 
-        public function setModel (Model $model);
+        public function updateOrCreate(array $id, array $updateData);
+
+        public function where(string $column, $value);
+
+        public function findWithRelation(int $id, string $relation);
+
+        public function setModel(Model $model);
 
     }

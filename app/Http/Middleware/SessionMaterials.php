@@ -16,7 +16,7 @@ class SessionMaterials
      */
     public function handle($request, Closure $next)
     {
-        if(!(session::has('idMaterialsFloor'))){
+        if(!(Session::has('idMaterialsFloor'))){
             return redirect(route('materials'));
         }
 

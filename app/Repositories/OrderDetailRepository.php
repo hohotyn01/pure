@@ -8,11 +8,6 @@
     {
         public function __construct (OrderDetail $orderDetail)
         {
-            $this->setModel($orderDetail);
-        }
-
-        public function whereGetId (string $column, $value)
-        {
-            return $this->model->where($column, $value)->first()->id;
+            $this->setModel ($orderDetail);
         }
     }

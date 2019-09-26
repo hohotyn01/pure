@@ -1,10 +1,4 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: Anton
-     * Date: 23.09.2019
-     * Time: 16:30
-     */
 
     namespace App\Repositories;
 
@@ -16,40 +10,50 @@
     {
         protected $model;
 
-        public function __construct (Model $model)
+        public function __construct(Model $model)
         {
-            $this->setModel ($model);
+            $this->setModel($model);
         }
 
-        public function find (int $id)
+        public function find(int $id)
         {
-            try {
-                return $this->model->find ($id);
-            } catch (Throwable $error) {
-                dd ($error->getMessage ());
-            }
+            return $this->model->find($id);
         }
 
-        public function firstOrCreate (array $id)
+        public function create(array $data)
         {
-            return $this->model->firstOrCreate ($id);
+            return $this->model->create($data);
         }
 
-        public function updateOrCreate (array $id, array $updateData)
+        public function update(array $data)
         {
-            return $this->model->updateOrCreate ($id, $updateData);
+            return $this->model->update($data);
         }
 
-        public function where (string $column, $value)
+        public function firstOrCreate(array $data)
         {
-            return $this->model->where ($column, $value)->first ();
+            return $this->model->firstOrCreate($data);
         }
 
-        public function setModel (Model $model)
+        public function updateOrCreate(array $data, array $updateData)
+        {
+            return $this->model->updateOrCreate($data, $updateData);
+        }
+
+        public function where(string $column, $value)
+        {
+            return $this->model->where($column, $value)->first();
+        }
+
+        public function findWithRelation(int $id, string $relation)
+        {
+            return $this->model->with($relation)->find($id);
+        }
+
+        public function setModel(Model $model)
         {
             $this->model = $model;
 
             return $this;
         }
-
     }

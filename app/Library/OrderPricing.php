@@ -10,7 +10,6 @@
     {
         private $order;
 
-        //type hint OrderRepository $order
         public function __construct(Order $order)
         {
             $this->order = $order;

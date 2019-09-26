@@ -31,6 +31,7 @@ class RequestYourHome extends FormRequest
             'rate_cleanliness' => 'required|max:10',
             'cleaned_2_months_ago' => 'required|in:yes,no',
             'differently' => 'required|max:255',
+            // Photo Model
             'photo.*' => 'image|mimes:jpeg,png,jpg',
             'photo' => 'max:8',
         ];

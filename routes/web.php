@@ -13,20 +13,16 @@
     Route::get('/', 'Index@home')->name('index');
     Route::post('/', 'Index@homePost');
 
-//    Route::resource('/fake', 'FakeController');
-    
     Route::group(['middleware' => ['redirectUserId']], function () {
 
         Route::get('/personal_info', 'Index@personalInfo')->name('info');
         Route::post('/personal_info', 'Index@personalInfoPost');
-
 
         Route::group(['middleware' => ['redirectPersonalInfo']], function () {
 
             Route::get('/your_home', 'Index@yourHome')->name('home');
             Route::post('/your_home', 'Index@yourHomePost');
             Route::post('/your_home_photo', 'Index@yourHomePostPhoto');
-
 
             Route::group(['middleware' => ['redirectYourHome']], function () {
 
