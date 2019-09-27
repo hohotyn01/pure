@@ -50,6 +50,11 @@
             return $this->model->with($relation)->find($id);
         }
 
+        public function findWithRelations(int $id, array $relations)
+        {
+            return $this->model->with($relations)->find($id);
+        }
+
         public function setModel(Model $model)
         {
             $this->model = $model;

@@ -26,6 +26,11 @@
             'about_us'
         ];
 
+        public function user()
+        {
+            return $this->belongsTo('App\Models\User');
+        }
+
         public function orderDetail()
         {
             return $this->hasOne('App\Models\OrderDetail');

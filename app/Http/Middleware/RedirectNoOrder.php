@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Session;
 
-class SessionMaterials
+class RedirectNoOrder
 {
     /**
      * Handle an incoming request.
@@ -16,8 +16,8 @@ class SessionMaterials
      */
     public function handle($request, Closure $next)
     {
-        if(!(Session::has('idMaterialsFloor'))){
-            return redirect(route('materials'));
+        if(!(Session::has('orderId'))){
+            return redirect(route('home'));
         }
 
         return $next($request);
