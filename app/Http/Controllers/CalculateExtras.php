@@ -1,39 +1,47 @@
 <?php
 
-    namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 
-    use Illuminate\Http\Request;
-    use App\Library\OrderPricing;
-    use App\Models\Order;
-    use App\Models\OrderExtras;
-    use Session;
+use App\Exceptions\OrderNotFoundException;
+use Illuminate\Http\Request;
+use App\Services\OrderService;
+use Session;
 
 
-    class CalculateExtras extends Controller
+class CalculateExtras extends Controller
+{
+    protected $orderService;
+
+    public function __construct(OrderService $orderService)
     {
-        public function calculate(Request $request)
-        {
-            // Add Session
-            $orderId = Session::get('orderId');
-
-            // Getting data form ajax
-            $requestData = $request->input('data');
-
-            // Eager loading OrderExtras
-            $order = Order::with('orderExtras')->findOrFail($orderId);
-
-            if ($order->orderExtras === null) {
-                $orderExtras = new OrderExtras($requestData);
-                $order->orderExtras()->save($orderExtras);
-            } else {
-                $order->orderExtras->update($requestData);
-            }
-
-            // Calculate
-            $orderPricing = new OrderPricing($order);
-
-            return response()->json([
-                'data' => $orderPricing->calculate()
-            ]);
-        }
+        $this->orderService = $orderService;
     }
+
+    public function calculate(Request $request)
+    {
+        // Getting data form ajax
+        $responseData = $request->input('data');
+
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['orderExtras']
+            );
+
+            $this->orderService->checkRelation($orderModel->orderExtras);
+            $orderModel->orderExtras->update($responseData);
+        } catch (OrderNotFoundException $e) {
+            $this->orderService->createOrderExtras(
+                $orderModel,
+                $responseData
+            );
+        }
+
+        // Calculate And Save
+        $this->orderService->calculateAndSavePrice($orderModel);
+
+        return response()->json([
+            'data' => $orderModel->total_sum
+        ]);
+    }
+}

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Session;
 use Validator;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\OrderShipped;
 use App\Http\Requests\RequestHomePost;
 use App\Http\Requests\RequestPersonalInfo;
 use App\Http\Requests\RequestYourHome;
@@ -103,6 +101,12 @@ class Index extends Controller
 
     public function personalInfoPost(RequestPersonalInfo $request)
     {
+        $userData = $request->only(
+            'mobile_phone',
+            'first_name',
+            'last_name'
+        );
+
         try {
             $orderModel = $this->orderService->findOrFail(
                 Session::get('orderId'),
@@ -111,12 +115,6 @@ class Index extends Controller
         } catch (OrderNotFoundException $e) {
             return redirect(route('home'));
         }
-
-        $userData = $request->only(
-            'mobile_phone',
-            'first_name',
-            'last_name'
-        );
 
         $orderModel->user->update($userData);
 
@@ -336,7 +334,6 @@ class Index extends Controller
         ]);
     }
 
-
     public function extrasPost(RequestExtrasPost $request)
     {
         $dataExtras = $request->toArray();
@@ -362,6 +359,7 @@ class Index extends Controller
                 $dataExtras
             );
         }
+
         // Send User Notification:
         $this->userService->sendOrderShippedEmail(
             $orderModel->user()->first(),
