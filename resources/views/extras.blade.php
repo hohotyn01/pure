@@ -73,7 +73,6 @@
                             Service Weekend
                         --}}
                         <strong>Would you like us to perform service on weekend?</strong><br>
-                        <small></small>
                         <br>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="service_weekend" id="weekend_yes"
@@ -123,11 +122,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center mt-5 mb-5">
-                    <input type="submit" class="btn btn-danger" value="Reserve a Cleaning">
-                </div>
+
             </div>
         </form>
+        <div class="container mt-5 mb-5">
+            <div class="row justify-content-center">
+                <form action="/charge" method="post" id="payment-form">
+                    <div class="form-row">
+                        <div id="card-element">
+                            <!-- A Stripe Element will be inserted here. -->
+                        </div>
+
+                        <!-- Used to display form errors. -->
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+                        <button class="test">Submit Payment</button>
+                </form>
+            </div>
+        </div>
+        <div class="text-center mt-5 mb-5">
+            <input type="submit" class="btn btn-danger" value="Reserve a Cleaning" form="priceForm">
+        </div>
     </div>
 
 

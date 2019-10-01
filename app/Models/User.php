@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Cashier\Billable;
 
 class User extends Model
 {
+    use Billable;
+
     protected $table = 'users';
 
     protected $fillable = [

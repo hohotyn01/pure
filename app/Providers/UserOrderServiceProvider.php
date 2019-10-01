@@ -15,15 +15,7 @@ class UserOrderServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        /*$this->app->when('App\Http\Controllers\Index')
-            ->needs('$orderModel')
-            ->give(function () {
-                return (
-                    Session::has('userId')
-                        ? $this->userService->find(Session::get('userId'))
-                        : null
-                );
-            });*/
+        //
     }
 
     /**
