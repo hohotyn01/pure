@@ -13,14 +13,13 @@ class PaymentRepository extends BaseRepository
         $this->setModel($payment);
     }
 
-    public function getOrderBySession($session)
+    public function getOrder($id)
     {
-        return Order::find($session);
+        return Order::find($id);
     }
 
-    // Form which gathers your customer's payment method details
-    public function createSetupIntent(Order $order)
+    public function updateOrder(Order $order, array $array)
     {
-        $order->user->createSetupIntent();
+        $order->update($array);
     }
 }

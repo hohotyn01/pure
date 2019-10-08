@@ -12,7 +12,6 @@
     <div class="container mt-5 mb-5 cart">
         <form action="/extras/charge" method="post" id="payment-form">
             @csrf
-{{--            @dump($intent)--}}
             <div class="form-row inline">
                 <div class="col">
                     <label class="with" for="card-holder-name">

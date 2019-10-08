@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\OrderNotFoundException;
 use App\Http\Requests\RequestPayment;
-use App\Models\Order;
 use App\Services\PaymentService;
 use Illuminate\Support\Facades\Session;
 
@@ -19,56 +18,39 @@ class Payment extends Controller
         $this->paymentService = $paymentService;
     }
 
-    public function paymentGet()
+    public function getPayment()
     {
         try {
-            $order = $this->paymentService->paymentGet(Session::get('orderId'));
-
+            $order = $this->paymentService->getPayment(Session::get('orderId'));
         } catch (OrderNotFoundException $e) {
+            $order = $this->paymentService->getOrder(Session::get('orderId'));
+
             return view(
-                'payment',
-                $this->paymentService->arraySubscribe(Session::get('orderId'))
-            );
+                'payment',[
+                'price' => $order->total_sum,
+                // Form which gathers your customer's payment method details
+                'intent' => $order->user->createSetupIntent()
+            ]);
         }
 
         if ($order->cleaning_frequency == 'once') {
             return view(
-                'payment',
-                $this->paymentService->arraySinge(Session::get('orderId'))
-            );
+                'payment',[
+                'price' => $order->total_sum
+            ]);
         }
     }
 
-    public function paymentPost(RequestPayment $requestPayment)
+    public function postPayment(RequestPayment $requestPayment)
     {
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-
-        $order = Order::find(Session::get('orderId'));
-        $user = $order->user;
-
-        // Get payment method
-        $paymentMethod = $requestPayment->payment_method_id;
-
-        if ($order->cleaning_frequency == 'once') {
-            // Single charge
-            $pay = $user->charge($order->total_sum, $paymentMethod);
-            $pay = $pay->status;
-        } else {
-            // Create new plan
-            $plan = $this->paymentService->createPlan($order, $user->first_name);
-
-            // Check plan
-            if (!$plan) {
-                return view('extras', ['message' => "Sorry, stripe plan did not create!"]);
-            }
-
-            // Create new subscribe
-            $subscribe = $user->newSubscription($plan->nickname, $plan->id)->create($paymentMethod);
-            $pay = $subscribe->exists;
+        try {
+            $this->paymentService->postPayment(
+                Session::get('orderId'),
+                $requestPayment->payment_method_id
+            );
+        } catch (OrderNotFoundException $e) {
+            return redirect()->route('extras', ['message' => $e->getMessage()]);
         }
-
-        // Add status in data base
-        $this->paymentService->statusPayment($order, $pay);
 
         return redirect()->route('extras', ['message' => "Thank you, payment was successful!"]);
     }

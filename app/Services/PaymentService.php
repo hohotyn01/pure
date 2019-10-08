@@ -6,6 +6,8 @@ use App\Exceptions\OrderNotFoundException;
 use App\Models\Order;
 use App\Models\User;
 use App\Repositories\PaymentRepository;
+use Stripe\Plan;
+use Stripe\Stripe;
 
 
 class PaymentService extends BaseService
@@ -17,10 +19,10 @@ class PaymentService extends BaseService
         $this->paymentRepository = $paymentRepository;
     }
 
-    public function paymentGet($session)
+    public function getPayment($id)
     {
         // Get Order model
-        $order = $this->paymentRepository->getOrderBySession($session);
+        $order = $this->getOrder($id);
 
         if ($order->cleaning_frequency != 'once') {
             throw new OrderNotFoundException("No once");
@@ -29,42 +31,41 @@ class PaymentService extends BaseService
         return $order;
     }
 
-    public function arraySinge($session)
+    public function postPayment($id, $paymentMethod)
     {
-        $order = $this->paymentRepository->getOrderBySession($session);
+        Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        return [
-            'price' => $order->total_sum
-        ];
+        $order = $this->paymentRepository->getOrder($id);
+        $user = $order->user;
+
+        if ($order->cleaning_frequency == 'once') {
+            // Single charge for Stripe API
+            $pay = $user->charge($order->total_sum, $paymentMethod);
+            $pay = $pay->status;
+        } else {
+            // Create new plan
+            $plan = $this->createPlan($order, $user->first_name);
+
+            if (!$plan){
+                throw new OrderNotFoundException("Sorry, stripe plan did not create!");
+            }
+
+            // Create new subscribe
+            $subscribe = $user->newSubscription($plan->nickname, $plan->id)->create($paymentMethod);
+            $pay = $subscribe->exists;
+        }
+
+        // Update status payment
+        if ($pay) {
+            $this->paymentRepository->updateOrder($order, ['status' => 'paid']);
+        }
     }
 
-    public function arraySubscribe($session)
+    public function updateStatusPayment(Order $order, $pay = false)
     {
-        $order = $this->paymentRepository->getOrderBySession($session);
-
-        return [
-            'price' => $order->total_sum,
-            'intent' => $this->paymentRepository->createSetupIntent($order)
-        ];
-    }
-
-
-
-
-
-
-
-
-
-    public function createCustomer(User $user)
-    {
-        $customer = $user->createAsStripeCustomer([
-            "name" => $user->first_name . ' ' . $user->last_name,
-            "description" => "home cleaning",
-            "phone" => $user->mobile_phone,
-        ]);
-
-        return $customer;
+        if ($pay) {
+            $order->update(['status' => 'paid']);
+        }
     }
 
     public function createPlan(Order $order, $firstName)
@@ -81,7 +82,8 @@ class PaymentService extends BaseService
                 break;
         }
 
-        $plan = \Stripe\Plan::create([
+        // Create API Stripe plan payment
+        $plan = Plan::create([
             'amount' => $order->total_sum,
             'currency' => 'usd',
             'interval' => $interval,
@@ -99,13 +101,8 @@ class PaymentService extends BaseService
         return $plan;
     }
 
-    public function statusPayment(Order $order, $pay = false)
+    public function getOrder($id)
     {
-        if ($pay) {
-            $order->update(['status' => 'paid']);
-        } else {
-            $order->update(['status' => 'unpaid']);
-        }
+        return $this->paymentRepository->getOrder($id);
     }
-
 }

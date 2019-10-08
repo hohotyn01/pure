@@ -29,7 +29,7 @@
 
         Route::post('/extrasCalculate', 'CalculateExtras@calculate')->name('calculate');
 
-        Route::get('/extras/charge', 'Payment@paymentGet')->name('payment');
-        Route::post('/extras/charge', 'Payment@paymentPost')->name('payment');
+        Route::get('/extras/charge', 'Payment@getPayment')->name('payment');
+        Route::post('/extras/charge', 'Payment@postPayment')->name('payment');
     });
 
