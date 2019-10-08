@@ -12,11 +12,13 @@
         "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
-        "laravel/cashier": "^10.2",
+        "laravel/cashier": "^10.3",
         "laravel/framework": "5.8.*",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "stripe/stripe-php": "^7.3"
     },
     "require-dev": {
+        "squizlabs/php_codesniffer": "3.*",
         "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",

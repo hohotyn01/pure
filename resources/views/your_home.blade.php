@@ -19,7 +19,7 @@
             </h5>
         </div>
         <hr>
-        <form  action="" method="post" enctype="multipart/form-data" id="yourHome">
+        <form action="" method="post" enctype="multipart/form-data" id="yourHome">
             @if(count($errors) > 0)
                 <div class="alert alert-danger">
                     <ul>
@@ -206,35 +206,26 @@
             UPLOAD PHOTOS
         --}}
         <form action="your_home_photo" method="post" enctype="multipart/form-data">
+            @csrf
             <div class="form-group row mt-4 md-4">
                 {{--LEFT LABEL--}}
                 <label class="col-sm-3 col-form-label align-self-center">HOME PHOTOS</label>
-
                 <div class="col-sm-9">
                     <div class="col-md-12">
-                        <label>
-                            <strong>Do you have any photos of your home?</strong><br>
-                            <small>You can upload more than one photo at a time. Up to 8 photos in total</small>
-                        </label>
-                        <br>
-                        <div id="upload">
-                            <div id="drop">
-                                Drop Here
-
-                                <a>Browse</a>
-                                <input type="file" name="upl" multiple/>
-                            </div>
-                            <ul>
-
-                            </ul>
-                        </div>
-                        <br>
+                        <label>Upload Photo</label><br>
+                        <input type="file" name="image" multiple/><br>
+                        <label for="unset">unset</label>
+                        <input type="checkbox" name="unset"><br>
+                        <input type="submit" value="submit">
                     </div>
                 </div>
             </div>
+            @isset ($path)
+                <img class="img-fluid" src="{{ asset('/storage/'.$path) }}">
+            @endisset
         </form>
         <div class="text-center mt-5 mb-5">
-            <input type="submit" class="btn btn-danger" value="2 Steps Left" form="yourHome" >
+            <input type="submit" class="btn btn-danger" value="2 Steps Left" form="yourHome">
         </div>
     </div>
 @endsection

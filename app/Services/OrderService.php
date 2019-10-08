@@ -48,7 +48,7 @@ class OrderService extends BaseService
     {
         $orderData['user_id'] = $user->id;
         return (
-        $this->orderRepository->create($orderData)
+            $this->orderRepository->create($orderData)
         );
     }
 
@@ -57,7 +57,7 @@ class OrderService extends BaseService
         $dataYourHome['order_id'] = $order->id;
 
         return (
-        $order->OrderDetail()->create($dataYourHome)
+            $order->OrderDetail()->create($dataYourHome)
         );
     }
 
@@ -66,7 +66,7 @@ class OrderService extends BaseService
         $dataMaterialsDetail['order_id'] = $order->id;
 
         return (
-        $order->orderMaterialsDetail()->create($dataMaterialsDetail)
+            $order->orderMaterialsDetail()->create($dataMaterialsDetail)
         );
     }
 
@@ -75,7 +75,7 @@ class OrderService extends BaseService
         $dataMaterialsFloor['order_id'] = $order->id;
 
         return (
-        $order->orderMaterialsFloor()->create($dataMaterialsFloor)
+            $order->orderMaterialsFloor()->create($dataMaterialsFloor)
         );
     }
 
@@ -84,7 +84,7 @@ class OrderService extends BaseService
         $dataMaterialsCountertop['order_id'] = $order->id;
 
         return (
-        $order->orderMaterialsCountertop()->create($dataMaterialsCountertop)
+            $order->orderMaterialsCountertop()->create($dataMaterialsCountertop)
         );
     }
 
@@ -93,7 +93,7 @@ class OrderService extends BaseService
         $dataOrderExtras['order_id'] = $order->id;
 
         return (
-        $order->orderExtras()->create($dataOrderExtras)
+            $order->orderExtras()->create($dataOrderExtras)
         );
     }
 
@@ -163,35 +163,36 @@ class OrderService extends BaseService
 
     protected function getYourHomePrice(Order $order)
     {
-        if ($order->orderDetail()->first() === null) {
+        $orderDetail = $order->orderDetail()->first();
+        if ($orderDetail === null) {
             return 0;
         }
 
         $dogs_or_cats = $this->_getPriceRateByKey(
             'price.dogs_or_cats',
-            $order->orderDetail->dogs_or_cats
+            $orderDetail->dogs_or_cats
         );
-        if ($order->orderDetail->pets_total === null) {
+        if ($orderDetail->pets_total === null) {
             $pets_total = 0;
         } else {
             $pets_total = $this->_getPriceRateByKey(
                 'price.pets_total',
-                $order->orderDetail->pets_total
+                $orderDetail->pets_total
             );
         }
         $adults = $this->_getPriceRateByKey(
-            'price.adults', $order->orderDetail->adults
+            'price.adults', $orderDetail->adults
         );
         $children = $this->_getPriceRateByKey(
-            'price.children', $order->orderDetail->children
+            'price.children', $orderDetail->children
         );
         $rate_cleanliness = $this->_getPriceRateByKey(
             'price.rate_cleanliness',
-            $order->orderDetail->rate_cleanliness
+            $orderDetail->rate_cleanliness
         );
         $cleaned_2_months_ago = $this->_getPriceRateByKey(
             'price.cleaned_2_months_ago',
-            $order->orderDetail->cleaned_2_months_ago
+            $orderDetail->cleaned_2_months_ago
         );
 
         return (
@@ -206,41 +207,42 @@ class OrderService extends BaseService
 
     protected function getMaterialsFloor(Order $order)
     {
-        if ($order->orderMaterialsFloor()->first() === null) {
+        $orderMaterialsFloor = $order->orderMaterialsFloor()->first();
+        if ($orderMaterialsFloor === null) {
             return 0;
         }
 
         $hardwood = $this->_getPriceRateByKey(
             'price.flooring.hardwood',
-            $order->orderMaterialsFloor->hardwood
+            $orderMaterialsFloor->hardwood
         );
         $cork = $this->_getPriceRateByKey(
             'price.flooring.cork',
-            $order->orderMaterialsFloor->cork
+            $orderMaterialsFloor->cork
         );
         $vinyl = $this->_getPriceRateByKey(
             'price.flooring.vinyl',
-            $order->orderMaterialsFloor->vinyl
+            $orderMaterialsFloor->vinyl
         );
         $concrete = $this->_getPriceRateByKey(
             'price.flooring.concrete',
-            $order->orderMaterialsFloor->concrete
+            $orderMaterialsFloor->concrete
         );
         $carpet = $this->_getPriceRateByKey(
             'price.flooring.carpet',
-            $order->orderMaterialsFloor->carpet
+            $orderMaterialsFloor->carpet
         );
         $naturalStone = $this->_getPriceRateByKey(
             'price.flooring.natural_stone',
-            $order->orderMaterialsFloor->natural_stone
+            $orderMaterialsFloor->natural_stone
         );
         $tile = $this->_getPriceRateByKey(
             'price.flooring.tile',
-            $order->orderMaterialsFloor->tile
+            $orderMaterialsFloor->tile
         );
         $laminate = $this->_getPriceRateByKey(
             'price.flooring.laminate',
-            $order->orderMaterialsFloor->laminate
+            $orderMaterialsFloor->laminate
         );
 
         return (
@@ -257,42 +259,43 @@ class OrderService extends BaseService
 
     protected function getMaterialsCountertop(Order $order)
     {
-        if ($order->orderMaterialsCountertop()->first() === null) {
+        $orderMaterialsCountertop = $order->orderMaterialsCountertop()->first();
+        if ($orderMaterialsCountertop === null) {
             return 0;
         }
 
-        //modelCountertop getting price
+        // ModelCountertop Getting Price
         $concrete_c = $this->_getPriceRateByKey(
             'price.countertops.concrete_c',
-            $order->orderMaterialsCountertop->concrete_c
+            $orderMaterialsCountertop->concrete_c
         );
         $quartz = $this->_getPriceRateByKey(
             'price.countertops.quartz',
-            $order->orderMaterialsCountertop->quartz
+            $orderMaterialsCountertop->quartz
         );
         $formica = $this->_getPriceRateByKey(
             'price.countertops.formica',
-            $order->orderMaterialsCountertop->formica
+            $orderMaterialsCountertop->formica
         );
         $granite = $this->_getPriceRateByKey(
             'price.countertops.granite',
-            $order->orderMaterialsCountertop->granite
+            $orderMaterialsCountertop->granite
         );
         $marble = $this->_getPriceRateByKey(
             'price.countertops.marble',
-            $order->orderMaterialsCountertop->marble
+            $orderMaterialsCountertop->marble
         );
         $tile_c = $this->_getPriceRateByKey(
             'price.countertops.tile_c',
-            $order->orderMaterialsCountertop->tile_c
+            $orderMaterialsCountertop->tile_c
         );
         $paper_stone = $this->_getPriceRateByKey(
             'price.countertops.paper_stone',
-            $order->orderMaterialsCountertop->paper_stone
+            $orderMaterialsCountertop->paper_stone
         );
         $butcher_block = $this->_getPriceRateByKey(
             'price.countertops.butcher_block',
-            $order->orderMaterialsCountertop->butcher_block
+            $orderMaterialsCountertop->butcher_block
         );
 
         return (
@@ -310,28 +313,28 @@ class OrderService extends BaseService
 
     protected function getMaterialsDetail(Order $order)
     {
-        if ($order->orderMaterialsDetail()->first() === null) {
+        $orderMaterialsDetail = $order->orderMaterialsDetail()->first();
+        if ($orderMaterialsDetail === null) {
             return 0;
         }
 
         //modelDetail getting price
         $stainlessSteel = $this->_getPriceRateByKey(
             'price.stainless_steel_appliances',
-            $order->orderMaterialsDetail->stainless_steel_appliances
+            $orderMaterialsDetail->stainless_steel_appliances
         );
         $stoveType = $this->_getPriceRateByKey(
             'price.stove_type',
-            $order->orderMaterialsDetail->stove_type
+            $orderMaterialsDetail->stove_type
         );
         $shawerDoors = $this->_getPriceRateByKey(
             'price.shawer_doors_glass',
-            $order->orderMaterialsDetail->shawer_doors_glass
+            $orderMaterialsDetail->shawer_doors_glass
         );
         $mold = $this->_getPriceRateByKey(
             'price.mold',
-            $order->orderMaterialsDetail->mold
+            $orderMaterialsDetail->mold
         );
-
 
         return (
             $stainlessSteel +
@@ -394,7 +397,7 @@ class OrderService extends BaseService
         }
 
         return (
-        Config::get($key)[$value]
+            Config::get($key)[$value]
         );
     }
 }

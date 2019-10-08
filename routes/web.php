@@ -28,5 +28,8 @@
         Route::post('/extras', 'Index@extrasPost');
 
         Route::post('/extrasCalculate', 'CalculateExtras@calculate')->name('calculate');
+
+        Route::get('/extras/charge', 'Payment@paymentGet')->name('payment');
+        Route::post('/extras/charge', 'Payment@paymentPost')->name('payment');
     });
 

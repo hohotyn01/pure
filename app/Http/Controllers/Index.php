@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Session;
 use Validator;
 use App\Http\Requests\RequestHomePost;
@@ -34,6 +35,7 @@ class Index extends Controller
                 Session::get('orderId'),
                 ['user']
             );
+
             $userModel = $orderModel->user;
         } catch (OrderNotFoundException $e) {
             $orderModel = null;
@@ -41,13 +43,13 @@ class Index extends Controller
         }
 
         return (
-            view(
-                'home',
-                [
-                    'order' => $orderModel,
-                    'user' => $userModel
-                ]
-            )
+        view(
+            'home',
+            [
+                'order' => $orderModel,
+                'user' => $userModel
+            ]
+        )
         );
     }
 
@@ -59,7 +61,6 @@ class Index extends Controller
             'bathroom',
             'zip_code'
         );
-
         $userModel = $this->userService->findByEmailOrCreate(
             $userData['email']
         );
@@ -106,7 +107,6 @@ class Index extends Controller
             'first_name',
             'last_name'
         );
-
         try {
             $orderModel = $this->orderService->findOrFail(
                 Session::get('orderId'),
@@ -141,7 +141,7 @@ class Index extends Controller
      */
     public function yourHome()
     {
-        try{
+        try {
             $orderModel = $this->orderService->findOrFail(
                 Session::get('orderId'),
                 ['orderDetail']
@@ -151,46 +151,19 @@ class Index extends Controller
             return redirect(route('home'));
         }
 
-        if(!$orderModel->cleaning_frequency) {
+        if (!$orderModel->cleaning_frequency) {
             return redirect(route('info'));
         };
 
         return view('your_home', ['orderDetail' => $orderModel->orderDetail]);
     }
 
-    public function yourHomePostPhoto()
+    public function yourHomePostPhoto(Request $request)
     {
-        $orderModel = (
-            Session::has('orderId')
-                ? $this->orderService->find(Session::get('orderId'))
-                : null
-        );
+        // Its Time Decision
+        $path = $request->file('image')->store('uploads', 'public');
 
-        if (isset($_FILES['upl']) && $_FILES['upl']['error'] == 0) {
-
-            $extension = pathinfo($_FILES['upl']['name'], PATHINFO_EXTENSION);
-
-            if (!in_array(strtolower($extension), ['png', 'jpg', 'gif', 'bmp'])) {
-                echo '{"status":"error"}';
-                exit;
-            }
-
-            if (move_uploaded_file($_FILES['upl']['tmp_name'], 'storage/' . $_FILES['upl']['name'])) {
-
-                if (!OrderDetailPhoto::where('photo_path', '=', $_FILES['upl']['name'])->exists()) {
-                    $orderDetailPhoto = new OrderDetailPhoto;
-                    $orderDetailPhoto->photo_path = $_FILES['upl']['name'];
-                    $orderDetailPhoto->order_id = Session::get('orderId');
-                    $orderDetailPhoto->save();
-                    return response()->json(["status" => "success"], 200);
-                }
-
-                return response()->json(["status" => "error"], 200);
-            }
-        }
-
-        echo '{"status":"error"}';
-        exit;
+        return view('your_home', ['path' => $path]);
     }
 
     /*
@@ -209,12 +182,11 @@ class Index extends Controller
             'differently'
         );
 
-        try{
+        try {
             $orderModel = $this->orderService->findOrFail(
                 Session::get('orderId'),
                 ['orderDetail']
             );
-
             $this->orderService->checkRelation($orderModel->orderDetail);
             $orderModel->orderDetail->update($dataYourHome);
         } catch (OrderNotFoundException $e) {
@@ -258,7 +230,7 @@ class Index extends Controller
 
     public function materialsPost(RequestMaterialsPost $request)
     {
-        // Request Array
+        // Request Go Array
         $dataOrderMaterials = $request->toArray();
 
         // When checkbox is not selected add 0

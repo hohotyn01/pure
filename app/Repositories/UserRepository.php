@@ -1,13 +1,13 @@
 <?php
 
-    namespace App\Repositories;
+namespace App\Repositories;
 
-    use App\Models\User;
+use App\Models\User;
 
-    class UserRepository extends BaseRepository
+class UserRepository extends BaseRepository
+{
+    public function __construct(User $user)
     {
-        public function __construct(User $user)
-        {
-            $this->setModel($user);
-        }
+        $this->setModel($user);
     }
+}

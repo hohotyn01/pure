@@ -23,7 +23,7 @@
             'per_cleaning',
             'total_sum',
             'status',
-            'about_us'
+            'about_us',
         ];
 
         public function user()

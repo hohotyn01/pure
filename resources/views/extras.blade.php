@@ -112,34 +112,21 @@
                             <p>One-Time Cleaning</p>
                             <small>This week</small>
                             <br>
-                            <small>{{$bedroomExtras}} bed, {{$bathroomExtras}} bath - {{$homeFootageExtras}} sq. ft
-                            </small>
+                            <small>{{$bedroomExtras}} bed, {{$bathroomExtras}} bath - {{$homeFootageExtras}} sq. ft</small>
                         </div>
                         <hr>
                         <div class="justify-content-between total">
                             <p>Total</p>
                             <div id="priceHolder">{{$data}}</div>
                         </div>
+                        <div class="text-center">
+                            <a href="/extras/charge">Payment</a>
+                        </div>
                     </div>
                 </div>
 
             </div>
         </form>
-        <div class="container mt-5 mb-5">
-            <div class="row justify-content-center">
-                <form action="/charge" method="post" id="payment-form">
-                    <div class="form-row">
-                        <div id="card-element">
-                            <!-- A Stripe Element will be inserted here. -->
-                        </div>
-
-                        <!-- Used to display form errors. -->
-                        <div id="card-errors" role="alert"></div>
-                    </div>
-                        <button class="test">Submit Payment</button>
-                </form>
-            </div>
-        </div>
         <div class="text-center mt-5 mb-5">
             <input type="submit" class="btn btn-danger" value="Reserve a Cleaning" form="priceForm">
         </div>
