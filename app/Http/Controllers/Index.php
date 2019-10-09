@@ -1,413 +1,344 @@
 <?php
 
-    namespace App\Http\Controllers;
-
-    use Illuminate\Support\Facades\DB;
-    use Session;
-    use Validator;
-    use Illuminate\Http\Request;
-    use App\Models\Order;
-    use App\Models\OrderDetail;
-    use App\Models\OrderDetailPhoto;
-    use App\Models\OrderExtras;
-    use App\Models\OrderMaterialsCountertop;
-    use App\Models\OrderMaterialsDetail;
-    use App\Models\OrderMaterialsFloor;
-    use App\Models\User;
-
-    class Index extends Controller
-    {
-
-        public function home()
-        {
-            //If (isset Session ('userId')('orderId'))  get id User Order
-            $user = Session::has('userId') ? User::where('id', Session::get('userId'))->first() : null;
-            $order = Session::has('orderId') ? Order::where('id', Session::get('orderId'))->first() : null;
-
-            return view('home', ['order' => $order, 'user' => $user]);
-        }
-
-
-        public function homePost(Request $request)
-        {
-            /*
-             * Validate Start
-             */
-            $validator = Validator::make($request->all(), [
-                'bedroom' => 'required|max:10',
-                'bathroom' => 'required|max:5',
-                'zip_code' => 'required|max:10',
-                'email' => 'required|email|max:150',
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-             * Validate End
-             */
-
-            /*
-            * Save start
-            */
-            $dataUser = $request->except(
-                'user_id',
-                '_token',
-                'bedroom',
-                'zip_code',
-                'bathroom'
-            );
-
-            //Add User in Database
-            User::updateOrcreate($dataUser);
-
-            //Add Session userId
-            $user = User::where('email', $dataUser)->first()->id;
-            Session::put('userId', "$user");
-
-
-            //Add Order in Database
-            $idUser = Session::get('userId');
-            $dataOrder = $request->except('email', '_token');
-            $dataOrder['user_id'] = $idUser;
-
-            Order::updateOrCreate($dataOrder);
-
-            //Add Session orderId
-            $order = Order::where('user_id', $user)->first()->id;
-            Session::put('orderId', $order);
-
-
-            return redirect(route('info'));
-            /*
-             * Save end
-             */
-        }
-
-
-        public function personalInfo()
-        {
-            //If (isset Session ('userId')(orderId))  get id User, Order
-            $user = Session::has('userId') ? User::where('id', Session::get('userId'))->first() : null;
-            $order = Session::has('orderId') ? Order::where('id', Session::get('orderId'))->first() : null;
-
-            return view('personal_info', ['order' => $order, 'user' => $user]);
-        }
-
-
-        public function personalInfoPost(Request $request)
-        {
-            /*
-            * Validate Start
-            */
-            $validator = Validator::make($request->all(), [
-                'cleaning_frequency' => 'required|in:once,weekly,biweekly,monthly',
-                'cleaning_type' => 'required|in:deep_or_spring,move_in,move_out,post_remodeling',
-                'cleaning_date' => 'required|in:next_available,this_week,next_week,this_month,i_am_flexible,just_need_a_quote',
-                'first_name' => 'required|max:150',
-                'last_name' => 'required|max:150',
-                'street_address' => 'required|max:150',
-                'apt' => 'max:15',
-                'city' => 'required|max:150',
-                'home_footage' => 'required|max:10',
-                'mobile_phone' => 'required|between:9,15',
-                'about_us' => 'required|in:cleaning_for_reason'
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-             * Validate End
-             */
-
-            /*
-            * Save start
-            */
-            $dataOrder = $request->except(
-                '_token',
-                'first_name',
-                'last_name',
-                'mobile_phone'
-            );
-            $dataUser = $request->except(
-                '_token',
-                'cleaning_frequency',
-                'cleaning_type',
-                'cleaning_date',
-                'street_address',
-                'apt',
-                'city',
-                'home_footage',
-                'about_us'
-            );
-
-            //Update Database Order and User
-            Order::where('id', Session::get('orderId'))->update($dataOrder);
-            User::where('id', Session::get('userId'))->update($dataUser);
-
-            $first_name = User::where('id', Session::get('userId'))->first()->first_name;
-
-            Session::put('first_name', $first_name);
-
-
-            return redirect(route('home'));
-
-            /*
-            * Save End
-            */
-
-        }
-
-
-        public function yourHome()
-        {
-            //If (isset Session ('idOrderDetail'))  get id OrderDetail
-            $orderDetails = Session::has('idOrderDetail') ? OrderDetail::where('id',
-                Session::get('idOrderDetail'))->first() : null;
-
-            return view('your_home', ['orderDetails' => $orderDetails]);
-        }
-
-
-        public function yourHomePost(Request $request)
-        {
-            /*
-            * Validate Start
-            */
-            $validator = Validator::make($request->all(), [
-                'dogs_or_cats' => 'required|in:none,dog,cat,both',
-                'pets_total' => 'required|in:pet_1,pet_2,pet_3_more',
-                'adults' => 'required|in:none,1_2,3_4,5_and_more',
-                'children' => 'required|in:none_children,1,2,3_and_more',
-                'rate_cleanliness' => 'required|max:10',
-                'cleaned_2_months_ago' => 'required|in:yes,no',
-                'differently' => 'required|max:255',
-                'photo.*' => 'image|mimes:jpeg,png,jpg',
-                'photo' => 'max:8',
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-            * Validate End
-            */
-            /*
-            * Save Start
-            */
-            $id = Session::get('orderId');
-            $data = $request->except('_token', 'photo');
-            $data['order_id'] = $id;
-
-            OrderDetail::updateOrCreate(["order_id" => $id], $data);
-
-            if (!empty($request->file('photo'))) {
-                foreach ($request->file('photo') as $photo) {
-                    $filename = $photo->hashName();
-                    $photo->store('upload', 'public');
-
-                    $orderDetailPhoto = new OrderDetailPhoto;
-                    $orderDetailPhoto->photo_path = $filename;
-                    $orderDetailPhoto->order_id = $id;
-                    $orderDetailPhoto->save();
-                }
-            }
-
-            $idOrderDetail = OrderDetail::where('order_id', $id)->first()->id;
-
-            Session::put('idOrderDetail', $idOrderDetail);
-
-
-            return redirect(route('materials'));
-            /*
-            * Save End
-            */
-        }
-
-
-        public function materials()
-        {
-            //If (isset Session ('idMaterialsCountertop')('idMaterialsFloor')('idMaterialsDetail'))  get id OrderMaterialsFloor OrderMaterialsCountertop OrderMaterialsDetail
-            $MaterialsFloor = session::has('idMaterialsFloor') ? OrderMaterialsFloor::where('id',
-                session::get('idMaterialsFloor'))->first() : null;
-            $MaterialsCountertop = session::has('idMaterialsCountertop') ? OrderMaterialsCountertop::where('id',
-                session::get('idMaterialsCountertop'))->first() : null;
-            $MaterialsDetail = session::has('idMaterialsDetail') ? OrderMaterialsDetail::where('id',
-                session::get('idMaterialsDetail'))->first() : null;
-
-            return view('materials', [
-                'MaterialsFloor' => $MaterialsFloor,
-                'MaterialsCountertop' => $MaterialsCountertop,
-                'MaterialsDetail' => $MaterialsDetail,
-            ]);
-        }
-
-
-        public function materialsPost(Request $request)
-        {
-            /*
-             * Validate Start
-             */
-            $validator = Validator::make($request->all(), [
-//                    Floor
-                'hardwood' => 'boolean',
-                'cork' => 'boolean',
-                'vinyl' => 'boolean',
-                'concrete' => 'boolean',
-                'carpet' => 'boolean',
-                'natural_stone' => 'boolean',
-                'tile' => 'boolean',
-                'laminate' => 'boolean',
-//                    Floor
-//                    Countertop
-                'concrete_c' => 'boolean',
-                'quartz' => 'boolean',
-                'formica' => 'boolean',
-                'granite' => 'boolean',
-                'marble' => 'boolean',
-                'tile_c' => 'boolean',
-                'paper_stone' => 'boolean',
-                'butcher_block' => 'boolean',
-//                    Countertop
-//                    Detail
-                'stainless_steel_appliances' => 'required|in:yes,no',
-                'stove_type' => 'required|in:yes,no',
-                'shawer_doors_glass' => 'required|in:yes,no',
-                'mold' => 'required|in:yes,no',
-                'areas_special_attention' => 'max:255',
-                'anything_know' => 'max:255',
-//                    Detail
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-            * Validate End
-            */
-
-            /*
-            * Save Start
-            */
-            //Request Array
-            $data = $request->toArray();
-            $dataCountertops = $request->toArray();
-
-            //When checkbox is not selected add 0
-            $data['hardwood'] = $request->has('hardwood') ? 1 : 0;
-            $data['cork'] = $request->has('cork') ? 1 : 0;
-            $data['vinyl'] = $request->has('vinyl') ? 1 : 0;
-            $data['concrete'] = $request->has('concrete') ? 1 : 0;
-            $data['carpet'] = $request->has('carpet') ? 1 : 0;
-            $data['natural_stone'] = $request->has('natural_stone') ? 1 : 0;
-            $data['tile'] = $request->has('tile') ? 1 : 0;
-            $data['laminate'] = $request->has('laminate') ? 1 : 0;
-
-            //When checkbox is not selected add 0
-            $dataCountertops['concrete_c'] = $request->has('concrete_c') ? 1 : 0;
-            $dataCountertops['quartz'] = $request->has('quartz') ? 1 : 0;
-            $dataCountertops['formica'] = $request->has('formica') ? 1 : 0;
-            $dataCountertops['granite'] = $request->has('granite') ? 1 : 0;
-            $dataCountertops['marble'] = $request->has('marble') ? 1 : 0;
-            $dataCountertops['tile_c'] = $request->has('tile_c') ? 1 : 0;
-            $dataCountertops['paper_stone'] = $request->has('paper_stone') ? 1 : 0;
-            $dataCountertops['butcher_block'] = $request->has('butcher_block') ? 1 : 0;
-
-            $id = Session::get('orderId');
-
-            $dataCountertops['order_id'] = $id;
-
-            //Add DataBase
-            OrderMaterialsDetail::updateOrCreate(["order_id" => $id], $data);
-            OrderMaterialsFloor::updateOrCreate(["order_id" => $id], $data);
-            OrderMaterialsCountertop::updateOrCreate(["order_id" => $id], $dataCountertops);
-
-            $idMaterialsDetail = OrderMaterialsDetail::where('order_id', $id)->first()->id;
-            $idMaterialsFloor = OrderMaterialsFloor::where('order_id', $id)->first()->id;
-            $idMaterialsCountertop = OrderMaterialsCountertop::where('order_id', $id)->first()->id;
-
-            //Add Session
-            Session::put('idMaterialsDetail', $idMaterialsDetail);
-            Session::put('idMaterialsFloor', $idMaterialsFloor);
-            Session::put('idMaterialsCountertop', $idMaterialsCountertop);
-
-            return redirect(route('extras'));
-            /*
-            * Save End
-            */
-
-        }
-
-
-        public function extras()
-        {
-            //If (isset Session ('idOrderExtras'))  get id OrderExtras
-            $OrderExtras = Session::has('idOrderExtras') ? OrderExtras::where('id',
-                Session::get('idOrderExtras'))->first() : null;
-
-            return view('extras', ['OrderExtras' => $OrderExtras]);
-        }
-
-
-        public function extrasPost(Request $request)
-        {
-            /*
-            * Validate Start
-            */
-            $validator = Validator::make($request->all(), [
-//                    Select extras
-                'inside_fridge' => 'boolean',
-                'inside_oven' => 'boolean',
-                'garage_swept' => 'boolean',
-                'blinds_cleaning' => 'boolean',
-                'laundry_wash_dry' => 'boolean',
-
-                'service_weekend' => 'required|in:yes,no',
-                'carpet' => 'required|in:yes,no',
-            ]);
-
-            if ($validator->fails()) {
-                return back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-            /*
-            * Validate End
-            */
-            /*
-            * Save Start
-            */
-            $id = Session::get('orderId');
-            $data = $request->toArray();
-
-            //When checkbox is not selected add 0
-            $data['inside_fridge'] = $request->has('inside_fridge') ? 1 : 0;
-            $data['inside_oven'] = $request->has('inside_oven') ? 1 : 0;
-            $data['garage_swept'] = $request->has('garage_swept') ? 1 : 0;
-            $data['blinds_cleaning'] = $request->has('blinds_cleaning') ? 1 : 0;
-            $data['laundry_wash_dry'] = $request->has('laundry_wash_dry') ? 1 : 0;
-
-            //Add DataBase
-            OrderExtras::updateOrCreate(["order_id" => $id], $data);
-
-            //Add Session
-            $idOrderExtras = OrderExtras::where('order_id', $id)->first()->id;
-            Session::put('idOrderExtras', $idOrderExtras);
-
-            $request->session()->flush();
-
-            return back();
-            /*
-            * Save End
-            */
-        }
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Session;
+use Validator;
+use App\Http\Requests\RequestHomePost;
+use App\Http\Requests\RequestPersonalInfo;
+use App\Http\Requests\RequestYourHome;
+use App\Http\Requests\RequestMaterialsPost;
+use App\Http\Requests\RequestExtrasPost;
+use App\Services\OrderService;
+use App\Services\UserService;
+use App\Exceptions\OrderNotFoundException;
+
+
+class Index extends Controller
+{
+    protected $orderService;
+    protected $userService;
+
+    public function __construct(
+        OrderService $orderService,
+        UserService $userService
+    ) {
+        $this->orderService = $orderService;
+        $this->userService = $userService;
     }
+
+    public function home()
+    {
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['user']
+            );
+
+            $userModel = $orderModel->user;
+        } catch (OrderNotFoundException $e) {
+            $orderModel = null;
+            $userModel = null;
+        }
+
+        return (
+        view(
+            'home',
+            [
+                'order' => $orderModel,
+                'user' => $userModel
+            ]
+        )
+        );
+    }
+
+    public function homePost(RequestHomePost $request)
+    {
+        $userData = $request->only('email');
+        $orderData = $request->only(
+            'bedroom',
+            'bathroom',
+            'zip_code'
+        );
+        $userModel = $this->userService->findByEmailOrCreate(
+            $userData['email']
+        );
+
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId')
+            );
+
+            $orderModel->update($orderData);
+        } catch (OrderNotFoundException $e) {
+            $orderModel = $this->orderService->createUserOrder(
+                $userModel,
+                $orderData
+            );
+
+            // Save current orderId to Session
+            Session::put('orderId', $orderModel->id);
+        }
+
+        return redirect(route('info'));
+    }
+
+
+    public function personalInfo()
+    {
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['user']
+            );
+        } catch (OrderNotFoundException $e) {
+            return redirect(route('home'));
+        }
+
+        return view('personal_info', ['order' => $orderModel, 'user' => $orderModel->user]);
+    }
+
+
+    public function personalInfoPost(RequestPersonalInfo $request)
+    {
+        $userData = $request->only(
+            'mobile_phone',
+            'first_name',
+            'last_name'
+        );
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['user']
+            );
+        } catch (OrderNotFoundException $e) {
+            return redirect(route('home'));
+        }
+
+        $orderModel->user->update($userData);
+
+        $orderData = $request->only(
+            'cleaning_frequency',
+            'cleaning_type',
+            'cleaning_date',
+            'street_address',
+            'apt',
+            'city',
+            'home_footage',
+            'about_us'
+        );
+
+        $orderModel->update($orderData);
+
+        $this->orderService->calculateAndSavePrice($orderModel);
+
+        return redirect(route('yourHome'));
+    }
+
+    /*
+     * Your Home Get
+     */
+    public function yourHome()
+    {
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['orderDetail']
+            );
+
+        } catch (OrderNotFoundException $e) {
+            return redirect(route('home'));
+        }
+
+        if (!$orderModel->cleaning_frequency) {
+            return redirect(route('info'));
+        };
+
+        return view('your_home', ['orderDetail' => $orderModel->orderDetail]);
+    }
+
+    public function yourHomePostPhoto(Request $request)
+    {
+        // Its Time Decision
+        $path = $request->file('image')->store('uploads', 'public');
+
+        return view('your_home', ['path' => $path]);
+    }
+
+    public function yourHomePost(RequestYourHome $request)
+    {
+        $dataYourHome = $request->only
+        (
+            'dogs_or_cats',
+            'pets_total',
+            'adults',
+            'children',
+            'rate_cleanliness',
+            'cleaned_2_months_ago',
+            'differently'
+        );
+
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['orderDetail']
+            );
+            $this->orderService->checkRelation($orderModel->orderDetail);
+            $orderModel->orderDetail->update($dataYourHome);
+        } catch (OrderNotFoundException $e) {
+            $this->orderService->createOrderDetail(
+                $orderModel,
+                $dataYourHome
+            );
+        }
+
+        if ($request->dogs_or_cats == 'none') {
+            $request->pets_total = null;
+        }
+
+        $this->orderService->calculateAndSavePrice($orderModel);
+
+        return redirect(route('materials'));
+    }
+
+    public function materials()
+    {
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['orderDetail']
+            );
+
+        } catch (OrderNotFoundException $e) {
+            return redirect(route('home'));
+        }
+
+        if (!$orderModel->orderDetail) {
+            return redirect(route('yourHome'));
+        }
+
+        return view('materials', [
+            'MaterialsFloor' => $orderModel->orderMaterialsFloor,
+            'MaterialsCountertop' => $orderModel->orderMaterialsCountertop,
+            'MaterialsDetail' => $orderModel->orderMaterialsDetail,
+        ]);
+    }
+
+    public function materialsPost(RequestMaterialsPost $request)
+    {
+        // Request Go Array
+        $dataOrderMaterials = $request->toArray();
+
+        // When checkbox is not selected add 0
+        $dataOrderMaterials['hardwood'] = $request->has('hardwood') ? 1 : 0;
+        $dataOrderMaterials['cork'] = $request->has('cork') ? 1 : 0;
+        $dataOrderMaterials['vinyl'] = $request->has('vinyl') ? 1 : 0;
+        $dataOrderMaterials['concrete'] = $request->has('concrete') ? 1 : 0;
+        $dataOrderMaterials['carpet'] = $request->has('carpet') ? 1 : 0;
+        $dataOrderMaterials['natural_stone'] = $request->has('natural_stone') ? 1 : 0;
+        $dataOrderMaterials['tile'] = $request->has('tile') ? 1 : 0;
+        $dataOrderMaterials['laminate'] = $request->has('laminate') ? 1 : 0;
+        $dataOrderMaterials['concrete_c'] = $request->has('concrete_c') ? 1 : 0;
+        $dataOrderMaterials['quartz'] = $request->has('quartz') ? 1 : 0;
+        $dataOrderMaterials['formica'] = $request->has('formica') ? 1 : 0;
+        $dataOrderMaterials['granite'] = $request->has('granite') ? 1 : 0;
+        $dataOrderMaterials['marble'] = $request->has('marble') ? 1 : 0;
+        $dataOrderMaterials['tile_c'] = $request->has('tile_c') ? 1 : 0;
+        $dataOrderMaterials['paper_stone'] = $request->has('paper_stone') ? 1 : 0;
+        $dataOrderMaterials['butcher_block'] = $request->has('butcher_block') ? 1 : 0;
+
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['orderDetail']
+            );
+
+            $this->orderService->checkRelation($orderModel->orderMaterialsDetail);
+            $orderModel->orderMaterialsFloor->update($dataOrderMaterials);
+            $orderModel->orderMaterialsCountertop->update($dataOrderMaterials);
+            $orderModel->orderMaterialsDetail->update($dataOrderMaterials);
+        } catch (OrderNotFoundException $e) {
+            $this->orderService->createOrderMaterialsDetail(
+                $orderModel,
+                $dataOrderMaterials
+            );
+            $this->orderService->createOrderMaterialsFloor(
+                $orderModel,
+                $dataOrderMaterials
+            );
+            $this->orderService->createOrderMaterialsCountertop(
+                $orderModel,
+                $dataOrderMaterials
+            );
+        }
+
+        $this->orderService->calculateAndSavePrice($orderModel);
+
+        return redirect(route('extras'));
+    }
+
+    public function extras()
+    {
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['orderDetail']
+            );
+
+        } catch (OrderNotFoundException $e) {
+            return redirect(route('home'));
+        }
+
+        if (!$orderModel->orderMaterialsDetail) {
+            return redirect(route('materials'));
+        }
+
+        return view('extras', [
+            'orderExtras' => $orderModel->orderExtras,
+            'bedroomExtras' => $orderModel->bedroom,
+            'bathroomExtras' => $orderModel->bathroom,
+            'homeFootageExtras' => $orderModel->home_footage,
+            'data' => $orderModel->total_sum
+        ]);
+    }
+
+    public function extrasPost(RequestExtrasPost $request)
+    {
+        $dataExtras = $request->toArray();
+
+        // When checkbox is not selected add 0
+        $dataExtras['inside_fridge'] = $request->has('inside_fridge') ? 1 : 0;
+        $dataExtras['inside_oven'] = $request->has('inside_oven') ? 1 : 0;
+        $dataExtras['garage_swept'] = $request->has('garage_swept') ? 1 : 0;
+        $dataExtras['blinds_cleaning'] = $request->has('blinds_cleaning') ? 1 : 0;
+        $dataExtras['laundry_wash_dry'] = $request->has('laundry_wash_dry') ? 1 : 0;
+
+        try {
+            $orderModel = $this->orderService->findOrFail(
+                Session::get('orderId'),
+                ['orderExtras']
+            );
+
+            $this->orderService->checkRelation($orderModel->orderExtras);
+            $orderModel->orderExtras->update($dataExtras);
+        } catch (OrderNotFoundException $e) {
+            $this->orderService->createOrderExtras(
+                $orderModel,
+                $dataExtras
+            );
+        }
+
+        // Send User Notification:
+        $this->userService->sendOrderShippedEmail(
+            $orderModel->user()->first(),
+            $orderModel
+        );
+        dd(1);
+
+        // TODO: remove only Order ID:
+        $request->session()->flush();
+
+        return back();
+    }
+}

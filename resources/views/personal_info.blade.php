@@ -1,5 +1,9 @@
 @extends('layouts.site')
 
+@section('title')
+    Personal Info
+@endsection
+
 @section('header')
     @include('site.header')
 @endsection
@@ -167,43 +171,47 @@
 
                 <div class="col-sm-9">
                     <div class="form-row">
-                        {{--The first block--}}
+                        {{--First name block--}}
                         <div class="form-group col-md-6">
                             <label for="first_name">First name</label>
                             <input type="text" class="form-control" id="first_name" name="first_name"
                                    value="{{!empty($user->first_name) ? $user->first_name : ''}}">
                         </div>
+                        {{--Last name block--}}
                         <div class="form-group col-md-6">
                             <label for="last_name">Last name</label>
                             <input type="text" class="form-control" id="last_name" name="last_name"
                                    value="{{!empty($user->last_name) ? $user->last_name : ''}}">
                         </div>
-                        {{--The second block--}}
+                        {{--Street address block--}}
                         <div class="form-group col-md-8">
                             <label for="street_address">Street address</label>
                             <input type="text" class="form-control" id="street_address" name="street_address"
                                    value="{{!empty($order->street_address) ? $order->street_address : ''}}">
                         </div>
+                        {{--Apt block--}}
                         <div class="form-group col-md-4">
                             <label for="apt">Apt</label>
                             <input type="text" class="form-control" id="apt" name="apt" value="{{!empty($order->apt) ? $order->apt : ''}}">
                         </div>
-                        {{--Tree block--}}
+                        {{--City block--}}
                         <div class="form-group col-md-6">
                             <label for="city">City</label>
                             <input type="text" class="form-control" id="city" name="city" value="{{!empty($order->city) ? $order->city : ''}}">
                         </div>
+                        {{--Home Footage block--}}
                         <div class="form-group col-md-6">
                             <label for="home_footage">Home Footage</label>
                             <input type="text" class="form-control" id="home_footage" name="home_footage"
                                    value="{{!empty($order->home_footage) ? $order->home_footage : ''}}">
                         </div>
-                        {{--Four Bock--}}
+                        {{--Mobile phone block--}}
                         <div class="form-group col-md-6">
                             <label for="mobile_phone">Mobile phone</label>
                             <input type="tel" class="form-control" name="mobile_phone" id="mobile_phone"
                                    value="{{!empty($user->mobile_phone) ? $user->mobile_phone : ''}}">
                         </div>
+                        {{--About us block--}}
                         <div class="form-group col-md-6">
                             <label for="about_us">How did you hear about us?</label>
                             <select class="form-control" name="about_us" id="about_us">

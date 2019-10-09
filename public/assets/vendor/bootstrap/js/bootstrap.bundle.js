@@ -612,7 +612,7 @@
     ACTIVE: '.active',
     ACTIVE_ITEM: '.active.carousel-item',
     ITEM: '.carousel-item',
-    ITEM_IMG: '.carousel-item img',
+    ITEM_IMG: '.carousel-item images',
     NEXT_PREV: '.carousel-item-next, .carousel-item-prev',
     INDICATORS: '.carousel-indicators',
     DATA_SLIDE: '[data-slide], [data-slide-to]',
@@ -4056,7 +4056,7 @@
   }();
 
   /**
-   * The `referenceObject` is an object that provides an interface compatible with Popper.js
+   * The `referenceObject` is an object that provides an Interfaces compatible with Popper.js
    * and lets you use it as replacement of a real DOM node.<br />
    * You can use this method to position a popper relatively to a set of coordinates
    * in case you don't have a DOM node to use as reference.

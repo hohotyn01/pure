@@ -60,10 +60,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'redirectUserId' => \App\Http\Middleware\SessionUserId::class,
-        'redirectPersonalInfo' => \App\Http\Middleware\SessionPersonalInfo::class,
-        'redirectYourHome' => \App\Http\Middleware\SessionYourHome::class,
-        'redirectMaterials' => \App\Http\Middleware\SessionMaterials::class,
+        'redirectNoOrder' => \App\Http\Middleware\RedirectNoOrder::class,
     ];
 
     /**
