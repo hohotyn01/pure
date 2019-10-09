@@ -36,6 +36,11 @@
             return $this->hasOne('App\Models\OrderDetail');
         }
 
+        public function orderDetailPhoto()
+        {
+            return $this->hasOne('App\Models\OrderDetailPhoto');
+        }
+
         public function orderMaterialsFloor()
         {
             return $this->hasOne('App\Models\OrderMaterialsFloor');

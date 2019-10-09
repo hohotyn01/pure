@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Exceptions\OrderNotFoundException;
 use App\Models\Order;
-use App\Models\User;
 use App\Repositories\PaymentRepository;
 use Stripe\Plan;
 use Stripe\Stripe;

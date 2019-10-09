@@ -213,17 +213,20 @@
                 <div class="col-sm-9">
                     <div class="col-md-12">
                         <label>Upload Photo</label><br>
-                        <input type="file" name="image" multiple/><br>
-                        <label for="unset">unset</label>
-                        <input type="checkbox" name="unset"><br>
+                        <input type="file" name="image[]" multiple/><br>
                         <input type="submit" value="submit">
                     </div>
                 </div>
             </div>
-            @isset ($path)
-                @dump($path)
+            @isset ($paths)
+                @dump($paths)
 
-                <img class="img-fluid" src="{{ asset('/storage/'.$path) }}">
+                @if(is_array($paths))
+                    @foreach($paths as $path)
+                        <img class="img-fluid" src="{{ asset('/storage/'.$path->photo_path) }}">
+                        <input type="checkbox" value="{{$path->id}}">
+                    @endforeach
+                @endif
             @endisset
         </form>
         <div class="text-center mt-5 mb-5">
