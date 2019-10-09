@@ -221,6 +221,8 @@
                 </div>
             </div>
             @isset ($path)
+                @dump($path)
+
                 <img class="img-fluid" src="{{ asset('/storage/'.$path) }}">
             @endisset
         </form>

@@ -166,9 +166,6 @@ class Index extends Controller
         return view('your_home', ['path' => $path]);
     }
 
-    /*
-     * Your Home Post
-     */
     public function yourHomePost(RequestYourHome $request)
     {
         $dataYourHome = $request->only
