@@ -167,7 +167,7 @@ class Index extends Controller
 
         $modelOrderPaths = $this->orderService->actionPhoto($request->file('image'), $orderModel);
 
-        return view ('your_home', ['modelOrderPaths' => $modelOrderPaths]);
+        return redirect()->route('yourHome', ['modelOrderPaths' => $modelOrderPaths]);
     }
 
 //response()->json(['modelOrderPaths' => $modelOrderPaths], 200)
