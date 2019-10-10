@@ -165,27 +165,12 @@ class Index extends Controller
             Session::get('orderId')
         );
 
-        $files = $request->file('image');
+        $modelOrderPaths = $this->orderService->actionPhoto($request->file('image'), $orderModel);
 
-        foreach ($files as $file) {
-            // Value path from photo
-            $bdPhotoPath[] = $file->store('uploads', 'public');
-        }
-
-        foreach ($bdPhotoPath as $path) {
-            // Insert in DB path photo
-            orderDetailPhoto::create(['order_id' => $orderModel->id, 'photo_path' => $path]);
-        }
-
-        $getPaths = orderDetailPhoto::where('order_id', $orderModel->id)->get();
-
-        foreach ($getPaths as $getPath) {
-
-            $viewPaths[] = $getPath;
-        }
-
-        return view('your_home', ['paths' => $viewPaths]);
+        return view ('your_home', ['modelOrderPaths' => $modelOrderPaths]);
     }
+
+//response()->json(['modelOrderPaths' => $modelOrderPaths], 200)
 
     public function yourHomePost(RequestYourHome $request)
     {

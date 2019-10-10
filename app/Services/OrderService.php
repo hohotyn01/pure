@@ -97,7 +97,50 @@ class OrderService extends BaseService
         );
     }
 
+    /*
+     * A list of photo
+     */
+    public function actionPhoto(array $files, Order $order)
+    {
+        $responsePhotoPath = $this->responsePhotoPath($files);
+        $this->insertPhotoPath($responsePhotoPath, $order->id);
+        $viewPaths = $this->getPhotoPath($order->id);
 
+        return $viewPaths;
+    }
+
+    public function responsePhotoPath(array $files)
+    {
+        foreach ($files as $file) {
+            // Value path from photo
+            $responsePhotoPath[] = $file->store('uploads', 'public');
+        }
+
+        return $responsePhotoPath;
+    }
+
+    public function insertPhotoPath(array $responsePhotoPath, int $orderId)
+    {
+        foreach ($responsePhotoPath as $path) {
+            // Insert in DB, path photo
+            $this->orderRepository->createOrderPath($path, $orderId);
+        }
+    }
+
+    public function getPhotoPath(int $orderId)
+    {
+        $orderPaths = $this->orderRepository->getOrderPath('order_id', $orderId);
+
+        foreach ($orderPaths as $orderPath) {
+            $modelOrderPath[] = $orderPath;
+        }
+
+        return $modelOrderPath;
+    }
+
+    /*
+     * End photo list
+     */
 
     public function calculateAndSavePrice(Order $order)
     {

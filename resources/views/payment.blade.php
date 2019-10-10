@@ -1,7 +1,11 @@
 @extends('layouts.site')
 
 @section('title')
+    Payment
+@endsection
 
+@section('style')
+    <link href="{{asset('assets/css/styleStripe.css')}}" rel="stylesheet">
 @endsection
 
 @section('header')

@@ -214,20 +214,19 @@
                     <div class="col-md-12">
                         <label>Upload Photo</label><br>
                         <input type="file" name="image[]" multiple/><br>
-                        <input type="submit" value="submit">
+                        <br>
+                        <input type="submit" id="sendPhoto" class="btn btn-success" value="Send Photo">
                     </div>
                 </div>
             </div>
-            @isset ($paths)
-                @dump($paths)
-
-                @if(is_array($paths))
-                    @foreach($paths as $path)
-                        <img class="img-fluid" src="{{ asset('/storage/'.$path->photo_path) }}">
-                        <input type="checkbox" value="{{$path->id}}">
-                    @endforeach
-                @endif
-            @endisset
+            @if(isset($modelOrderPaths) && is_array($modelOrderPaths))
+                @foreach($modelOrderPaths as $modelOrderPath)
+                    <div id="{{$modelOrderPath->id}}">
+                        <button class="btn btn-light" id="{{$modelOrderPath->id}}"><i class="fa fa-trash " aria-hidden="true">delete</i></button><br>
+                        <img class="crops" src="{{ asset('/storage/'.$modelOrderPath->photo_path) }}">
+                    </div>
+                @endforeach
+            @endif
         </form>
         <div class="text-center mt-5 mb-5">
             <input type="submit" class="btn btn-danger" value="2 Steps Left" form="yourHome">
