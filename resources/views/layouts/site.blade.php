@@ -22,11 +22,15 @@
     <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet">
     <!-- Google web fonts -->
     <link href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700" rel='stylesheet'/>
+    {{-- CDN Fontawesome Needed for icons --}}
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel='stylesheet'/>
     <!-- Custom styles for this template -->
     <link href="{{asset('assets/css/business-casual.min.css')}}" rel="stylesheet">
 
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
-    <link href="{{asset('assets/css/styleStripe.css')}}" rel="stylesheet">
+
+    @yield('style')
+
 </head>
 
 <body>

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\OrderDetailPhoto;
 use Session;
 use Validator;
 use App\Http\Requests\RequestHomePost;
 use App\Http\Requests\RequestPersonalInfo;
 use App\Http\Requests\RequestYourHome;
+use App\Http\Requests\RequestPhoto;
 use App\Http\Requests\RequestMaterialsPost;
 use App\Http\Requests\RequestExtrasPost;
 use App\Services\OrderService;
@@ -158,13 +159,18 @@ class Index extends Controller
         return view('your_home', ['orderDetail' => $orderModel->orderDetail]);
     }
 
-    public function yourHomePostPhoto(Request $request)
+    public function yourHomePostPhoto(RequestPhoto $request)
     {
-        // Its Time Decision
-        $path = $request->file('image')->store('uploads', 'public');
+        $orderModel = $this->orderService->findOrFail(
+            Session::get('orderId')
+        );
 
-        return view('your_home', ['path' => $path]);
+        $modelOrderPaths = $this->orderService->actionPhoto($request->file('image'), $orderModel);
+
+        return redirect()->route('yourHome', ['modelOrderPaths' => $modelOrderPaths]);
     }
+
+//response()->json(['modelOrderPaths' => $modelOrderPaths], 200)
 
     public function yourHomePost(RequestYourHome $request)
     {

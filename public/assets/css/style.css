@@ -67,6 +67,11 @@ footer h2 i{
     color:#888;
 }
 
+.crops{
+    width: 200px;
+    height: 150px;
+}
+
 #_download{
     opacity:0.9;
     background-color:#257691;
