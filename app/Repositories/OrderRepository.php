@@ -22,8 +22,13 @@ class OrderRepository extends BaseRepository
         return orderDetailPhoto::where($column, $orderId)->get();
     }
 
-    public function softDeletePhoto($id)
+    public function softDeletePhoto($id, $idOrder)
     {
-        OrderDetailPhoto::destroy($id);
+        OrderDetailPhoto::where([
+            ['id', $id],
+            ['order_id', $idOrder]
+        ])->delete();
+
+
     }
 }

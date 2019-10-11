@@ -24,7 +24,7 @@ class RequestSoftDeletePhoto extends FormRequest
     public function rules()
     {
         return [
-            'idPhoto' => 'numeric',
+//            'idPhoto' => 'numeric',
         ];
     }
 }

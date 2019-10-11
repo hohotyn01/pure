@@ -97,9 +97,9 @@ class OrderService extends BaseService
         );
     }
 
-    public function softDeletePhoto($id)
+    public function softDeletePhoto($id, $idOrder)
     {
-        $this->orderRepository->softDeletePhoto($id);
+       $this->orderRepository->softDeletePhoto($id, $idOrder);
     }
 
     /*

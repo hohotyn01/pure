@@ -105,7 +105,7 @@ $(document).ready(function () {
         photo = this.files;
     });
 
-    // Send Ajax for photo
+    // Send delete for photo
     $('button.btn-light').click(function (event) {
         event.preventDefault();
         let idPhoto = $(this).attr("id");
@@ -115,7 +115,8 @@ $(document).ready(function () {
             method: "POST",
             cache: false,
             data: {
-                "idPhoto": idPhoto//1
+                "idPhoto": idPhoto,
+                'modelPhoto': modelPhoto
             },
             dataType: 'html',
             beforeSend: function () {

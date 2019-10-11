@@ -170,13 +170,10 @@ class Index extends Controller
 
         return redirect()->back();
     }
-//return redirect()->back();
-//return view()
-//response()->json(['modelOrderPaths' => $modelOrderPaths], 200)
 
     public function softDeleteYouHomePostPhoto(RequestSoftDeletePhoto $request)
     {
-        $this->orderService->softDeletePhoto($request->all()['idPhoto']);
+        $this->orderService->softDeletePhoto($request->all()['idPhoto'], $request->all()['modelPhoto']['order_id']);
 
         return response()->json(true);
     }

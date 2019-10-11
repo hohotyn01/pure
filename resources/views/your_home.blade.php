@@ -148,7 +148,7 @@
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="adults" id="5_and_more"
-                             value="5_and_more" {{
+                                   value="5_and_more" {{
                              !empty($orderDetail->adults)
                              && ($orderDetail->adults == '5_and_more')
                              ? 'checked'
@@ -301,22 +301,27 @@
                     </div>
                 </div>
             </div>
-            @if(isset($orderDetail->orderDetailPhoto))
-                <div class="row mt-4 md-4">
-                    @foreach($orderDetail->orderDetailPhoto as $modelOrderPath)
-                        <div class="col-md-3 mt-3" id="{{$modelOrderPath->id}}">
-                            <button class="btn btn-light" id="{{$modelOrderPath->id}}">
-                                <i class="fa fa-trash "aria-hidden="true">delete</i>
-                            </button>
-                            <br>
-                            <img class="crops" src="{{ asset('/storage/'.$modelOrderPath->photo_path) }}">
-                        </div>
-                    @endforeach
-                </div>
-            @endif
         </form>
+
+        @dump($orderDetail->orderDetailPhoto[0])
+        @if(isset($orderDetail->orderDetailPhoto))
+            <div class="row mt-4 md-4">
+                @foreach($orderDetail->orderDetailPhoto as $modelOrderPath)
+                    <div class="col-md-3 mt-3" id="{{$modelOrderPath->id}}">
+                        <button class="btn btn-light" id="{{$modelOrderPath->id}}">
+                            <i class="fa fa-trash " aria-hidden="true">delete</i>
+                        </button>
+                        <br>
+                        <img class="crops" src="{{ asset('/storage/'.$modelOrderPath->photo_path) }}">
+                    </div>
+                @endforeach
+            </div>
+        @endif
         <div class="text-center mt-5 mb-5">
             <input type="submit" class="btn btn-danger" value="2 Steps Left" form="yourHome">
         </div>
     </div>
+    <script>
+        let modelPhoto = {!! json_encode($orderDetail->orderDetailPhoto[0]) !!};
+    </script>
 @endsection
