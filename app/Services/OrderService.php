@@ -138,9 +138,14 @@ class OrderService extends BaseService
         return $modelOrderPath;
     }
 
-    public function softDeletePhoto($id, $idOrder)
+    public function getModelPath($idPhoto)
     {
-        $this->orderRepository->softDeletePhoto($id, $idOrder);
+        return $this->orderRepository->getModelPath($idPhoto);
+    }
+    
+    public function softDeletePhoto($idPhoto)
+    {
+        $this->orderRepository->softDeletePhoto($idPhoto);
     }
     /*
      * End photo list

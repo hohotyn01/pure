@@ -115,8 +115,7 @@ $(document).ready(function () {
             method: "POST",
             cache: false,
             data: {
-                "idPhoto": idPhoto,
-                'modelPhoto': modelPhoto
+                "idPhoto": idPhoto
             },
             dataType: 'html',
             beforeSend: function () {
@@ -124,7 +123,6 @@ $(document).ready(function () {
                 $("button").prop('disabled', true);
             },
             success: function (data) {
-                console.log(data);
                 // Reload from cookies
                 location.reload();
                 // Buttons active

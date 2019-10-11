@@ -318,7 +318,4 @@
             <input type="submit" class="btn btn-danger" value="2 Steps Left" form="yourHome">
         </div>
     </div>
-    <script>
-        let modelPhoto = {!! json_encode($orderDetail->orderDetailPhoto) !!};
-    </script>
 @endsection
