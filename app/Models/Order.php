@@ -38,7 +38,7 @@
 
         public function orderDetailPhoto()
         {
-            return $this->hasOne('App\Models\OrderDetailPhoto');
+            return $this->hasMany('App\Models\OrderDetailPhoto');
         }
 
         public function orderMaterialsFloor()

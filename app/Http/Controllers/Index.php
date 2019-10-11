@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrderDetailPhoto;
 use Session;
 use Validator;
 use App\Http\Requests\RequestHomePost;
 use App\Http\Requests\RequestPersonalInfo;
 use App\Http\Requests\RequestYourHome;
 use App\Http\Requests\RequestPhoto;
+use App\Http\Requests\RequestSoftDeletePhoto;
 use App\Http\Requests\RequestMaterialsPost;
 use App\Http\Requests\RequestExtrasPost;
 use App\Services\OrderService;
@@ -156,7 +156,8 @@ class Index extends Controller
             return redirect(route('info'));
         };
 
-        return view('your_home', ['orderDetail' => $orderModel->orderDetail]);
+//        return view('your_home', ['orderDetail' => $orderModel->orderDetail]);
+        return view('your_home', ['orderDetail' => $orderModel]);
     }
 
     public function yourHomePostPhoto(RequestPhoto $request)
@@ -165,12 +166,20 @@ class Index extends Controller
             Session::get('orderId')
         );
 
-        $modelOrderPaths = $this->orderService->actionPhoto($request->file('image'), $orderModel);
+        $this->orderService->actionPhoto($request->file('image'), $orderModel);
 
-        return redirect()->route('yourHome', ['modelOrderPaths' => $modelOrderPaths]);
+        return redirect()->back();
     }
-
+//return redirect()->back();
+//return view()
 //response()->json(['modelOrderPaths' => $modelOrderPaths], 200)
+
+    public function softDeleteYouHomePostPhoto(RequestSoftDeletePhoto $request)
+    {
+        $this->orderService->softDeletePhoto($request->all()['idPhoto']);
+
+        return response()->json(true);
+    }
 
     public function yourHomePost(RequestYourHome $request)
     {

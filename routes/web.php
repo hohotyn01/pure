@@ -20,6 +20,7 @@
         Route::get('/your_home', 'Index@yourHome')->name('yourHome');
         Route::post('/your_home', 'Index@yourHomePost')->name('youHomePost');
         Route::post('/your_home_photo', 'Index@yourHomePostPhoto');
+        Route::post('/your_home_photo_delete', 'Index@softDeleteYouHomePostPhoto');
 
         Route::get('/materials', 'Index@materials')->name('materials');
         Route::post('/materials', 'Index@materialsPost');

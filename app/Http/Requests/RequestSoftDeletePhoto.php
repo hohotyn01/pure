@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RequestPhoto extends FormRequest
+class RequestSoftDeletePhoto extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,7 @@ class RequestPhoto extends FormRequest
     public function rules()
     {
         return [
-            'image' => 'required',
-            'photo.*' => 'image|mimes:jpeg,png,jpg',
-            'photo' => 'max:8'
+            'idPhoto' => 'numeric',
         ];
     }
 }

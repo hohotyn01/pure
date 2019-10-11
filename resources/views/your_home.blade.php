@@ -202,6 +202,7 @@
             </div>
             <hr>
         </form>
+        @dump($orderDetail->orderDetailPhoto)
         {{--
             UPLOAD PHOTOS
         --}}
@@ -219,8 +220,8 @@
                     </div>
                 </div>
             </div>
-            @if(isset($modelOrderPaths) && is_array($modelOrderPaths))
-                @foreach($modelOrderPaths as $modelOrderPath)
+            @if(isset($orderDetail->orderDetailPhoto))
+                @foreach($orderDetail->orderDetailPhoto as $modelOrderPath)
                     <div id="{{$modelOrderPath->id}}">
                         <button class="btn btn-light" id="{{$modelOrderPath->id}}"><i class="fa fa-trash " aria-hidden="true">delete</i></button><br>
                         <img class="crops" src="{{ asset('/storage/'.$modelOrderPath->photo_path) }}">

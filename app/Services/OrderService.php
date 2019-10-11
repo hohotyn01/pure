@@ -97,6 +97,11 @@ class OrderService extends BaseService
         );
     }
 
+    public function softDeletePhoto($id)
+    {
+        $this->orderRepository->softDeletePhoto($id);
+    }
+
     /*
      * A list of photo
      */
