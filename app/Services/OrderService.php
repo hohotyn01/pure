@@ -97,11 +97,6 @@ class OrderService extends BaseService
         );
     }
 
-    public function softDeletePhoto($id, $idOrder)
-    {
-       $this->orderRepository->softDeletePhoto($id, $idOrder);
-    }
-
     /*
      * A list of photo
      */
@@ -143,6 +138,10 @@ class OrderService extends BaseService
         return $modelOrderPath;
     }
 
+    public function softDeletePhoto($id, $idOrder)
+    {
+        $this->orderRepository->softDeletePhoto($id, $idOrder);
+    }
     /*
      * End photo list
      */

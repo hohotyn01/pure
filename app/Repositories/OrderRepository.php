@@ -28,7 +28,5 @@ class OrderRepository extends BaseRepository
             ['id', $id],
             ['order_id', $idOrder]
         ])->delete();
-
-
     }
 }
