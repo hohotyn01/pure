@@ -98,21 +98,17 @@ $(document).ready(function () {
     $('#both').on('change', function () {
         $('#pets').show(1000);
     });
+
     let photo;
 
-    $('input[type=file]').change(function(){
+    $('input[type=file]').change(function () {
         photo = this.files;
     });
-
-
-
 
     // Send Ajax for photo
     $('button.btn-light').click(function (event) {
         event.preventDefault();
         let idPhoto = $(this).attr("id");
-
-        console.log(idPhoto);
 
         $.ajax({
             url: 'your_home_photo_delete',
@@ -123,14 +119,15 @@ $(document).ready(function () {
             },
             dataType: 'html',
             beforeSend: function () {
+                // Buttons none active
                 $("button").prop('disabled', true);
             },
             success: function (data) {
                 console.log(data);
-                if (data == true){
-                    location.reload(true);
-                    $("button").prop('disabled', false);
-                }
+                // Reload from cookies
+                location.reload();
+                // Buttons active
+                $("button").prop('disabled', false);
 
             }
         });
