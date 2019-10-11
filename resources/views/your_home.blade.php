@@ -283,7 +283,6 @@
             </div>
             <hr>
         </form>
-        @dump($orderDetail->orderDetailPhoto)
         {{--
             UPLOAD PHOTOS
         --}}
@@ -302,8 +301,6 @@
                 </div>
             </div>
         </form>
-
-        @dump($orderDetail->orderDetailPhoto[0])
         @if(isset($orderDetail->orderDetailPhoto))
             <div class="row mt-4 md-4">
                 @foreach($orderDetail->orderDetailPhoto as $modelOrderPath)
@@ -322,6 +319,6 @@
         </div>
     </div>
     <script>
-        let modelPhoto = {!! json_encode($orderDetail->orderDetailPhoto[0]) !!};
+        let modelPhoto = {!! json_encode($orderDetail->orderDetailPhoto) !!};
     </script>
 @endsection
